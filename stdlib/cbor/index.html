@@ -1,0 +1,666 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>cbor — CBOR (RFC 8949) encoder, decoder, and struct codec · Lora Language</title><meta name="description" content="Module cbor (lib/cbor.lora) exports 31 declarations. Import with use cbor;."><script>
+      try {
+        const t = localStorage.getItem('lora-docs-theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      } catch {}
+    </script><link rel="stylesheet" href="/lora-docs/_astro/PageContent.NRsqP4nx.css"></head><body data-base="/lora-docs/"><header class="topbar"><div class="topbar-left"><button id="mobile-menu-btn" class="menu-btn" type="button" aria-label="Toggle navigation" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button><a href="/lora-docs/" class="brand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="The Lora owl">
+  <title>The Lora owl</title>
+  <path d="M 48 88 L 60 24 L 96 60 Q 128 52 160 60 L 196 24 L 208 88 Q 232 120 224 160 Q 216 232 128 232 Q 40 232 32 160 Q 24 120 48 88 Z" fill="#ff9fc8"/>
+  <circle cx="92" cy="128" r="40" fill="#ffffff" stroke="#ffc799" stroke-width="13"/>
+  <circle cx="164" cy="128" r="40" fill="#ffffff" stroke="#ffc799" stroke-width="13"/>
+  <circle cx="96" cy="132" r="18" fill="#101010"/>
+  <circle cx="160" cy="132" r="18" fill="#101010"/>
+  <polygon points="114,168 142,168 128,194" fill="#ffc799"/>
+</svg>
+<span>Lora Language</span></a><span class="version-pill">v0.1.0</span></div><button id="open-search" type="button" class="search-trigger" aria-label="Search documentation"><span class="search-trigger-left"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><span>Search documentation...</span></span><kbd class="search-kbd">Ctrl K</kbd></button><div class="topbar-right"><button id="theme-toggle" type="button" class="icon-btn" aria-label="Toggle color theme" title="Toggle dark/light theme"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg></button><a href="/lora-docs/specification/standard-library" class="icon-btn" aria-label="Standard Library Index" title="Standard Library (57 modules)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg></a></div></header><div class="shell"><aside id="sidebar" class="sidebar" aria-label="Documentation Navigation"><details class="nav-group" open><summary class="nav-group-summary"><span>GETTING STARTED</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/getting-started/introduction" class="nav-link">Introduction</a></li><li><a href="/lora-docs/getting-started/toolchain-and-editors" class="nav-link">Toolchain &amp; Editors</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>LANGUAGE DESIGN</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/language-design/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/language-design/aliases" class="nav-link">Aliases &amp; Type Declarations</a></li><li><a href="/lora-docs/language-design/assignment" class="nav-link">Assignment</a></li><li><a href="/lora-docs/language-design/blocks-and-statements" class="nav-link">Blocks and Statements</a></li><li><a href="/lora-docs/language-design/structs-unions-interfaces" class="nav-link">Structs, Unions &amp; Interfaces</a></li><li><a href="/lora-docs/language-design/declaring-entities" class="nav-link">Declaring Entities</a></li><li><a href="/lora-docs/language-design/functions" class="nav-link">Functions</a></li><li><a href="/lora-docs/language-design/lambdas" class="nav-link">Lambdas &amp; Closures</a></li><li><a href="/lora-docs/language-design/metaprogramming" class="nav-link">Metaprogramming &amp; Comptime</a></li><li><a href="/lora-docs/language-design/name-lookup" class="nav-link">Name Lookup</a></li><li><a href="/lora-docs/language-design/naming-conventions" class="nav-link">Naming Conventions</a></li><li><a href="/lora-docs/language-design/pattern-matching" class="nav-link">Pattern Matching</a></li><li><a href="/lora-docs/language-design/sum-types" class="nav-link">Sum Types, Optionals &amp; Enums</a></li><li><a href="/lora-docs/language-design/tuples" class="nav-link">Tuples &amp; Named Tuples</a></li><li><a href="/lora-docs/language-design/type-inference" class="nav-link">Type Inference</a></li><li><a href="/lora-docs/language-design/values-pointers-views" class="nav-link">Values, Owners, Pointers &amp; Views</a></li><li><a href="/lora-docs/language-design/variadics" class="nav-link">Variadics</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>CODE &amp; NAME ORGANIZATION</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/organization/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/organization/source-files" class="nav-link">Source Files &amp; Modules</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>CONTROL FLOW</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/control-flow/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/control-flow/conditionals" class="nav-link">Conditionals</a></li><li><a href="/lora-docs/control-flow/loops" class="nav-link">Loops</a></li><li><a href="/lora-docs/control-flow/return-yield-defer" class="nav-link">Return, Yield &amp; Defer</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>EXPRESSIONS</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/expressions/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/expressions/arithmetic" class="nav-link">Arithmetic &amp; Overflow</a></li><li><a href="/lora-docs/expressions/as-expressions" class="nav-link">Conversions (@T) &amp; Assertions</a></li><li><a href="/lora-docs/expressions/bitwise" class="nav-link">Bitwise &amp; @bits</a></li><li><a href="/lora-docs/expressions/comparison-operators" class="nav-link">Comparison Operators</a></li><li><a href="/lora-docs/expressions/if-expressions" class="nav-link">If &amp; Match Expressions</a></li><li><a href="/lora-docs/expressions/implicit-conversions" class="nav-link">Implicit Conversions</a></li><li><a href="/lora-docs/expressions/indexing" class="nav-link">Indexing &amp; Slicing</a></li><li><a href="/lora-docs/expressions/literals" class="nav-link">Literals</a></li><li><a href="/lora-docs/expressions/logical-operators" class="nav-link">Logical Operators</a></li><li><a href="/lora-docs/expressions/member-access" class="nav-link">Member Access</a></li><li><a href="/lora-docs/expressions/pointer-operators" class="nav-link">Pointer &amp; Ownership Operators</a></li><li><a href="/lora-docs/expressions/type-operators" class="nav-link">Type &amp; Layout Operators</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>GENERICS</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/generics/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/generics/goals" class="nav-link">Goals</a></li><li><a href="/lora-docs/generics/terminology" class="nav-link">Terminology</a></li><li><a href="/lora-docs/generics/generics-overview" class="nav-link">Constraints Overview</a></li><li><a href="/lora-docs/generics/generics-details" class="nav-link">Generics Details</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>INTEROPERABILITY</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/interoperability/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/interoperability/c-abi" class="nav-link">Philosophy, Goals &amp; C ABI</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>LEXICAL CONVENTIONS</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/lexical/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/lexical/comments" class="nav-link">Comments</a></li><li><a href="/lora-docs/lexical/numeric-literals" class="nav-link">Numeric Literals</a></li><li><a href="/lora-docs/lexical/string-literals" class="nav-link">String &amp; Rune Literals</a></li><li><a href="/lora-docs/lexical/symbolic-tokens" class="nav-link">Symbolic Tokens</a></li><li><a href="/lora-docs/lexical/whitespace" class="nav-link">Whitespace &amp; Semicolons</a></li><li><a href="/lora-docs/lexical/words" class="nav-link">Words &amp; Keywords</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>SAFETY</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/safety/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/safety/terminology" class="nav-link">Terminology</a></li><li><a href="/lora-docs/safety/memory-ownership" class="nav-link">Memory &amp; Ownership Safety</a></li><li><a href="/lora-docs/safety/borrow-loan-views" class="nav-link">Borrow, Loan &amp; View Safety</a></li><li><a href="/lora-docs/safety/concurrency-races" class="nav-link">Concurrency &amp; Data Races</a></li><li><a href="/lora-docs/safety/stack-overflow" class="nav-link">Stack Overflow &amp; @depth</a></li><li><a href="/lora-docs/safety/contracts-and-unit-functions" class="nav-link">Contracts &amp; Unit Functions</a></li><li><a href="/lora-docs/safety/unsafe-code" class="nav-link">Unsafe Code &amp; Hardening</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>PRINCIPLES</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/principles/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/principles/error-handling" class="nav-link">Error Handling</a></li><li><a href="/lora-docs/principles/information-accumulation" class="nav-link">Information Accumulation</a></li><li><a href="/lora-docs/principles/library-apis-only" class="nav-link">Library APIs Only</a></li><li><a href="/lora-docs/principles/low-context-sensitivity" class="nav-link">Low Context Sensitivity</a></li><li><a href="/lora-docs/principles/namespace-cleanliness" class="nav-link">Namespace Cleanliness</a></li><li><a href="/lora-docs/principles/one-way" class="nav-link">One Way</a></li><li><a href="/lora-docs/principles/progressive-disclosure" class="nav-link">Progressive Disclosure</a></li><li><a href="/lora-docs/principles/safety-strategy" class="nav-link">Safety Strategy</a></li><li><a href="/lora-docs/principles/static-open-extension" class="nav-link">Static Open Extension</a></li><li><a href="/lora-docs/principles/success-criteria" class="nav-link">Success Criteria</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>GUIDES</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/guides/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/guides/glossary" class="nav-link">Glossary</a></li><li><a href="/lora-docs/guides/idiomatic-lora" class="nav-link">Idiomatic Lora &amp; Style Guide</a></li><li><a href="/lora-docs/guides/testing-and-benchmarking" class="nav-link">Testing, Benchmarks &amp; Fuzzing</a></li><li><a href="/lora-docs/guides/concurrency-and-sync" class="nav-link">Concurrency, Sync &amp; Context</a></li><li><a href="/lora-docs/guides/containers-and-data" class="nav-link">Containers, Data &amp; Checksums</a></li><li><a href="/lora-docs/guides/web-and-auth" class="nav-link">Web, HTTP &amp; Auth</a></li><li><a href="/lora-docs/guides/resilience-and-observability" class="nav-link">Resilience &amp; Observability</a></li><li><a href="/lora-docs/guides/cli-and-markup" class="nav-link">CLI, Terminal &amp; Markup</a></li><li><a href="/lora-docs/guides/math-and-algorithms" class="nav-link">Math, Stats &amp; Algorithms</a></li><li><a href="/lora-docs/guides/allocators" class="nav-link">Allocators &amp; Memory Strategies</a></li><li><a href="/lora-docs/guides/sql-and-postgresql" class="nav-link">Typed SQL, PostgreSQL &amp; SQLite</a></li><li><a href="/lora-docs/guides/tags-and-codecs" class="nav-link">Structure Tags &amp; Codecs</a></li><li><a href="/lora-docs/guides/encodings-and-crypto" class="nav-link">Encodings &amp; Cryptography</a></li><li><a href="/lora-docs/guides/reading-generated-code" class="nav-link">Reading Generated Code</a></li><li><a href="/lora-docs/guides/diagnostic-catalog" class="nav-link">Diagnostic Catalog (L0001–L1004)</a></li><li><a href="/lora-docs/guides/roadmap" class="nav-link">Roadmap</a></li><li><a href="/lora-docs/guides/summary" class="nav-link">Stdlib &amp; Language Summary</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>SPECIFICATION</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/specification/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/specification/language-spec" class="nav-link">Language Spec (Full 27 Chapters)</a></li><li><a href="/lora-docs/specification/execution" class="nav-link">Execution &amp; Runtime</a></li><li><a href="/lora-docs/specification/lexing" class="nav-link">Lexing</a></li><li><a href="/lora-docs/specification/libraries" class="nav-link">Libraries &amp; Typedefs</a></li><li><a href="/lora-docs/specification/names" class="nav-link">Names &amp; Visibility</a></li><li><a href="/lora-docs/specification/parsing" class="nav-link">Parsing &amp; Limits</a></li><li><a href="/lora-docs/specification/semantics" class="nav-link">Semantics &amp; Checking</a></li><li><a href="/lora-docs/specification/standard-library" class="nav-link">Standard Library Index</a></li></ul><details class="nav-subdetails" open><summary class="nav-subsummary"><span>Standard Library Modules (141)</span><svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/stdlib/mem" class="nav-link">mem</a></li><li><a href="/lora-docs/stdlib/expanse" class="nav-link">expanse</a></li><li><a href="/lora-docs/stdlib/pool" class="nav-link">pool</a></li><li><a href="/lora-docs/stdlib/allocator" class="nav-link">allocator</a></li><li><a href="/lora-docs/stdlib/arena" class="nav-link">arena</a></li><li><a href="/lora-docs/stdlib/scratch" class="nav-link">scratch</a></li><li><a href="/lora-docs/stdlib/rc" class="nav-link">rc</a></li><li><a href="/lora-docs/stdlib/arc" class="nav-link">arc</a></li><li><a href="/lora-docs/stdlib/slotmap" class="nav-link">slotmap</a></li><li><a href="/lora-docs/stdlib/intern" class="nav-link">intern</a></li><li><a href="/lora-docs/stdlib/strconv" class="nav-link">strconv</a></li><li><a href="/lora-docs/stdlib/utf8" class="nav-link">utf8</a></li><li><a href="/lora-docs/stdlib/utf16" class="nav-link">utf16</a></li><li><a href="/lora-docs/stdlib/unicode" class="nav-link">unicode</a></li><li><a href="/lora-docs/stdlib/ascii" class="nav-link">ascii</a></li><li><a href="/lora-docs/stdlib/strings" class="nav-link">strings</a></li><li><a href="/lora-docs/stdlib/bytes" class="nav-link">bytes</a></li><li><a href="/lora-docs/stdlib/compare" class="nav-link">compare</a></li><li><a href="/lora-docs/stdlib/sort" class="nav-link">sort</a></li><li><a href="/lora-docs/stdlib/slices" class="nav-link">slices</a></li><li><a href="/lora-docs/stdlib/iter" class="nav-link">iter</a></li><li><a href="/lora-docs/stdlib/fuzzy" class="nav-link">fuzzy</a></li><li><a href="/lora-docs/stdlib/io" class="nav-link">io</a></li><li><a href="/lora-docs/stdlib/bufio" class="nav-link">bufio</a></li><li><a href="/lora-docs/stdlib/bitio" class="nav-link">bitio</a></li><li><a href="/lora-docs/stdlib/fmt" class="nav-link">fmt</a></li><li><a href="/lora-docs/stdlib/os" class="nav-link">os</a></li><li><a href="/lora-docs/stdlib/env" class="nav-link">env</a></li><li><a href="/lora-docs/stdlib/dotenv" class="nav-link">dotenv</a></li><li><a href="/lora-docs/stdlib/path" class="nav-link">path</a></li><li><a href="/lora-docs/stdlib/fs" class="nav-link">fs</a></li><li><a href="/lora-docs/stdlib/tempfile" class="nav-link">tempfile</a></li><li><a href="/lora-docs/stdlib/glob" class="nav-link">glob</a></li><li><a href="/lora-docs/stdlib/time" class="nav-link">time</a></li><li><a href="/lora-docs/stdlib/signal" class="nav-link">signal</a></li><li><a href="/lora-docs/stdlib/process" class="nav-link">process</a></li><li><a href="/lora-docs/stdlib/mmap" class="nav-link">mmap</a></li><li><a href="/lora-docs/stdlib/dl" class="nav-link">dl</a></li><li><a href="/lora-docs/stdlib/sys" class="nav-link">sys</a></li><li><a href="/lora-docs/stdlib/ipc" class="nav-link">ipc</a></li><li><a href="/lora-docs/stdlib/math" class="nav-link">math</a></li><li><a href="/lora-docs/stdlib/stats" class="nav-link">stats</a></li><li><a href="/lora-docs/stdlib/matrix" class="nav-link">matrix</a></li><li><a href="/lora-docs/stdlib/fft" class="nav-link">fft</a></li><li><a href="/lora-docs/stdlib/geo" class="nav-link">geo</a></li><li><a href="/lora-docs/stdlib/bits" class="nav-link">bits</a></li><li><a href="/lora-docs/stdlib/bitset" class="nav-link">bitset</a></li><li><a href="/lora-docs/stdlib/bitstructs" class="nav-link">bitstructs</a></li><li><a href="/lora-docs/stdlib/vectors" class="nav-link">vectors</a></li><li><a href="/lora-docs/stdlib/decimal" class="nav-link">decimal</a></li><li><a href="/lora-docs/stdlib/rand" class="nav-link">rand</a></li><li><a href="/lora-docs/stdlib/cmplx" class="nav-link">cmplx</a></li><li><a href="/lora-docs/stdlib/big" class="nav-link">big</a></li><li><a href="/lora-docs/stdlib/color" class="nav-link">color</a></li><li><a href="/lora-docs/stdlib/qoi" class="nav-link">qoi</a></li><li><a href="/lora-docs/stdlib/hash" class="nav-link">hash</a></li><li><a href="/lora-docs/stdlib/checksum" class="nav-link">checksum</a></li><li><a href="/lora-docs/stdlib/crypto" class="nav-link">crypto</a></li><li><a href="/lora-docs/stdlib/secret" class="nav-link">secret</a></li><li><a href="/lora-docs/stdlib/otp" class="nav-link">otp</a></li><li><a href="/lora-docs/stdlib/compress" class="nav-link">compress</a></li><li><a href="/lora-docs/stdlib/tar" class="nav-link">tar</a></li><li><a href="/lora-docs/stdlib/zip" class="nav-link">zip</a></li><li><a href="/lora-docs/stdlib/map" class="nav-link">map</a></li><li><a href="/lora-docs/stdlib/set" class="nav-link">set</a></li><li><a href="/lora-docs/stdlib/deque" class="nav-link">deque</a></li><li><a href="/lora-docs/stdlib/heap" class="nav-link">heap</a></li><li><a href="/lora-docs/stdlib/btree" class="nav-link">btree</a></li><li><a href="/lora-docs/stdlib/trie" class="nav-link">trie</a></li><li><a href="/lora-docs/stdlib/ring" class="nav-link">ring</a></li><li><a href="/lora-docs/stdlib/lru" class="nav-link">lru</a></li><li><a href="/lora-docs/stdlib/cache" class="nav-link">cache</a></li><li><a href="/lora-docs/stdlib/bloom" class="nav-link">bloom</a></li><li><a href="/lora-docs/stdlib/graph" class="nav-link">graph</a></li><li><a href="/lora-docs/stdlib/dsu" class="nav-link">dsu</a></li><li><a href="/lora-docs/stdlib/interval" class="nav-link">interval</a></li><li><a href="/lora-docs/stdlib/thread" class="nav-link">thread</a></li><li><a href="/lora-docs/stdlib/sync" class="nav-link">sync</a></li><li><a href="/lora-docs/stdlib/coro" class="nav-link">coro</a></li><li><a href="/lora-docs/stdlib/context" class="nav-link">context</a></li><li><a href="/lora-docs/stdlib/channel" class="nav-link">channel</a></li><li><a href="/lora-docs/stdlib/broadcast" class="nav-link">broadcast</a></li><li><a href="/lora-docs/stdlib/workpool" class="nav-link">workpool</a></li><li><a href="/lora-docs/stdlib/errors" class="nav-link">errors</a></li><li><a href="/lora-docs/stdlib/ratelimit" class="nav-link">ratelimit</a></li><li><a href="/lora-docs/stdlib/retry" class="nav-link">retry</a></li><li><a href="/lora-docs/stdlib/metrics" class="nav-link">metrics</a></li><li><a href="/lora-docs/stdlib/trace" class="nav-link">trace</a></li><li><a href="/lora-docs/stdlib/cron" class="nav-link">cron</a></li><li><a href="/lora-docs/stdlib/log" class="nav-link">log</a></li><li><a href="/lora-docs/stdlib/config" class="nav-link">config</a></li><li><a href="/lora-docs/stdlib/ini" class="nav-link">ini</a></li><li><a href="/lora-docs/stdlib/flag" class="nav-link">flag</a></li><li><a href="/lora-docs/stdlib/term" class="nav-link">term</a></li><li><a href="/lora-docs/stdlib/unit" class="nav-link">unit</a></li><li><a href="/lora-docs/stdlib/semver" class="nav-link">semver</a></li><li><a href="/lora-docs/stdlib/regex" class="nav-link">regex</a></li><li><a href="/lora-docs/stdlib/base64" class="nav-link">base64</a></li><li><a href="/lora-docs/stdlib/base32" class="nav-link">base32</a></li><li><a href="/lora-docs/stdlib/ascii85" class="nav-link">ascii85</a></li><li><a href="/lora-docs/stdlib/hex" class="nav-link">hex</a></li><li><a href="/lora-docs/stdlib/binary" class="nav-link">binary</a></li><li><a href="/lora-docs/stdlib/encoding" class="nav-link">encoding</a></li><li><a href="/lora-docs/stdlib/pem" class="nav-link">pem</a></li><li><a href="/lora-docs/stdlib/asn1" class="nav-link">asn1</a></li><li><a href="/lora-docs/stdlib/json" class="nav-link">json</a></li><li><a href="/lora-docs/stdlib/csv" class="nav-link">csv</a></li><li><a href="/lora-docs/stdlib/xml" class="nav-link">xml</a></li><li><a href="/lora-docs/stdlib/html" class="nav-link">html</a></li><li><a href="/lora-docs/stdlib/template" class="nav-link">template</a></li><li><a href="/lora-docs/stdlib/markdown" class="nav-link">markdown</a></li><li><a href="/lora-docs/stdlib/pack" class="nav-link">pack</a></li><li><a href="/lora-docs/stdlib/cbor" class="nav-link is-active">cbor</a></li><li><a href="/lora-docs/stdlib/msgpack" class="nav-link">msgpack</a></li><li><a href="/lora-docs/stdlib/toml" class="nav-link">toml</a></li><li><a href="/lora-docs/stdlib/yaml" class="nav-link">yaml</a></li><li><a href="/lora-docs/stdlib/netip" class="nav-link">netip</a></li><li><a href="/lora-docs/stdlib/net" class="nav-link">net</a></li><li><a href="/lora-docs/stdlib/dns" class="nav-link">dns</a></li><li><a href="/lora-docs/stdlib/url" class="nav-link">url</a></li><li><a href="/lora-docs/stdlib/textproto" class="nav-link">textproto</a></li><li><a href="/lora-docs/stdlib/hpack" class="nav-link">hpack</a></li><li><a href="/lora-docs/stdlib/http" class="nav-link">http</a></li><li><a href="/lora-docs/stdlib/cookie" class="nav-link">cookie</a></li><li><a href="/lora-docs/stdlib/mime" class="nav-link">mime</a></li><li><a href="/lora-docs/stdlib/multipart" class="nav-link">multipart</a></li><li><a href="/lora-docs/stdlib/websocket" class="nav-link">websocket</a></li><li><a href="/lora-docs/stdlib/sse" class="nav-link">sse</a></li><li><a href="/lora-docs/stdlib/jwt" class="nav-link">jwt</a></li><li><a href="/lora-docs/stdlib/x509" class="nav-link">x509</a></li><li><a href="/lora-docs/stdlib/tls" class="nav-link">tls</a></li><li><a href="/lora-docs/stdlib/smtp" class="nav-link">smtp</a></li><li><a href="/lora-docs/stdlib/sql" class="nav-link">sql</a></li><li><a href="/lora-docs/stdlib/pg" class="nav-link">pg</a></li><li><a href="/lora-docs/stdlib/sqlite" class="nav-link">sqlite</a></li><li><a href="/lora-docs/stdlib/kv" class="nav-link">kv</a></li><li><a href="/lora-docs/stdlib/uuid" class="nav-link">uuid</a></li><li><a href="/lora-docs/stdlib/ulid" class="nav-link">ulid</a></li><li><a href="/lora-docs/stdlib/diff" class="nav-link">diff</a></li><li><a href="/lora-docs/stdlib/testing" class="nav-link">testing</a></li><li><a href="/lora-docs/stdlib/rt" class="nav-link">rt</a></li></ul></details></details></aside><main class="content-wrap"><article class="article"><div class="breadcrumbs">Standard Library</div><h1 id="top" class="page-title">cbor — CBOR (RFC 8949) encoder, decoder, and struct codec</h1><p class="lead">Module <code class="inline-code">cbor</code> (lib/cbor.lora) exports 31 declarations. Import with <code class="inline-code">use cbor;</code>.</p><section><h2 id="overview" class="doc-h2"><a class="anchor-link" href="#overview">Overview</a></h2><p>The <code class="inline-code">cbor</code> module implements RFC 8949 CBOR (Concise Binary Object Representation), including canonical deterministic encoding (<code class="inline-code">options.canonical = true</code>), indefinite-length arrays/maps/strings, half-precision <code class="inline-code">f16</code> decoding, arbitrary-precision <code class="inline-code">neg_int</code> (<code class="inline-code">&lt; i64::MIN</code>), semantic <code class="inline-code">tagged</code> values, dynamic <code class="inline-code">cbor::value</code> tree parsing (<code class="inline-code">parse</code>), streaming <code class="inline-code">encoder</code> / <code class="inline-code">decoder</code>, and struct <code class="inline-code">marshal</code> / <code class="inline-code">unmarshal</code>.</p>
+<p>Struct fields can be tagged with <code class="inline-code">@cbor</code> (<code class="inline-code">name</code>, integer <code class="inline-code">key</code> + <code class="inline-code">has_key</code>, <code class="inline-code">omit_empty</code>, <code class="inline-code">omit_zero</code>, <code class="inline-code">skip</code>, <code class="inline-code">to_array</code>) for compact COSE/WebAuthn-style integer-keyed maps or positional arrays.</p>
+<div class="table-wrap"><table><thead><tr><th>Symbol</th><th>Kind</th><th>Purpose</th></tr></thead><tbody><tr><td><code class="inline-code">parse(r, data)</code> / <code class="inline-code">encode_value(v, opts)</code></td><td>fn</td><td>Dynamic <code class="inline-code">cbor::value</code> tree codec</td></tr>
+<tr><td><code class="inline-code">marshal</code> / <code class="inline-code">unmarshal</code></td><td>fn</td><td>Struct codec with <code class="inline-code">@cbor</code> tags</td></tr>
+<tr><td><code class="inline-code">new_encoder(opts)</code> / <code class="inline-code">new_decoder(data, opts)</code></td><td>fn</td><td>Streaming CBOR encoder and decoder</td></tr>
+<tr><td><code class="inline-code">options</code></td><td>struct</td><td><code class="inline-code">{ canonical, reject_unknown, max_depth }</code></td></tr>
+<tr><td><code class="inline-code">MAX_DEPTH</code></td><td>def</td><td>Default nesting limit (<code class="inline-code">64</code>)</td></tr></tbody></table></div>
+</section><section><h2 id="valid-usage" class="doc-h2"><a class="anchor-link" href="#valid-usage">Valid Usage &amp; Examples</a></h2><h3 id="allowed-marshal-structs-with-integer-keys-in-canonical-cbor" class="doc-h3"><a class="anchor-link" href="#allowed-marshal-structs-with-integer-keys-in-canonical-cbor">Marshal structs with integer keys in canonical CBOR</a></h3><p>Use <code class="inline-code">@cbor(key = ..., has_key)</code> and <code class="inline-code">options { canonical = true, ... }</code> for RFC 8949 deterministic encoding.</p>
+<div class="code-frame" data-lang="lora" data-variant="allowed">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-allowed">Allowed</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> cbor</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> expanse</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> packet</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FF9FC8">	@cbor</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">key</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> has_key</span><span style="color:#E8E8E8">)</span><span style="color:#FFFFFF"> id</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> u64</span><span style="color:#C8C8C8">,</span></span>
+<span class="line"><span style="color:#FF9FC8">	@cbor</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"msg"</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> omit_empty</span><span style="color:#E8E8E8">)</span><span style="color:#FFFFFF"> text</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> str</span><span style="color:#C8C8C8">,</span></span>
+<span class="line"><span style="color:#FFFFFF">	ok</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> bool</span><span style="color:#C8C8C8">,</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> m</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> expanse</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">reserve</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">expanse</span><span style="color:#C8C8C8">::</span><span style="color:#FF9FC8">MIB</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	defer</span><span style="color:#FF9FC8"> expanse</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">finish</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">m</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> packet</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> id</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 42</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> text</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> "hi"</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> ok</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> true</span><span style="color:#E8E8E8"> }</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> raw</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> cbor</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">marshal_with</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">p</span><span style="color:#C8C8C8">,</span><span style="color:#FF9FC8"> cbor</span><span style="color:#C8C8C8">::</span><span style="color:#FF9FC8">options</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> canonical</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> true</span><span style="color:#C8C8C8">,</span><span style="color:#FFC799"> ..</span><span style="color:#C8C8C8">.</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	defer</span><span style="color:#FFC799"> free</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">raw</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> back</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> cbor</span><span style="color:#C8C8C8">::</span><span style="color:#FF9FC8">unmarshal</span><span style="color:#C8C8C8">::</span><span style="color:#E8E8E8">[</span><span style="color:#FFFFFF">packet</span><span style="color:#E8E8E8">](</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">m</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> raw</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">back</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">id</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 42</span><span style="color:#C8C8C8"> &#x26;&#x26;</span><span style="color:#FFFFFF"> back</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">text</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> "hi"</span><span style="color:#C8C8C8"> &#x26;&#x26;</span><span style="color:#FFFFFF"> back</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">ok</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><h3 id="allowed-parse-dynamic-cbor-values-including-indefinite-length-arrays" class="doc-h3"><a class="anchor-link" href="#allowed-parse-dynamic-cbor-values-including-indefinite-length-arrays">Parse dynamic CBOR values including indefinite-length arrays</a></h3><p>Use <code class="inline-code">cbor::parse</code> to inspect arbitrary CBOR payloads as <code class="inline-code">cbor::value</code> variants.</p>
+<div class="code-frame" data-lang="lora" data-variant="allowed">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-allowed">Allowed</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> cbor</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> expanse</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> m</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> expanse</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">auto</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	defer</span><span style="color:#FF9FC8"> expanse</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">finish</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">m</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#737373">	// Indefinite-length array [_ 1, 2, 3]</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> arr</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> cbor</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">parse</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">m</span><span style="color:#C8C8C8">,</span><span style="color:#E8E8E8"> [</span><span style="color:#99FFE4">0x9fu8</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 0x01</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 0x02</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 0x03</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 0xff</span><span style="color:#E8E8E8">])</span><span style="color:#C8C8C8">!</span><span style="color:#FFC799"> as</span><span style="color:#E8E8E8"> []</span><span style="color:#FF9FC8">cbor</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">value</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">len</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">arr</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 3</span><span style="color:#C8C8C8"> &#x26;&#x26;</span><span style="color:#E8E8E8"> (</span><span style="color:#FFFFFF">arr</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">2</span><span style="color:#E8E8E8">]</span><span style="color:#FFC799"> as</span><span style="color:#7DCFFF"> u64</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 3</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div></section><section><h2 id="disallowed-forms" class="doc-h2"><a class="anchor-link" href="#disallowed-forms">Disallowed Forms &amp; Diagnostics</a></h2><h3 id="rejected-unexpected-cbor-break-byte-outside-indefinite-length-container" class="doc-h3"><a class="anchor-link" href="#rejected-unexpected-cbor-break-byte-outside-indefinite-length-container">Unexpected CBOR break byte outside indefinite-length container</a></h3><p>A standalone <code class="inline-code">0xff</code> break code or truncated item fails with <code class="inline-code">cbor::invalid</code>.</p>
+<div class="diag-callout"><strong>cbor::invalid: </strong>invalid CBOR at byte 0: unexpected CBOR break stop code</div><div class="code-frame" data-lang="lora" data-variant="error">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-error">Rejected</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> cbor</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> expanse</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> m</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> expanse</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">auto</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	defer</span><span style="color:#FF9FC8"> expanse</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">finish</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">m</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-error"><span style="color:#FFC799">	let</span><span style="color:#E8E8ED"> _ </span><span style="color:#C8C8C8">=</span><span style="color:#FF9FC8"> cbor</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">parse</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">m</span><span style="color:#C8C8C8">,</span><span style="color:#E8E8E8"> [</span><span style="color:#99FFE4">0xffu8</span><span style="color:#E8E8E8">])</span><span style="color:#C8C8C8">!;</span><span style="color:#737373"> // error: standalone 0xff break byte returns cbor::invalid</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><div class="code-frame" data-lang="lora" data-variant="allowed">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-allowed">Allowed</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> cbor</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> expanse</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> m</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> expanse</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">auto</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	defer</span><span style="color:#FF9FC8"> expanse</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">finish</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">m</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-allowed"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> cbor</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">parse</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">m</span><span style="color:#C8C8C8">,</span><span style="color:#E8E8E8"> [</span><span style="color:#99FFE4">0xf6u8</span><span style="color:#E8E8E8">])</span><span style="color:#C8C8C8">!;</span><span style="color:#737373"> // ok: valid CBOR null item</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">v</span><span style="color:#FFC799"> is</span><span style="color:#FFC799"> void</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div></section><section><h2 id="constraints-and-limits" class="doc-h2"><a class="anchor-link" href="#constraints-and-limits">Constraints &amp; Limits</a></h2><div class="limits-grid"><div class="limit-item"><div class="limit-label">Default max depth</div><div class="limit-value">64 (`MAX_DEPTH`)</div><div class="limit-note">Configurable via `options.max_depth`.</div></div><div class="limit-item"><div class="limit-label">Canonical mode</div><div class="limit-value">RFC 8949 §4.2</div><div class="limit-note">Sorts map keys by encoded length then lexicographically; uses shortest integer/float forms.</div></div></div></section><section><h2 id="module-guide" class="doc-h2"><a class="anchor-link" href="#module-guide">Module Guide &amp; Examples</a></h2><p>CBOR (RFC 8949): Concise Binary Object Representation.</p>
+<p>Supports all 8 major types (unsigned/negative ints, byte/text strings,
+arrays, maps, semantic tags, IEEE 754 f16/f32/f64, booleans, null,
+undefined, simple values), definite and indefinite-length items, optional
+RFC 8949 canonical/deterministic encoding, tree values, streaming
+encoder/decoder, and @cbor struct tags.</p>
+<p>type msg = struct {
+	@cbor(key = 1, has_key) id: u64,
+	@cbor(&quot;text&quot;, omit_empty) body: str,
+};
+let raw = cbor::marshal(&amp;m)?;
+let back = cbor::unmarshal::[msg](&amp;region, raw[..])?;</p>
+<p>Region-backed <code class="inline-code">cbor::parse</code> / <code class="inline-code">cbor::format</code> plus typed <code class="inline-code">marshal</code> / <code class="inline-code">unmarshal</code> supporting <code class="inline-code">@cbor</code> struct tags, integers, floats, byte strings, text strings, arrays, maps, and tags.</p>
+</section><section><h2 id="exported-api" class="doc-h2"><a class="anchor-link" href="#exported-api">Exported API (31)</a></h2><h3 id="api-types" class="doc-h3"><a class="anchor-link" href="#api-types">Types (14)</a></h3><div id="api-decoder" class="api-item"><div class="api-head"><span class="api-kind">type</span><span class="api-loc">lib/cbor.lora:585</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::decoder</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> decoder</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#E8E8ED"> … </span><span style="color:#E8E8E8">}</span></span></code></pre>
+</div></div><div id="api-encoder" class="api-item"><div class="api-head"><span class="api-kind">type</span><span class="api-loc">lib/cbor.lora:562</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::encoder</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> encoder</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#E8E8ED"> … </span><span style="color:#E8E8E8">}</span></span></code></pre>
+</div></div><div id="api-entry" class="api-item"><div class="api-head"><span class="api-kind">type</span><span class="api-loc">lib/cbor.lora:100</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::entry</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> entry</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#E8E8ED"> … </span><span style="color:#E8E8E8">}</span></span></code></pre>
+</div></div><div id="api-error" class="api-item"><div class="api-head"><span class="api-kind">type</span><span class="api-loc">lib/cbor.lora:93</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::error</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> error</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> (</span><span style="color:#FFFFFF">invalid</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> too_deep</span><span style="color:#C8C8C8"> |</span><span style="color:#FF9FC8"> expanse</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">full</span><span style="color:#C8C8C8"> |</span><span style="color:#FF9FC8"> expanse</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">uncommitted</span><span style="color:#C8C8C8"> |</span><span style="color:#FF9FC8"> io</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">failure</span><span style="color:#E8E8E8">)</span></span></code></pre>
+</div></div><div id="api-field" class="api-item"><div class="api-head"><span class="api-kind">type</span><span class="api-loc">lib/cbor.lora:31</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::field</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FF9FC8">@shorthand</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">cbor</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> type</span><span style="color:#FFFFFF"> field</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#E8E8ED"> … </span><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><div class="table-wrap" style="margin: 0; border-radius: 0; border-width: 1px 0 0 0;"><table><thead><tr><th>Tag Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead><tbody><tr><td><code class="inline-code">name</code></td><td><code class="inline-code">str</code></td><td><code class="inline-code">&quot;&quot;</code></td><td></td></tr><tr><td><code class="inline-code">key</code></td><td><code class="inline-code">i64</code></td><td><code class="inline-code">0</code></td><td></td></tr><tr><td><code class="inline-code">has_key</code></td><td><code class="inline-code">bool</code></td><td><code class="inline-code">false</code></td><td></td></tr><tr><td><code class="inline-code">omit_empty</code></td><td><code class="inline-code">bool</code></td><td><code class="inline-code">false</code></td><td></td></tr><tr><td><code class="inline-code">omit_zero</code></td><td><code class="inline-code">bool</code></td><td><code class="inline-code">false</code></td><td></td></tr><tr><td><code class="inline-code">skip</code></td><td><code class="inline-code">bool</code></td><td><code class="inline-code">false</code></td><td></td></tr><tr><td><code class="inline-code">to_array</code></td><td><code class="inline-code">bool</code></td><td><code class="inline-code">false</code></td><td></td></tr></tbody></table></div></div><div id="api-invalid" class="api-item"><div class="api-head"><span class="api-kind">type</span><span class="api-loc">lib/cbor.lora:81</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::invalid</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> invalid</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#E8E8ED"> … </span><span style="color:#E8E8E8">}</span></span></code></pre>
+</div></div><div id="api-neg_int" class="api-item"><div class="api-head"><span class="api-kind">type</span><span class="api-loc">lib/cbor.lora:99</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::neg_int</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> neg_int</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#E8E8ED"> … </span><span style="color:#E8E8E8">}</span></span></code></pre>
+</div></div><div id="api-options" class="api-item"><div class="api-head"><span class="api-kind">type</span><span class="api-loc">lib/cbor.lora:43</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::options</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> options</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#E8E8ED"> … </span><span style="color:#E8E8E8">}</span></span></code></pre>
+</div></div><div id="api-reason" class="api-item"><div class="api-head"><span class="api-kind">type</span><span class="api-loc">lib/cbor.lora:51</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::reason</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> reason</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> enum</span><span style="color:#E8E8E8"> {</span><span style="color:#E8E8ED"> … </span><span style="color:#E8E8E8">}</span></span></code></pre>
+</div></div><div id="api-simple" class="api-item"><div class="api-head"><span class="api-kind">type</span><span class="api-loc">lib/cbor.lora:98</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::simple</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> simple</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#E8E8ED"> … </span><span style="color:#E8E8E8">}</span></span></code></pre>
+</div></div><div id="api-tagged" class="api-item"><div class="api-head"><span class="api-kind">type</span><span class="api-loc">lib/cbor.lora:101</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::tagged</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> tagged</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#E8E8ED"> … </span><span style="color:#E8E8E8">}</span></span></code></pre>
+</div></div><div id="api-too_deep" class="api-item"><div class="api-head"><span class="api-kind">type</span><span class="api-loc">lib/cbor.lora:91</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::too_deep</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> too_deep</span><span style="color:#C8C8C8"> =</span><span style="color:#C8C8C8"> !</span><span style="color:#FFC799">void</span><span style="color:#99FFE4"> "CBOR value nested past max_depth"</span></span></code></pre>
+</div></div><div id="api-undefined_val" class="api-item"><div class="api-head"><span class="api-kind">type</span><span class="api-loc">lib/cbor.lora:97</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::undefined_val</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> undefined_val</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#E8E8ED"> … </span><span style="color:#E8E8E8">}</span></span></code></pre>
+</div></div><div id="api-value" class="api-item"><div class="api-head"><span class="api-kind">type</span><span class="api-loc">lib/cbor.lora:117</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::value</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> undefined_val</span><span style="color:#C8C8C8"> |</span><span style="color:#7DCFFF"> bool</span><span style="color:#C8C8C8"> |</span><span style="color:#7DCFFF"> u64</span><span style="color:#C8C8C8"> |</span><span style="color:#7DCFFF"> i64</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> neg_int</span><span style="color:#C8C8C8"> |</span><span style="color:#7DCFFF"> f64</span><span style="color:#C8C8C8"> |</span><span style="color:#E8E8E8"> []</span><span style="color:#7DCFFF">u8</span><span style="color:#C8C8C8"> |</span><span style="color:#7DCFFF"> str</span><span style="color:#C8C8C8"> |</span><span style="color:#E8E8E8"> []</span><span style="color:#FFFFFF">value</span><span style="color:#C8C8C8"> |</span><span style="color:#E8E8E8"> []</span><span style="color:#FFFFFF">entry</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> tagged</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> simple</span><span style="color:#E8E8E8"> )</span></span></code></pre>
+</div></div><h3 id="api-constants" class="doc-h3"><a class="anchor-link" href="#api-constants">Constants (1)</a></h3><div id="api-MAX_DEPTH" class="api-item"><div class="api-head"><span class="api-kind">constant</span><span class="api-loc">lib/cbor.lora:27</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::MAX_DEPTH</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">def</span><span style="color:#FF9FC8"> MAX_DEPTH</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> usize</span></span></code></pre>
+</div></div><h3 id="api-functions" class="doc-h3"><a class="anchor-link" href="#api-functions">Functions (16)</a></h3><div id="api-decode" class="api-item"><div class="api-head"><span class="api-kind">function</span><span class="api-loc">lib/cbor.lora:602</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::decode</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFFFFF"> decode</span><span style="color:#E8E8E8">[</span><span style="color:#FF9FC8">T</span><span style="color:#E8E8E8">](</span><span style="color:#FFFFFF">d</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">decoder</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> r</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FF9FC8">expanse</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">region</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#FF9FC8">T</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> done</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> error</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#E8E8E8">)</span></span></code></pre>
+</div></div><div id="api-decode_tree" class="api-item"><div class="api-head"><span class="api-kind">function</span><span class="api-loc">lib/cbor.lora:594</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::decode_tree</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> decode_tree</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">d</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">decoder</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> r</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FF9FC8">expanse</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">region</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#FFFFFF">value</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> done</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> error</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#E8E8E8">)</span></span></code></pre>
+</div></div><div id="api-encode" class="api-item"><div class="api-head"><span class="api-kind">function</span><span class="api-loc">lib/cbor.lora:580</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::encode</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFFFFF"> encode</span><span style="color:#E8E8E8">[</span><span style="color:#FF9FC8">T</span><span style="color:#E8E8E8">](</span><span style="color:#FFFFFF">e</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">encoder</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFC799">const</span><span style="color:#FF9FC8"> T</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">void</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> too_deep</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#E8E8E8">)</span></span></code></pre>
+</div></div><div id="api-encode_tree" class="api-item"><div class="api-head"><span class="api-kind">function</span><span class="api-loc">lib/cbor.lora:583</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::encode_tree</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> encode_tree</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">e</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">encoder</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8">:</span><span style="color:#FFFFFF"> value</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">void</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> too_deep</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#E8E8E8">)</span></span></code></pre>
+</div></div><div id="api-encode_value" class="api-item"><div class="api-head"><span class="api-kind">function</span><span class="api-loc">lib/cbor.lora:341</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::encode_value</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> encode_value</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">v</span><span style="color:#C8C8C8">:</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> opts</span><span style="color:#C8C8C8">:</span><span style="color:#FFFFFF"> options</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#C8C8C8">^</span><span style="color:#E8E8E8">[]</span><span style="color:#7DCFFF">u8</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> too_deep</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#E8E8E8">)</span></span></code></pre>
+</div></div><div id="api-encoder_bytes" class="api-item"><div class="api-head"><span class="api-kind">function</span><span class="api-loc">lib/cbor.lora:577</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::encoder_bytes</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> encoder_bytes</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">e</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFC799">const</span><span style="color:#FFFFFF"> encoder</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> []</span><span style="color:#FFC799">const</span><span style="color:#7DCFFF"> u8</span></span></code></pre>
+</div></div><div id="api-encoder_finish" class="api-item"><div class="api-head"><span class="api-kind">function</span><span class="api-loc">lib/cbor.lora:569</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::encoder_finish</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> encoder_finish</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">e</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">encoder</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span></span></code></pre>
+</div></div><div id="api-marshal" class="api-item"><div class="api-head"><span class="api-kind">function</span><span class="api-loc">lib/cbor.lora:932</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::marshal</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFFFFF"> marshal</span><span style="color:#E8E8E8">[</span><span style="color:#FF9FC8">T</span><span style="color:#E8E8E8">](</span><span style="color:#FFFFFF">v</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFC799">const</span><span style="color:#FF9FC8"> T</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#C8C8C8">^</span><span style="color:#E8E8E8">[]</span><span style="color:#7DCFFF">u8</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> too_deep</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#E8E8E8">)</span></span></code></pre>
+</div></div><div id="api-marshal_with" class="api-item"><div class="api-head"><span class="api-kind">function</span><span class="api-loc">lib/cbor.lora:934</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::marshal_with</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFFFFF"> marshal_with</span><span style="color:#E8E8E8">[</span><span style="color:#FF9FC8">T</span><span style="color:#E8E8E8">](</span><span style="color:#FFFFFF">v</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFC799">const</span><span style="color:#FF9FC8"> T</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> opts</span><span style="color:#C8C8C8">:</span><span style="color:#FFFFFF"> options</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#C8C8C8">^</span><span style="color:#E8E8E8">[]</span><span style="color:#7DCFFF">u8</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> too_deep</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#E8E8E8">)</span></span></code></pre>
+</div></div><div id="api-new_decoder" class="api-item"><div class="api-head"><span class="api-kind">function</span><span class="api-loc">lib/cbor.lora:592</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::new_decoder</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> new_decoder</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">data</span><span style="color:#C8C8C8">:</span><span style="color:#E8E8E8"> []</span><span style="color:#FFC799">const</span><span style="color:#7DCFFF"> u8</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> opts</span><span style="color:#C8C8C8">:</span><span style="color:#FFFFFF"> options</span><span style="color:#E8E8E8">)</span><span style="color:#FFFFFF"> decoder</span></span></code></pre>
+</div></div><div id="api-new_encoder" class="api-item"><div class="api-head"><span class="api-kind">function</span><span class="api-loc">lib/cbor.lora:567</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::new_encoder</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> new_encoder</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">opts</span><span style="color:#C8C8C8">:</span><span style="color:#FFFFFF"> options</span><span style="color:#E8E8E8">)</span><span style="color:#FFFFFF"> encoder</span></span></code></pre>
+</div></div><div id="api-parse" class="api-item"><div class="api-head"><span class="api-kind">function</span><span class="api-loc">lib/cbor.lora:551</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::parse</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> parse</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">r</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FF9FC8">expanse</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">region</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> data</span><span style="color:#C8C8C8">:</span><span style="color:#E8E8E8"> []</span><span style="color:#FFC799">const</span><span style="color:#7DCFFF"> u8</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#FFFFFF">value</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> error</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#E8E8E8">)</span></span></code></pre>
+</div></div><div id="api-parse_with" class="api-item"><div class="api-head"><span class="api-kind">function</span><span class="api-loc">lib/cbor.lora:553</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::parse_with</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> parse_with</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">r</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FF9FC8">expanse</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">region</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> data</span><span style="color:#C8C8C8">:</span><span style="color:#E8E8E8"> []</span><span style="color:#FFC799">const</span><span style="color:#7DCFFF"> u8</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> opts</span><span style="color:#C8C8C8">:</span><span style="color:#FFFFFF"> options</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#FFFFFF">value</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> error</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#E8E8E8">)</span></span></code></pre>
+</div></div><div id="api-reason_text" class="api-item"><div class="api-head"><span class="api-kind">function</span><span class="api-loc">lib/cbor.lora:66</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::reason_text</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> reason_text</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">r</span><span style="color:#C8C8C8">:</span><span style="color:#FFFFFF"> reason</span><span style="color:#E8E8E8">)</span><span style="color:#7DCFFF"> str</span></span></code></pre>
+</div></div><div id="api-unmarshal" class="api-item"><div class="api-head"><span class="api-kind">function</span><span class="api-loc">lib/cbor.lora:941</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::unmarshal</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFFFFF"> unmarshal</span><span style="color:#E8E8E8">[</span><span style="color:#FF9FC8">T</span><span style="color:#E8E8E8">](</span><span style="color:#FFFFFF">r</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FF9FC8">expanse</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">region</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> data</span><span style="color:#C8C8C8">:</span><span style="color:#E8E8E8"> []</span><span style="color:#FFC799">const</span><span style="color:#7DCFFF"> u8</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#FF9FC8">T</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> error</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#E8E8E8">)</span></span></code></pre>
+</div></div><div id="api-unmarshal_with" class="api-item"><div class="api-head"><span class="api-kind">function</span><span class="api-loc">lib/cbor.lora:943</span></div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">cbor::unmarshal_with</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFFFFF"> unmarshal_with</span><span style="color:#E8E8E8">[</span><span style="color:#FF9FC8">T</span><span style="color:#E8E8E8">](</span><span style="color:#FFFFFF">r</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FF9FC8">expanse</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">region</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> data</span><span style="color:#C8C8C8">:</span><span style="color:#E8E8E8"> []</span><span style="color:#FFC799">const</span><span style="color:#7DCFFF"> u8</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> opts</span><span style="color:#C8C8C8">:</span><span style="color:#FFFFFF"> options</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#FF9FC8">T</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> error</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#E8E8E8">)</span></span></code></pre>
+</div></div></section><section><h2 id="trait-implementations" class="doc-h2"><a class="anchor-link" href="#trait-implementations">Interface Implementations</a></h2><div class="table-wrap"><table><thead><tr><th>Interface</th><th>Type</th><th>Methods</th></tr></thead><tbody><tr><td><code class="inline-code">drop</code></td><td><code class="inline-code">encoder</code></td><td><code class="inline-code">drop</code></td></tr></tbody></table></div></section><div class="doc-status-bar"><div class="doc-status-left"><span class="doc-status-files">1 file changed</span><span class="doc-status-counts"><span class="doc-status-add">+60</span><span class="doc-status-del">-3</span></span><span class="doc-status-chevron" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span></div><a href="/lora-docs/specification/standard-library" class="doc-status-review" title="Review all 141 standard library modules"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg><span>Review</span></a></div><nav class="pager" aria-label="Page pagination"><a href="/lora-docs/stdlib/pack" class="pager-link prev"><span class="pager-dir">← Previous</span><span class="pager-label">pack — values as bytes that describe themselves</span></a><a href="/lora-docs/stdlib/msgpack" class="pager-link next"><span class="pager-dir">Next →</span><span class="pager-label">msgpack — MessagePack binary encoder and streaming decoder</span></a></nav></article></main><aside class="toc" aria-label="On This Page"><div class="toc-title">On This Page</div><ul class="toc-list"><li><a href="#top" class="toc-link depth-2 is-active" data-toc-target="top">Table of contents</a></li><li><a href="#overview" class="toc-link depth-2" data-toc-target="overview">Overview</a></li><li><a href="#valid-usage" class="toc-link depth-2" data-toc-target="valid-usage">Valid Usage &amp; Examples</a></li><li><a href="#allowed-marshal-structs-with-integer-keys-in-canonical-cbor" class="toc-link depth-3" data-toc-target="allowed-marshal-structs-with-integer-keys-in-canonical-cbor">Marshal structs with integer keys in canonical CBOR</a></li><li><a href="#allowed-parse-dynamic-cbor-values-including-indefinite-length-arrays" class="toc-link depth-3" data-toc-target="allowed-parse-dynamic-cbor-values-including-indefinite-length-arrays">Parse dynamic CBOR values including indefinite-length arrays</a></li><li><a href="#disallowed-forms" class="toc-link depth-2" data-toc-target="disallowed-forms">Disallowed Forms &amp; Diagnostics</a></li><li><a href="#rejected-unexpected-cbor-break-byte-outside-indefinite-length-container" class="toc-link depth-3" data-toc-target="rejected-unexpected-cbor-break-byte-outside-indefinite-length-container">Unexpected CBOR break byte outside indefinite-length container</a></li><li><a href="#constraints-and-limits" class="toc-link depth-2" data-toc-target="constraints-and-limits">Constraints &amp; Limits</a></li><li><a href="#module-guide" class="toc-link depth-2" data-toc-target="module-guide">Module Guide &amp; Examples</a></li><li><a href="#exported-api" class="toc-link depth-2" data-toc-target="exported-api">Exported API (31)</a></li><li><a href="#api-types" class="toc-link depth-3" data-toc-target="api-types">Types (14)</a></li><li><a href="#api-constants" class="toc-link depth-3" data-toc-target="api-constants">Constants (1)</a></li><li><a href="#api-functions" class="toc-link depth-3" data-toc-target="api-functions">Functions (16)</a></li><li><a href="#trait-implementations" class="toc-link depth-2" data-toc-target="trait-implementations">Interface Implementations</a></li></ul></aside></div><dialog id="search-dialog" class="search-modal" aria-label="Search Lora documentation"><div class="search-modal-head"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><input id="search-input" class="search-input" type="search" placeholder="Search syntax, errors (L0800), or stdlib (http::get, sql::numeric_buf_size)..." autocomplete="off"><kbd class="search-kbd">ESC</kbd></div><div id="search-results" class="search-results"><div style="padding: 16px; font-size: 0.86rem; color: var(--text-muted);">Type to search pages, compiler error codes, and 2,256 stdlib exports.</div></div></dialog><script>
+      // 1. Mobile sidebar drawer
+      const menuBtn = document.getElementById('mobile-menu-btn');
+      const sidebar = document.getElementById('sidebar');
+      if (menuBtn && sidebar) {
+        menuBtn.addEventListener('click', () => {
+          const open = sidebar.classList.toggle('is-open');
+          menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+
+      // Keep active nav link scrolled comfortably into view on load
+      const activeNav = sidebar?.querySelector('.nav-link.is-active');
+      if (activeNav) {
+        activeNav.scrollIntoView({ block: 'nearest' });
+      }
+
+      // 2. Dark / Light mode toggle (keeps Lora Fjord dark surface on all code blocks & tables)
+      const themeBtn = document.getElementById('theme-toggle');
+      themeBtn?.addEventListener('click', () => {
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        if (isLight) {
+          document.documentElement.removeAttribute('data-theme');
+          try { localStorage.setItem('lora-docs-theme', 'dark'); } catch {}
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+          try { localStorage.setItem('lora-docs-theme', 'light'); } catch {}
+        }
+      });
+
+      // 3. Code block copy & wrap buttons
+      document.addEventListener('click', async (ev) => {
+        const target = ev.target instanceof Element ? ev.target : null;
+        if (!target) return;
+        const wrapBtn = target.closest('.wrap-btn');
+        if (wrapBtn) {
+          const frame = wrapBtn.closest('.code-frame');
+          frame?.classList.toggle('is-wrapped');
+          wrapBtn.classList.toggle('is-wrapped');
+          return;
+        }
+        const btn = target.closest('.copy-btn');
+        if (!btn) return;
+        const frame = btn.closest('.code-frame');
+        const codeEl = frame?.querySelector('pre code') || frame?.querySelector('pre');
+        if (!codeEl) return;
+        try {
+          await navigator.clipboard.writeText(codeEl.textContent || '');
+          btn.classList.add('copied');
+          setTimeout(() => btn.classList.remove('copied'), 1500);
+        } catch {}
+      });
+
+      // 4. Right TOC scroll-spy
+      const tocLinks = Array.from(document.querySelectorAll('.toc-link'));
+      if (tocLinks.length > 1 && 'IntersectionObserver' in window) {
+        const map = new Map(tocLinks.map((a) => [a.getAttribute('data-toc-target'), a]));
+        const targets = tocLinks
+          .map((a) => document.getElementById(a.getAttribute('data-toc-target') || ''))
+          .filter(Boolean);
+        const obs = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                tocLinks.forEach((l) => l.classList.remove('is-active'));
+                map.get(entry.target.id)?.classList.add('is-active');
+                break;
+              }
+            }
+          },
+          { rootMargin: '-72px 0px -70% 0px', threshold: 0 }
+        );
+        targets.forEach((el) => obs.observe(el));
+      }
+
+      // 5. Lazy Search Modal (Ctrl/Cmd+K or /)
+      const dialog = document.getElementById('search-dialog');
+      const openBtn = document.getElementById('open-search');
+      const input = document.getElementById('search-input');
+      const resultsEl = document.getElementById('search-results');
+      let searchEntries = null;
+
+      const baseUrl = document.body.dataset.base || '/';
+
+      async function ensureIndex() {
+        if (searchEntries) return searchEntries;
+        try {
+          const res = await fetch(baseUrl + 'search-index.json');
+          searchEntries = await res.json();
+        } catch {
+          searchEntries = [];
+        }
+        return searchEntries;
+      }
+
+      function renderResults(query) {
+        if (!resultsEl || !searchEntries) return;
+        const q = query.trim().toLowerCase();
+        const matches = (q
+          ? searchEntries.filter(
+              (item) =>
+                item.title.toLowerCase().includes(q) ||
+                item.section.toLowerCase().includes(q) ||
+                item.subtitle.toLowerCase().includes(q)
+            )
+          : searchEntries.slice(0, 18)
+        ).slice(0, 35);
+
+        if (!matches.length) {
+          resultsEl.innerHTML =
+            '<div style="padding:16px;font-size:0.86rem;color:var(--text-muted)">No matches found.</div>';
+          return;
+        }
+        resultsEl.innerHTML = '';
+        for (const m of matches) {
+          const a = document.createElement('a');
+          a.href = baseUrl + String(m.slug || '').replace(/^\/+/, '');
+          a.className = 'search-item';
+          const left = document.createElement('div');
+          const t = document.createElement('div');
+          t.className = 'search-item-title';
+          t.textContent = m.title;
+          const sub = document.createElement('div');
+          sub.className = 'search-item-sub';
+          sub.textContent = m.subtitle;
+          left.appendChild(t);
+          if (m.subtitle) left.appendChild(sub);
+          const sec = document.createElement('span');
+          sec.className = 'search-item-section';
+          sec.textContent = m.section;
+          a.appendChild(left);
+          a.appendChild(sec);
+          resultsEl.appendChild(a);
+        }
+      }
+
+      async function openSearch() {
+        if (!dialog || !(dialog instanceof HTMLDialogElement)) return;
+        dialog.showModal();
+        input?.focus();
+        await ensureIndex();
+        renderResults(input?.value || '');
+      }
+
+      openBtn?.addEventListener('click', openSearch);
+      dialog?.addEventListener('click', (e) => {
+        if (e.target === dialog) dialog.close();
+      });
+      input?.addEventListener('input', () => renderResults(input.value));
+
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          if (dialog?.open) dialog.close();
+          else openSearch();
+        } else if (
+          e.key === '/' &&
+          document.activeElement?.tagName !== 'INPUT' &&
+          document.activeElement?.tagName !== 'TEXTAREA'
+        ) {
+          e.preventDefault();
+          openSearch();
+        }
+      });
+    </script></body></html>

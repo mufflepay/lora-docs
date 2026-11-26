@@ -1,0 +1,696 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Toolchain &amp; Editors · Lora Language</title><meta name="description" content="Complete reference for the lora driver, build modes, QBE backend, runtime diagnostics (LORA_LEAKS, LORA_UNITS, LORA_FAIL_ALLOC), language server (lora lsp), VS Code, and Zed."><script>
+      try {
+        const t = localStorage.getItem('lora-docs-theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      } catch {}
+    </script><link rel="stylesheet" href="/lora-docs/_astro/PageContent.NRsqP4nx.css"></head><body data-base="/lora-docs/"><header class="topbar"><div class="topbar-left"><button id="mobile-menu-btn" class="menu-btn" type="button" aria-label="Toggle navigation" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button><a href="/lora-docs/" class="brand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="The Lora owl">
+  <title>The Lora owl</title>
+  <path d="M 48 88 L 60 24 L 96 60 Q 128 52 160 60 L 196 24 L 208 88 Q 232 120 224 160 Q 216 232 128 232 Q 40 232 32 160 Q 24 120 48 88 Z" fill="#ff9fc8"/>
+  <circle cx="92" cy="128" r="40" fill="#ffffff" stroke="#ffc799" stroke-width="13"/>
+  <circle cx="164" cy="128" r="40" fill="#ffffff" stroke="#ffc799" stroke-width="13"/>
+  <circle cx="96" cy="132" r="18" fill="#101010"/>
+  <circle cx="160" cy="132" r="18" fill="#101010"/>
+  <polygon points="114,168 142,168 128,194" fill="#ffc799"/>
+</svg>
+<span>Lora Language</span></a><span class="version-pill">v0.1.0</span></div><button id="open-search" type="button" class="search-trigger" aria-label="Search documentation"><span class="search-trigger-left"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><span>Search documentation...</span></span><kbd class="search-kbd">Ctrl K</kbd></button><div class="topbar-right"><button id="theme-toggle" type="button" class="icon-btn" aria-label="Toggle color theme" title="Toggle dark/light theme"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg></button><a href="/lora-docs/specification/standard-library" class="icon-btn" aria-label="Standard Library Index" title="Standard Library (57 modules)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg></a></div></header><div class="shell"><aside id="sidebar" class="sidebar" aria-label="Documentation Navigation"><details class="nav-group" open><summary class="nav-group-summary"><span>GETTING STARTED</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/getting-started/introduction" class="nav-link">Introduction</a></li><li><a href="/lora-docs/getting-started/toolchain-and-editors" class="nav-link is-active">Toolchain &amp; Editors</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>LANGUAGE DESIGN</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/language-design/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/language-design/aliases" class="nav-link">Aliases &amp; Type Declarations</a></li><li><a href="/lora-docs/language-design/assignment" class="nav-link">Assignment</a></li><li><a href="/lora-docs/language-design/blocks-and-statements" class="nav-link">Blocks and Statements</a></li><li><a href="/lora-docs/language-design/structs-unions-interfaces" class="nav-link">Structs, Unions &amp; Interfaces</a></li><li><a href="/lora-docs/language-design/declaring-entities" class="nav-link">Declaring Entities</a></li><li><a href="/lora-docs/language-design/functions" class="nav-link">Functions</a></li><li><a href="/lora-docs/language-design/lambdas" class="nav-link">Lambdas &amp; Closures</a></li><li><a href="/lora-docs/language-design/metaprogramming" class="nav-link">Metaprogramming &amp; Comptime</a></li><li><a href="/lora-docs/language-design/name-lookup" class="nav-link">Name Lookup</a></li><li><a href="/lora-docs/language-design/naming-conventions" class="nav-link">Naming Conventions</a></li><li><a href="/lora-docs/language-design/pattern-matching" class="nav-link">Pattern Matching</a></li><li><a href="/lora-docs/language-design/sum-types" class="nav-link">Sum Types, Optionals &amp; Enums</a></li><li><a href="/lora-docs/language-design/tuples" class="nav-link">Tuples &amp; Named Tuples</a></li><li><a href="/lora-docs/language-design/type-inference" class="nav-link">Type Inference</a></li><li><a href="/lora-docs/language-design/values-pointers-views" class="nav-link">Values, Owners, Pointers &amp; Views</a></li><li><a href="/lora-docs/language-design/variadics" class="nav-link">Variadics</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>CODE &amp; NAME ORGANIZATION</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/organization/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/organization/source-files" class="nav-link">Source Files &amp; Modules</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>CONTROL FLOW</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/control-flow/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/control-flow/conditionals" class="nav-link">Conditionals</a></li><li><a href="/lora-docs/control-flow/loops" class="nav-link">Loops</a></li><li><a href="/lora-docs/control-flow/return-yield-defer" class="nav-link">Return, Yield &amp; Defer</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>EXPRESSIONS</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/expressions/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/expressions/arithmetic" class="nav-link">Arithmetic &amp; Overflow</a></li><li><a href="/lora-docs/expressions/as-expressions" class="nav-link">Conversions (@T) &amp; Assertions</a></li><li><a href="/lora-docs/expressions/bitwise" class="nav-link">Bitwise &amp; @bits</a></li><li><a href="/lora-docs/expressions/comparison-operators" class="nav-link">Comparison Operators</a></li><li><a href="/lora-docs/expressions/if-expressions" class="nav-link">If &amp; Match Expressions</a></li><li><a href="/lora-docs/expressions/implicit-conversions" class="nav-link">Implicit Conversions</a></li><li><a href="/lora-docs/expressions/indexing" class="nav-link">Indexing &amp; Slicing</a></li><li><a href="/lora-docs/expressions/literals" class="nav-link">Literals</a></li><li><a href="/lora-docs/expressions/logical-operators" class="nav-link">Logical Operators</a></li><li><a href="/lora-docs/expressions/member-access" class="nav-link">Member Access</a></li><li><a href="/lora-docs/expressions/pointer-operators" class="nav-link">Pointer &amp; Ownership Operators</a></li><li><a href="/lora-docs/expressions/type-operators" class="nav-link">Type &amp; Layout Operators</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>GENERICS</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/generics/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/generics/goals" class="nav-link">Goals</a></li><li><a href="/lora-docs/generics/terminology" class="nav-link">Terminology</a></li><li><a href="/lora-docs/generics/generics-overview" class="nav-link">Constraints Overview</a></li><li><a href="/lora-docs/generics/generics-details" class="nav-link">Generics Details</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>INTEROPERABILITY</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/interoperability/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/interoperability/c-abi" class="nav-link">Philosophy, Goals &amp; C ABI</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>LEXICAL CONVENTIONS</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/lexical/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/lexical/comments" class="nav-link">Comments</a></li><li><a href="/lora-docs/lexical/numeric-literals" class="nav-link">Numeric Literals</a></li><li><a href="/lora-docs/lexical/string-literals" class="nav-link">String &amp; Rune Literals</a></li><li><a href="/lora-docs/lexical/symbolic-tokens" class="nav-link">Symbolic Tokens</a></li><li><a href="/lora-docs/lexical/whitespace" class="nav-link">Whitespace &amp; Semicolons</a></li><li><a href="/lora-docs/lexical/words" class="nav-link">Words &amp; Keywords</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>SAFETY</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/safety/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/safety/terminology" class="nav-link">Terminology</a></li><li><a href="/lora-docs/safety/memory-ownership" class="nav-link">Memory &amp; Ownership Safety</a></li><li><a href="/lora-docs/safety/borrow-loan-views" class="nav-link">Borrow, Loan &amp; View Safety</a></li><li><a href="/lora-docs/safety/concurrency-races" class="nav-link">Concurrency &amp; Data Races</a></li><li><a href="/lora-docs/safety/stack-overflow" class="nav-link">Stack Overflow &amp; @depth</a></li><li><a href="/lora-docs/safety/contracts-and-unit-functions" class="nav-link">Contracts &amp; Unit Functions</a></li><li><a href="/lora-docs/safety/unsafe-code" class="nav-link">Unsafe Code &amp; Hardening</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>PRINCIPLES</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/principles/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/principles/error-handling" class="nav-link">Error Handling</a></li><li><a href="/lora-docs/principles/information-accumulation" class="nav-link">Information Accumulation</a></li><li><a href="/lora-docs/principles/library-apis-only" class="nav-link">Library APIs Only</a></li><li><a href="/lora-docs/principles/low-context-sensitivity" class="nav-link">Low Context Sensitivity</a></li><li><a href="/lora-docs/principles/namespace-cleanliness" class="nav-link">Namespace Cleanliness</a></li><li><a href="/lora-docs/principles/one-way" class="nav-link">One Way</a></li><li><a href="/lora-docs/principles/progressive-disclosure" class="nav-link">Progressive Disclosure</a></li><li><a href="/lora-docs/principles/safety-strategy" class="nav-link">Safety Strategy</a></li><li><a href="/lora-docs/principles/static-open-extension" class="nav-link">Static Open Extension</a></li><li><a href="/lora-docs/principles/success-criteria" class="nav-link">Success Criteria</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>GUIDES</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/guides/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/guides/glossary" class="nav-link">Glossary</a></li><li><a href="/lora-docs/guides/idiomatic-lora" class="nav-link">Idiomatic Lora &amp; Style Guide</a></li><li><a href="/lora-docs/guides/testing-and-benchmarking" class="nav-link">Testing, Benchmarks &amp; Fuzzing</a></li><li><a href="/lora-docs/guides/concurrency-and-sync" class="nav-link">Concurrency, Sync &amp; Context</a></li><li><a href="/lora-docs/guides/containers-and-data" class="nav-link">Containers, Data &amp; Checksums</a></li><li><a href="/lora-docs/guides/web-and-auth" class="nav-link">Web, HTTP &amp; Auth</a></li><li><a href="/lora-docs/guides/resilience-and-observability" class="nav-link">Resilience &amp; Observability</a></li><li><a href="/lora-docs/guides/cli-and-markup" class="nav-link">CLI, Terminal &amp; Markup</a></li><li><a href="/lora-docs/guides/math-and-algorithms" class="nav-link">Math, Stats &amp; Algorithms</a></li><li><a href="/lora-docs/guides/allocators" class="nav-link">Allocators &amp; Memory Strategies</a></li><li><a href="/lora-docs/guides/sql-and-postgresql" class="nav-link">Typed SQL, PostgreSQL &amp; SQLite</a></li><li><a href="/lora-docs/guides/tags-and-codecs" class="nav-link">Structure Tags &amp; Codecs</a></li><li><a href="/lora-docs/guides/encodings-and-crypto" class="nav-link">Encodings &amp; Cryptography</a></li><li><a href="/lora-docs/guides/reading-generated-code" class="nav-link">Reading Generated Code</a></li><li><a href="/lora-docs/guides/diagnostic-catalog" class="nav-link">Diagnostic Catalog (L0001–L1004)</a></li><li><a href="/lora-docs/guides/roadmap" class="nav-link">Roadmap</a></li><li><a href="/lora-docs/guides/summary" class="nav-link">Stdlib &amp; Language Summary</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>SPECIFICATION</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/specification/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/specification/language-spec" class="nav-link">Language Spec (Full 27 Chapters)</a></li><li><a href="/lora-docs/specification/execution" class="nav-link">Execution &amp; Runtime</a></li><li><a href="/lora-docs/specification/lexing" class="nav-link">Lexing</a></li><li><a href="/lora-docs/specification/libraries" class="nav-link">Libraries &amp; Typedefs</a></li><li><a href="/lora-docs/specification/names" class="nav-link">Names &amp; Visibility</a></li><li><a href="/lora-docs/specification/parsing" class="nav-link">Parsing &amp; Limits</a></li><li><a href="/lora-docs/specification/semantics" class="nav-link">Semantics &amp; Checking</a></li><li><a href="/lora-docs/specification/standard-library" class="nav-link">Standard Library Index</a></li></ul><details class="nav-subdetails"><summary class="nav-subsummary"><span>Standard Library Modules (141)</span><svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/stdlib/mem" class="nav-link">mem</a></li><li><a href="/lora-docs/stdlib/expanse" class="nav-link">expanse</a></li><li><a href="/lora-docs/stdlib/pool" class="nav-link">pool</a></li><li><a href="/lora-docs/stdlib/allocator" class="nav-link">allocator</a></li><li><a href="/lora-docs/stdlib/arena" class="nav-link">arena</a></li><li><a href="/lora-docs/stdlib/scratch" class="nav-link">scratch</a></li><li><a href="/lora-docs/stdlib/rc" class="nav-link">rc</a></li><li><a href="/lora-docs/stdlib/arc" class="nav-link">arc</a></li><li><a href="/lora-docs/stdlib/slotmap" class="nav-link">slotmap</a></li><li><a href="/lora-docs/stdlib/intern" class="nav-link">intern</a></li><li><a href="/lora-docs/stdlib/strconv" class="nav-link">strconv</a></li><li><a href="/lora-docs/stdlib/utf8" class="nav-link">utf8</a></li><li><a href="/lora-docs/stdlib/utf16" class="nav-link">utf16</a></li><li><a href="/lora-docs/stdlib/unicode" class="nav-link">unicode</a></li><li><a href="/lora-docs/stdlib/ascii" class="nav-link">ascii</a></li><li><a href="/lora-docs/stdlib/strings" class="nav-link">strings</a></li><li><a href="/lora-docs/stdlib/bytes" class="nav-link">bytes</a></li><li><a href="/lora-docs/stdlib/compare" class="nav-link">compare</a></li><li><a href="/lora-docs/stdlib/sort" class="nav-link">sort</a></li><li><a href="/lora-docs/stdlib/slices" class="nav-link">slices</a></li><li><a href="/lora-docs/stdlib/iter" class="nav-link">iter</a></li><li><a href="/lora-docs/stdlib/fuzzy" class="nav-link">fuzzy</a></li><li><a href="/lora-docs/stdlib/io" class="nav-link">io</a></li><li><a href="/lora-docs/stdlib/bufio" class="nav-link">bufio</a></li><li><a href="/lora-docs/stdlib/bitio" class="nav-link">bitio</a></li><li><a href="/lora-docs/stdlib/fmt" class="nav-link">fmt</a></li><li><a href="/lora-docs/stdlib/os" class="nav-link">os</a></li><li><a href="/lora-docs/stdlib/env" class="nav-link">env</a></li><li><a href="/lora-docs/stdlib/dotenv" class="nav-link">dotenv</a></li><li><a href="/lora-docs/stdlib/path" class="nav-link">path</a></li><li><a href="/lora-docs/stdlib/fs" class="nav-link">fs</a></li><li><a href="/lora-docs/stdlib/tempfile" class="nav-link">tempfile</a></li><li><a href="/lora-docs/stdlib/glob" class="nav-link">glob</a></li><li><a href="/lora-docs/stdlib/time" class="nav-link">time</a></li><li><a href="/lora-docs/stdlib/signal" class="nav-link">signal</a></li><li><a href="/lora-docs/stdlib/process" class="nav-link">process</a></li><li><a href="/lora-docs/stdlib/mmap" class="nav-link">mmap</a></li><li><a href="/lora-docs/stdlib/dl" class="nav-link">dl</a></li><li><a href="/lora-docs/stdlib/sys" class="nav-link">sys</a></li><li><a href="/lora-docs/stdlib/ipc" class="nav-link">ipc</a></li><li><a href="/lora-docs/stdlib/math" class="nav-link">math</a></li><li><a href="/lora-docs/stdlib/stats" class="nav-link">stats</a></li><li><a href="/lora-docs/stdlib/matrix" class="nav-link">matrix</a></li><li><a href="/lora-docs/stdlib/fft" class="nav-link">fft</a></li><li><a href="/lora-docs/stdlib/geo" class="nav-link">geo</a></li><li><a href="/lora-docs/stdlib/bits" class="nav-link">bits</a></li><li><a href="/lora-docs/stdlib/bitset" class="nav-link">bitset</a></li><li><a href="/lora-docs/stdlib/bitstructs" class="nav-link">bitstructs</a></li><li><a href="/lora-docs/stdlib/vectors" class="nav-link">vectors</a></li><li><a href="/lora-docs/stdlib/decimal" class="nav-link">decimal</a></li><li><a href="/lora-docs/stdlib/rand" class="nav-link">rand</a></li><li><a href="/lora-docs/stdlib/cmplx" class="nav-link">cmplx</a></li><li><a href="/lora-docs/stdlib/big" class="nav-link">big</a></li><li><a href="/lora-docs/stdlib/color" class="nav-link">color</a></li><li><a href="/lora-docs/stdlib/qoi" class="nav-link">qoi</a></li><li><a href="/lora-docs/stdlib/hash" class="nav-link">hash</a></li><li><a href="/lora-docs/stdlib/checksum" class="nav-link">checksum</a></li><li><a href="/lora-docs/stdlib/crypto" class="nav-link">crypto</a></li><li><a href="/lora-docs/stdlib/secret" class="nav-link">secret</a></li><li><a href="/lora-docs/stdlib/otp" class="nav-link">otp</a></li><li><a href="/lora-docs/stdlib/compress" class="nav-link">compress</a></li><li><a href="/lora-docs/stdlib/tar" class="nav-link">tar</a></li><li><a href="/lora-docs/stdlib/zip" class="nav-link">zip</a></li><li><a href="/lora-docs/stdlib/map" class="nav-link">map</a></li><li><a href="/lora-docs/stdlib/set" class="nav-link">set</a></li><li><a href="/lora-docs/stdlib/deque" class="nav-link">deque</a></li><li><a href="/lora-docs/stdlib/heap" class="nav-link">heap</a></li><li><a href="/lora-docs/stdlib/btree" class="nav-link">btree</a></li><li><a href="/lora-docs/stdlib/trie" class="nav-link">trie</a></li><li><a href="/lora-docs/stdlib/ring" class="nav-link">ring</a></li><li><a href="/lora-docs/stdlib/lru" class="nav-link">lru</a></li><li><a href="/lora-docs/stdlib/cache" class="nav-link">cache</a></li><li><a href="/lora-docs/stdlib/bloom" class="nav-link">bloom</a></li><li><a href="/lora-docs/stdlib/graph" class="nav-link">graph</a></li><li><a href="/lora-docs/stdlib/dsu" class="nav-link">dsu</a></li><li><a href="/lora-docs/stdlib/interval" class="nav-link">interval</a></li><li><a href="/lora-docs/stdlib/thread" class="nav-link">thread</a></li><li><a href="/lora-docs/stdlib/sync" class="nav-link">sync</a></li><li><a href="/lora-docs/stdlib/coro" class="nav-link">coro</a></li><li><a href="/lora-docs/stdlib/context" class="nav-link">context</a></li><li><a href="/lora-docs/stdlib/channel" class="nav-link">channel</a></li><li><a href="/lora-docs/stdlib/broadcast" class="nav-link">broadcast</a></li><li><a href="/lora-docs/stdlib/workpool" class="nav-link">workpool</a></li><li><a href="/lora-docs/stdlib/errors" class="nav-link">errors</a></li><li><a href="/lora-docs/stdlib/ratelimit" class="nav-link">ratelimit</a></li><li><a href="/lora-docs/stdlib/retry" class="nav-link">retry</a></li><li><a href="/lora-docs/stdlib/metrics" class="nav-link">metrics</a></li><li><a href="/lora-docs/stdlib/trace" class="nav-link">trace</a></li><li><a href="/lora-docs/stdlib/cron" class="nav-link">cron</a></li><li><a href="/lora-docs/stdlib/log" class="nav-link">log</a></li><li><a href="/lora-docs/stdlib/config" class="nav-link">config</a></li><li><a href="/lora-docs/stdlib/ini" class="nav-link">ini</a></li><li><a href="/lora-docs/stdlib/flag" class="nav-link">flag</a></li><li><a href="/lora-docs/stdlib/term" class="nav-link">term</a></li><li><a href="/lora-docs/stdlib/unit" class="nav-link">unit</a></li><li><a href="/lora-docs/stdlib/semver" class="nav-link">semver</a></li><li><a href="/lora-docs/stdlib/regex" class="nav-link">regex</a></li><li><a href="/lora-docs/stdlib/base64" class="nav-link">base64</a></li><li><a href="/lora-docs/stdlib/base32" class="nav-link">base32</a></li><li><a href="/lora-docs/stdlib/ascii85" class="nav-link">ascii85</a></li><li><a href="/lora-docs/stdlib/hex" class="nav-link">hex</a></li><li><a href="/lora-docs/stdlib/binary" class="nav-link">binary</a></li><li><a href="/lora-docs/stdlib/encoding" class="nav-link">encoding</a></li><li><a href="/lora-docs/stdlib/pem" class="nav-link">pem</a></li><li><a href="/lora-docs/stdlib/asn1" class="nav-link">asn1</a></li><li><a href="/lora-docs/stdlib/json" class="nav-link">json</a></li><li><a href="/lora-docs/stdlib/csv" class="nav-link">csv</a></li><li><a href="/lora-docs/stdlib/xml" class="nav-link">xml</a></li><li><a href="/lora-docs/stdlib/html" class="nav-link">html</a></li><li><a href="/lora-docs/stdlib/template" class="nav-link">template</a></li><li><a href="/lora-docs/stdlib/markdown" class="nav-link">markdown</a></li><li><a href="/lora-docs/stdlib/pack" class="nav-link">pack</a></li><li><a href="/lora-docs/stdlib/cbor" class="nav-link">cbor</a></li><li><a href="/lora-docs/stdlib/msgpack" class="nav-link">msgpack</a></li><li><a href="/lora-docs/stdlib/toml" class="nav-link">toml</a></li><li><a href="/lora-docs/stdlib/yaml" class="nav-link">yaml</a></li><li><a href="/lora-docs/stdlib/netip" class="nav-link">netip</a></li><li><a href="/lora-docs/stdlib/net" class="nav-link">net</a></li><li><a href="/lora-docs/stdlib/dns" class="nav-link">dns</a></li><li><a href="/lora-docs/stdlib/url" class="nav-link">url</a></li><li><a href="/lora-docs/stdlib/textproto" class="nav-link">textproto</a></li><li><a href="/lora-docs/stdlib/hpack" class="nav-link">hpack</a></li><li><a href="/lora-docs/stdlib/http" class="nav-link">http</a></li><li><a href="/lora-docs/stdlib/cookie" class="nav-link">cookie</a></li><li><a href="/lora-docs/stdlib/mime" class="nav-link">mime</a></li><li><a href="/lora-docs/stdlib/multipart" class="nav-link">multipart</a></li><li><a href="/lora-docs/stdlib/websocket" class="nav-link">websocket</a></li><li><a href="/lora-docs/stdlib/sse" class="nav-link">sse</a></li><li><a href="/lora-docs/stdlib/jwt" class="nav-link">jwt</a></li><li><a href="/lora-docs/stdlib/x509" class="nav-link">x509</a></li><li><a href="/lora-docs/stdlib/tls" class="nav-link">tls</a></li><li><a href="/lora-docs/stdlib/smtp" class="nav-link">smtp</a></li><li><a href="/lora-docs/stdlib/sql" class="nav-link">sql</a></li><li><a href="/lora-docs/stdlib/pg" class="nav-link">pg</a></li><li><a href="/lora-docs/stdlib/sqlite" class="nav-link">sqlite</a></li><li><a href="/lora-docs/stdlib/kv" class="nav-link">kv</a></li><li><a href="/lora-docs/stdlib/uuid" class="nav-link">uuid</a></li><li><a href="/lora-docs/stdlib/ulid" class="nav-link">ulid</a></li><li><a href="/lora-docs/stdlib/diff" class="nav-link">diff</a></li><li><a href="/lora-docs/stdlib/testing" class="nav-link">testing</a></li><li><a href="/lora-docs/stdlib/rt" class="nav-link">rt</a></li></ul></details></details></aside><main class="content-wrap"><article class="article"><div class="breadcrumbs">Getting Started</div><h1 id="top" class="page-title">Toolchain &amp; Editors</h1><p class="lead">Complete reference for the <code class="inline-code">lora</code> driver, build modes, QBE backend, runtime diagnostics (<code class="inline-code">LORA_LEAKS</code>, <code class="inline-code">LORA_UNITS</code>, <code class="inline-code">LORA_FAIL_ALLOC</code>), language server (<code class="inline-code">lora lsp</code>), VS Code, and Zed.</p><h2 id="the-lora-driver" class="doc-h2"><a class="anchor-link" href="#the-lora-driver">The <code class="inline-code">lora</code> driver</a></h2>
+<p><code class="inline-code">cmd/lora</code> is a POSIX shell script that orchestrates the four compilation
+steps (compiler → QBE → assembler → linker) and wires up the module typedef
+search paths. There is nothing magical about it; every step can be run by
+hand (see <code class="inline-code">docs/runtime.md</code>).</p>
+<div class="code-frame" data-lang="text">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">text</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code>usage:
+  lora run [--leaks | --guard] [--units=&lt;mode&gt;] &lt;file.lora&gt; [args...]
+  lora build [-o &lt;output&gt;] [--units=&lt;mode&gt;] &lt;file.lora&gt; [file.lora...]
+  lora check &lt;file.lora&gt; [file.lora...]
+  lora test [-run &lt;pat&gt;] [-j &lt;n&gt;] [--leaks | --guard] [--bench] [--fuzz] [--time &lt;dur&gt;] [--json] [file...]
+  lora sql schema &lt;url&gt; [file]  write lora.schema, which @sql is checked against
+  lora explain &lt;code&gt;        what a diagnostic such as L0003 means
+  lora lsp                   the language server, on stdin and stdout (for editors)
+  lora init [directory]
+  lora version
+  lora help</code></pre>
+</div><h3 id="testing-benchmarks-and-fuzzing-lora-test" class="doc-h3"><a class="anchor-link" href="#testing-benchmarks-and-fuzzing-lora-test">Testing, benchmarks, and fuzzing (<code class="inline-code">lora test</code>)</a></h3>
+<p>Functions marked <code class="inline-code">@test</code>, <code class="inline-code">@bench</code>, and <code class="inline-code">@fuzz</code> are discovered automatically by
+<code class="inline-code">lora test</code> (even in files without <code class="inline-code">main()</code>, for which the driver synthesizes a
+runner):</p>
+<ul>
+<li><p><code class="inline-code">@test fn name(t: *testing::t) void</code> or <code class="inline-code">@test fn name() (void | E)</code> — runs
+unit tests with <code class="inline-code">-run &lt;pat&gt;</code>, <code class="inline-code">-j &lt;n&gt;</code> parallelism, <code class="inline-code">--leaks</code> / <code class="inline-code">--guard</code>
+heap checking, and <code class="inline-code">--json</code> output.</p>
+</li>
+<li><p><code class="inline-code">@bench fn name(b: *testing::b) void</code> — runs with <code class="inline-code">--bench</code> (<code class="inline-code">--time &lt;dur&gt;</code>).</p>
+</li>
+<li><p><code class="inline-code">@fuzz fn name(f: *testing::f) void</code> — runs with <code class="inline-code">--fuzz</code> (<code class="inline-code">--time &lt;dur&gt;</code>).</p>
+</li>
+<li><p>The core library is built automatically on first use (incremental via
+<code class="inline-code">make stdlib</code>); set <code class="inline-code">LORA_NO_BUILD=1</code> to skip that step.</p>
+</li>
+<li><p>All intermediates live under <code class="file-chip file-chip-dir"><span class="chip-badge chip-dir" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span><span class="chip-name">.build/</span></code>; final binaries link against every
+core module object, and namespace-qualified symbols keep them collision-free.</p>
+</li>
+<li><p>The QBE target is chosen from <code class="inline-code">uname -m</code>: <code class="inline-code">arm64_apple</code> or <code class="inline-code">amd64_apple</code>.</p>
+</li>
+</ul>
+<h3 id="diagnostics" class="doc-h3"><a class="anchor-link" href="#diagnostics">Diagnostics</a></h3>
+<p>On a terminal, compiler errors and warnings are drawn in color: the file
+and position; a red <code class="inline-code">ERROR</code> or yellow <code class="inline-code">WARNING</code> badge with the kind of
+problem and its code; what happened, in a sentence; the line with the ones
+around it and the span underlined; why it matters, when that is not
+obvious; then the fixes, each on one line with the code to write; and a
+note pointing at <code class="inline-code">lora explain &lt;code&gt;</code>. A summary ends the output:</p>
+<div class="code-frame" data-lang="text">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">text</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code>main.lora:15:10
+ WARNING   Dropped error · L0006
+This `_ =&gt;` arm drops or hides a strconv::invalid_number error.
+14 │     let n: int =&gt; void,
+15 │     _ =&gt; void,
+   │     ~
+16 │ };
+  The program goes on (or stops) without knowing why strconv::parse_int failed.
+  fix: Name the error and report it:  let e: strconv::invalid_number =&gt; fmt::eprintln($&quot;{e}&quot;)!,
+   or: Give a fallback value:  strconv::parse_int(...) or 0
+   or: handle it where it happens with `or |e|`
+  note: `lora explain L0006` says more
+
+⚠ 1 warning  1 file · 58ms</code></pre>
+</div><p>Run-time failures are reported the same way: on a terminal, the place, a
+red <code class="inline-code">ABORT</code> badge with what went wrong, the message, the source lines with
+the place underlined, the trace and <code class="inline-code">fix:</code> lines. When stderr is not a
+terminal (an editor, a pipe, CI), the output is plain: <code class="inline-code">path:line:col: error[L0001]: message</code> from the compiler, followed by <code class="inline-code">= why:</code> lines and
+<code class="inline-code">= help: label&lt;TAB&gt;code</code> lines, which tools parse, and <code class="inline-code">path:line:col: abort: message</code> from a program, followed by the line with a <code class="inline-code">^</code> under the
+place. A failed program exits with status 134. <code class="inline-code">NO_COLOR=1</code> turns colors off; <code class="inline-code">LORA_COLOR=1</code>
+(compiler) and <code class="inline-code">LORA_COLOR=1</code> (programs) force them on.</p>
+<h3 id="installing-on-path" class="doc-h3"><a class="anchor-link" href="#installing-on-path">Installing on PATH</a></h3>
+<p>The driver lives at <code class="inline-code">cmd/lora</code> inside the project, so <code class="inline-code">lora</code> is not a
+command until you install it:</p>
+<div class="code-frame" data-lang="sh">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">sh</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">scripts/install-driver.sh</span><span style="color:#737373">     # symlinks into /opt/homebrew/bin (or /usr/local/bin)</span></span></code></pre>
+</div><p>The driver resolves symlinks to find the project root, so the symlink can
+live anywhere on PATH. Remove it any time with
+<code class="inline-code">rm /opt/homebrew/bin/lora</code>.</p>
+<h2 id="build-targets" class="doc-h2"><a class="anchor-link" href="#build-targets">Build targets</a></h2>
+<p>At the project root:</p>
+<ul>
+<li><code class="inline-code">make</code> / <code class="inline-code">make all</code> — build the compiler (if needed) and the core library</li>
+<li><code class="inline-code">make stdlib</code> — just <code class="inline-code">rt</code> + the modules in <code class="file-chip file-chip-dir"><span class="chip-badge chip-dir" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span><span class="chip-name">lib/</span></code></li>
+<li><code class="inline-code">make check</code> — <code class="inline-code">stdlib</code> + <code class="inline-code">./cmd/lora test</code></li>
+<li><code class="inline-code">make clean</code> — remove <code class="file-chip file-chip-dir"><span class="chip-badge chip-dir" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span><span class="chip-name">.build/</span></code></li>
+</ul>
+<p>In <code class="file-chip file-chip-dir"><span class="chip-badge chip-dir" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span><span class="chip-name">compiler/</span></code>:</p>
+<ul>
+<li><code class="inline-code">make</code> — build the compiler binary to <code class="inline-code">compiler/.bin/lorac</code></li>
+<li><code class="inline-code">make check</code> — run the compiler test suite (<code class="inline-code">compiler/tests/*.lora</code>, 40
+suites covering literals through the match patterns)</li>
+</ul>
+<h2 id="compiler-pipeline" class="doc-h2"><a class="anchor-link" href="#compiler-pipeline">Compiler pipeline</a></h2>
+<div class="code-frame" data-lang="text">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">text</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code>file.lora ──compiler/.bin/&lt;platform&gt;-&lt;arch&gt;/lorac──▶ .ssa (QBE IL)
+        ──qbe-darwin (macOS) / qbe (Linux)──▶ .s
+        ──darwin-as (macOS) / as (Linux)──▶ .o ──cc──▶ executable (+ .build/*.o core modules)</code></pre>
+</div><p>Every build output goes under a directory for its platform and architecture
+(<code class="file-chip file-chip-dir"><span class="chip-badge chip-dir" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span><span class="chip-name">compiler/.bin/darwin-aarch64/</span></code>, <code class="file-chip file-chip-dir"><span class="chip-badge chip-dir" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span><span class="chip-name">.build/linux-x86_64/</span></code>, and so on), so one
+checkout serves macOS and Linux machines, on arm64 and x86_64, at once.
+<code class="inline-code">make -C compiler</code> needs no setup: <code class="inline-code">compiler/configs/default.mk</code> finds the
+platform and architecture.</p>
+<ul>
+<li>QBE is vendored in <code class="file-chip file-chip-dir"><span class="chip-badge chip-dir" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span><span class="chip-name">qbe/</span></code> (see <code class="inline-code">qbe/VERSION</code> for the upstream commit and
+Lora&#39;s changes) and built by <code class="inline-code">make -C compiler</code> as <code class="inline-code">compiler/.bin/qbe</code>, so
+Lora needs no system QBE. Its own tests run with <code class="inline-code">make -C qbe check</code>.</li>
+<li><code class="inline-code">compiler/scripts/qbe-darwin</code> runs that QBE (target
+<code class="inline-code">arm64_apple</code>/<code class="inline-code">amd64_apple</code>) and post-processes its output: QBE emits GNU-as
+style quoted <code class="inline-code">.section</code> directives, which the Mach-O assembler rejects, so
+they are rewritten to Mach-O sections; Mach-O thread-local variable (TLV)
+descriptors are synthesized for TLS data.</li>
+<li><code class="inline-code">compiler/scripts/darwin-as</code> concatenates its input assembly files and
+assembles them with <code class="inline-code">cc -c</code> (the Apple toolchain assembler).</li>
+<li>On Linux QBE targets <code class="inline-code">arm64</code> or <code class="inline-code">amd64_sysv</code> and its output goes to <code class="inline-code">as</code>
+as it is. The compiler puts each function and datum in a section of its
+own (<code class="inline-code">.text.&lt;name&gt;</code>, <code class="inline-code">.data.&lt;name&gt;</code>), and programs are linked with
+<code class="inline-code">--gc-sections</code>, so the linker keeps only what the program reaches, as on
+macOS; the runtime&#39;s linker script (<code class="inline-code">runtime/+linux/lora.ld</code>) keeps the
+<code class="inline-code">@init</code>, <code class="inline-code">@fini</code> and <code class="inline-code">@test</code> arrays. Hello world is about 320 KB on
+x86_64 and 370 KB on arm64 instead of 9.7 MB.</li>
+<li>On macOS programs are linked with <code class="inline-code">-dead_strip</code>: <code class="inline-code">qbe-darwin</code> ends each file with
+<code class="inline-code">.subsections_via_symbols</code>, making every function and datum an atom of
+its own, so the linker keeps only what the program reaches, though every
+core module is linked. Hello world is about 240 KB. The
+<code class="inline-code">@init</code>, <code class="inline-code">@fini</code> and <code class="inline-code">@test</code> arrays, reached only through their section
+bounds, are marked <code class="inline-code">no_dead_strip</code>.</li>
+</ul>
+<h2 id="stack-overflow-check" class="doc-h2"><a class="anchor-link" href="#stack-overflow-check">Stack overflow check</a></h2>
+<p>Stacks have a fixed size and a 16 KiB guard page below them, so a program
+that uses too much stack stops, saying which stack (main, a thread&#39;s or a
+coroutine&#39;s) ran out; frames larger than a page are entered a page at a
+time, so none steps over the guard. The compiler estimates each
+function&#39;s stack use when it checks a program. It reports code that would
+overflow as a compile error, which also shows in the editor as you type.</p>
+<div class="table-wrap"><table><thead><tr><th>Entry point</th><th>Stack</th></tr></thead><tbody><tr><td><code class="inline-code">main</code>, <code class="inline-code">@init</code>, <code class="inline-code">@fini</code></td><td>8 MiB, whatever <code class="inline-code">ulimit -s</code> says</td></tr>
+<tr><td><code class="inline-code">@all</code>, <code class="inline-code">@first</code>, <code class="inline-code">@scope</code> children, <code class="inline-code">coro::detach</code></td><td>256 KiB</td></tr>
+<tr><td><code class="inline-code">coro::detach_sized(n, ...)</code></td><td><code class="inline-code">n</code> rounded up to 16 KiB</td></tr>
+<tr><td><code class="inline-code">thread::spawn</code>, <code class="inline-code">coro::blocking</code></td><td>512 KiB</td></tr></tbody></table></div>
+<ul>
+<li><strong>Error:</strong> the deepest call chain from an entry point needs more stack
+than the entry point gets. The message names the chain, for example
+<code class="inline-code">a lambda (1 KiB) -&gt; handle (1 KiB) -&gt; parse (301 KiB)</code>, and says what to
+do (use a larger <code class="inline-code">detach_sized</code>, or move large arrays to the heap with
+<code class="inline-code">alloc</code>).</li>
+<li><strong>Warning:</strong> an entry point (<code class="inline-code">main</code>, <code class="inline-code">@init</code>, <code class="inline-code">@fini</code>, a coroutine or a
+thread) calls a recursive function, so its stack use has no bound.
+<code class="inline-code">@depth</code> bounds a recursion; the warning names the recursive function
+and the chain to it.</li>
+<li><strong>Warning:</strong> a function with <code class="inline-code">@depth</code> changes its depth parameter or
+takes its address, so <code class="inline-code">@depth</code> no longer bounds its recursion.</li>
+</ul>
+<p><code class="inline-code">main</code>&#39;s 8 MiB holds on every machine: <code class="inline-code">lora build</code> links macOS programs
+with an 8 MiB main stack, and on Linux the runtime raises the soft stack
+limit to 8 MiB more than the stack holds at start (the program&#39;s arguments
+and environment), as far as the hard limit allows. Programs the program
+starts inherit the raised limit.</p>
+<p>A function&#39;s frame is estimated from its parameters, local bindings and
+aggregate temporaries, plus a fixed amount for saved registers. What may
+share space is counted once (the arms of a <code class="inline-code">match</code>, the branches of an
+<code class="inline-code">if</code>); what may not is counted in full: copies of large arguments, one for
+each argument position, and the slot of a large result of a call in a
+branch within a <code class="inline-code">match</code> arm, one for each arm. <code class="inline-code">scripts/test-stack-frames.py</code>
+checks every library function&#39;s estimate against the frame it gets. Constants
+(<code class="inline-code">def</code>) and <code class="inline-code">static</code> bindings take no stack. Calls through function
+pointers or closures, and calls into C or into the runtime (<code class="inline-code">alloc</code>,
+<code class="inline-code">append</code>, <code class="inline-code">free</code> and so on), count as 16 KiB. The estimate errs on the high
+side, so it may report code that would only just fit.</p>
+<p>Typedefs record each exported function&#39;s estimate as <code class="inline-code">@stack(bytes)</code>, so
+the check also follows calls into other modules. They record its effects
+as <code class="inline-code">@effects(keeps, returns, frees, into...)</code> too: bit i of each says what
+the function does with its i-th parameter, so that calls into other
+modules are checked for dangling pointers and use after free.</p>
+<h2 id="leak-checks" class="doc-h2"><a class="anchor-link" href="#leak-checks">Leak checks</a></h2>
+<p>Two checks find memory that is never freed (see &quot;Finding leaks&quot; in
+<code class="inline-code">language.md</code>):</p>
+<ul>
+<li><strong>Compile time.</strong> <code class="file-chip file-chip-c"><span class="chip-badge chip-c" aria-hidden="true">C</span><span class="chip-name">compiler/src/leak.c</span></code> follows each local holding new
+memory along every path out of its scope and warns where it is certainly
+unfreed: a return (a failed <code class="inline-code">?</code> included), a break or continue leaving its
+loop, the end of its block, or an overwrite. These are warnings, shown in
+the editor with a quick fix adding <code class="inline-code">defer free(x);</code>.</li>
+<li><strong>Run time.</strong> <code class="inline-code">lora run --leaks file.lora</code>, or <code class="inline-code">LORA_LEAKS=1</code> with any
+built program, reports at exit every allocation not freed, grouped
+by where they were made and the functions that were running, and exits
+with status 23. <code class="inline-code">LORA_LEAKS=report</code> keeps the exit status.
+<code class="inline-code">lora run --guard</code> (<code class="inline-code">LORA_LEAKS=guard</code>) also stops at the first read or write of freed
+memory, and at any access past a block&#39;s end, saying where the block
+was allocated and freed: each block has pages of its own, so it is slow,
+for when a test or <code class="inline-code">unsafe</code> code is suspect.</li>
+</ul>
+<p><code class="inline-code">scripts/test-leaks.py</code> tests both, and that the test programs which free
+their memory pass the run-time check.</p>
+<h2 id="debugging" class="doc-h2"><a class="anchor-link" href="#debugging">Debugging</a></h2>
+<p>Most Lora bugs are found before the program runs, and the rest say where
+and why when they happen. In order of how often each helps:</p>
+<h3 id="1-before-it-runs-let-the-compiler-find-it" class="doc-h3"><a class="anchor-link" href="#1-before-it-runs-let-the-compiler-find-it">1. Before it runs: let the compiler find it</a></h3>
+<ul>
+<li>In the editor (VS Code or Zed), diagnostics appear as you type; hover one
+for why it happened and the fixes. In a terminal, <code class="inline-code">lora check file.lora</code>
+checks without building, and <code class="inline-code">lora explain L0104</code> explains a code.</li>
+<li>Unhandled errors, leaks (L0100), use after free (L0102), dangling
+pointers (L0104), data races (L0700), constant overflow and values
+outside a pattern type are compile errors or warnings, not run-time
+surprises.</li>
+</ul>
+<h3 id="2-when-it-fails-read-what-it-prints" class="doc-h3"><a class="anchor-link" href="#2-when-it-fails-read-what-it-prints">2. When it fails: read what it prints</a></h3>
+<p>A failing program stops with where it failed and the values involved:</p>
+<div class="code-frame" data-lang="text">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">text</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code>app.lora:12:9
+ ABORT   Out of bounds
+index 5 is out of bounds for length 3
+11 │     let i = 5;
+12 │     let v = xs[i];
+   │             ~~
+13 │ };
+
+  fix: check the index is less than len(...) first</code></pre>
+</div><p>The same goes for slices, integer overflow (<code class="inline-code">250 + 10 is 260, which is out of range for u8 (0 to 255)</code>), division by zero, a string slice cutting a
+character, a null raw pointer, stack overflow and a value no <code class="inline-code">match</code> arm
+covers.</p>
+<p>An error that reaches <code class="inline-code">main</code>, or fails an <code class="inline-code">x!</code>, is printed with the notes
+added on its way up and where it came from:</p>
+<div class="code-frame" data-lang="text">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">text</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code>error: cannot open /etc/app.toml: No such file or directory (ENOENT, errno 2)
+  which happened while loading the settings
+  trace:
+    fs::read_file  lib/fs.lora:20:27  error made here
+    load           app.lora:5:33
+    main           app.lora:13:13</code></pre>
+</div><p>The note comes from <code class="inline-code">?</code> with a message. Add one where the caller&#39;s context
+matters: it is the cheapest debugging there is.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> fs</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> load</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">path</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> str</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">void</span><span style="color:#C8C8C8"> |</span><span style="color:#FF9FC8"> fs</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">error</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> data</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> fs</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">read_file</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">path</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ?</span><span style="color:#99FFE4"> "loading the settings"</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">load</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"/nonexistent/app.toml"</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> is</span><span style="color:#FF9FC8"> fs</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">error</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><h3 id="3-make-assumptions-checkable" class="doc-h3"><a class="anchor-link" href="#3-make-assumptions-checkable">3. Make assumptions checkable</a></h3>
+<p><code class="inline-code">assert(cond, &quot;why&quot;)</code> inside a function, and <code class="inline-code">requires(...)</code> and <code class="inline-code">ensures(...)</code> on
+its API, turn a wrong assumption into a report naming the condition, at
+the place it first goes wrong rather than where the damage shows.
+<code class="inline-code">lora run --units=observe app.lora</code> reports every false condition and
+keeps running, to see them all in one run (see the language reference,
+&quot;Unit functions&quot;).</p>
+<h3 id="4-memory" class="doc-h3"><a class="anchor-link" href="#4-memory">4. Memory</a></h3>
+<p><code class="inline-code">lora run --leaks app.lora</code>, or <code class="inline-code">LORA_LEAKS=1 ./app</code> for a built program,
+lists the memory never freed, with where each allocation was made and the
+calls that led there; it exits with status 23 when there are leaks. The
+same mode reports writes to freed memory (see <a href="#leak-checks">Leak checks</a>).</p>
+<h3 id="5-print-what-you-need-to-see" class="doc-h3"><a class="anchor-link" href="#5-print-what-you-need-to-see">5. Print what you need to see</a></h3>
+<p><code class="inline-code">{:?}</code> formats any value for debugging, fields included; <code class="inline-code">$&quot;...&quot;</code>
+interpolates:</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> point</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> x</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> y</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> s</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> point</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> x</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> y</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 2</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 3</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> xs</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> [</span><span style="color:#99FFE4">1</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 2</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FF9FC8">	fmt</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">eprintfn</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"state: {:?}"</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> s</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span><span style="color:#737373">           // state: point { x = 1, y = 2 }</span></span>
+<span class="line"><span style="color:#FF9FC8">	fmt</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">eprintln</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">$</span><span style="color:#99FFE4">"n = </span><span style="color:#FFC799">{</span><span style="color:#FFFFFF">n</span><span style="color:#FFC799">}</span><span style="color:#99FFE4">, len = </span><span style="color:#FFC799">{len</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">xs</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799">}</span><span style="color:#99FFE4">"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span><span style="color:#737373"> // n = 3, len = 2</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>For messages worth keeping, <code class="inline-code">log::debug(...)</code> is skipped unless
+<code class="inline-code">log::set_level(log::level::DEBUG)</code> turns it on, so they can stay in the
+code. Once a bug is understood, a program under <code class="file-chip file-chip-dir"><span class="chip-badge chip-dir" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span><span class="chip-name">tests/</span></code> that asserts on
+the result keeps it fixed (<code class="inline-code">lora test</code>).</p>
+<h3 id="6-look-at-what-the-compiler-made" class="doc-h3"><a class="anchor-link" href="#6-look-at-what-the-compiler-made">6. Look at what the compiler made</a></h3>
+<p>Every <code class="inline-code">lora build</code> and <code class="inline-code">lora run</code> keeps what it compiled the program to,
+replaced by the next build:</p>
+<div class="code-frame" data-lang="sh">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">sh</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">lora</span><span style="color:#E6E6EB"> build</span><span style="color:#E6E6EB"> app.lora</span></span>
+<span class="line"><span style="color:#FFC799">less</span><span style="color:#E6E6EB"> .build/app/program.ssa</span><span style="color:#737373">    # QBE's intermediate code</span></span>
+<span class="line"><span style="color:#FFC799">less</span><span style="color:#E6E6EB"> .build/app/program.s</span><span style="color:#737373">      # the assembly</span></span></code></pre>
+</div><p>Functions are symbols named after their module: <code class="inline-code">_main</code>, <code class="inline-code">_fmt.println</code>,
+and <code class="inline-code">_.half</code> for a program&#39;s private <code class="inline-code">half</code>. <a href="/lora-docs/guides/reading-generated-code">Reading the code Lora
+generates</a> walks through both files for hello
+world, line by line. The core library&#39;s are in
+<code class="inline-code">.build/&lt;module&gt;.ssa</code> and <code class="inline-code">.s</code>. To run the steps by hand, see
+<a href="#compiler-pipeline">Compiler pipeline</a>; <code class="inline-code">cmd/lora</code> shows the exact
+commands and the <code class="inline-code">LORA_TD_&lt;module&gt;</code> variables they need.</p>
+<h3 id="7-native-debuggers" class="doc-h3"><a class="anchor-link" href="#7-native-debuggers">7. Native debuggers</a></h3>
+<p><code class="inline-code">lldb ./app</code> works at the level of symbols and instructions: <code class="inline-code">b main</code>,
+<code class="inline-code">b fmt.println</code>, stepping, registers and memory. <strong>Limit:</strong> it cannot show
+source lines or Lora variables yet. The compiler emits line tables, but no
+DWARF compile-unit or function entries, so the linker writes no debug map
+(<code class="inline-code">dsymutil</code> reports no debug symbols) and backtraces show symbols, not
+<code class="inline-code">file:line</code>. The error traces and abort messages above carry <code class="inline-code">file:line</code>
+instead.</p>
+<p>If <code class="inline-code">lldb</code> fails to start with a missing <code class="inline-code">Python.framework</code>, reinstall the
+Xcode Command Line Tools (<code class="inline-code">xcode-select --install</code>).</p>
+<h3 id="a-workflow" class="doc-h3"><a class="anchor-link" href="#a-workflow">A workflow</a></h3>
+<ol>
+<li>Read the diagnostic, or the abort message and its values.</li>
+<li>Add a note at the <code class="inline-code">?</code> above the failure, or an <code class="inline-code">assert</code> where the
+assumption breaks, and run again.</li>
+<li>Write the failing case as a test under <code class="file-chip file-chip-dir"><span class="chip-badge chip-dir" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span><span class="chip-name">tests/</span></code>.</li>
+<li>Fix it, and run <code class="inline-code">lora test</code> and <code class="inline-code">lora run --leaks</code>.</li>
+</ol>
+<h2 id="module-typedef-environment" class="doc-h2"><a class="anchor-link" href="#module-typedef-environment">Module typedef environment</a></h2>
+<p>The compiler resolves imported modules through environment variables of the
+form <code class="inline-code">LORA_TD_&lt;module&gt;</code> pointing at a <code class="inline-code">.td</code> typedef file. The root <code class="inline-code">Makefile</code>
+builds one per core module into <code class="file-chip file-chip-dir"><span class="chip-badge chip-dir" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span><span class="chip-name">.build/</span></code> and the driver exports all of them:</p>
+<div class="code-frame" data-lang="sh">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">sh</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFFFFF">LORA_TD_rt</span><span style="color:#FF9FC8">=</span><span style="color:#99FFE4">.build/rt.td</span></span>
+<span class="line"><span style="color:#FFFFFF">LORA_TD_strings</span><span style="color:#FF9FC8">=</span><span style="color:#99FFE4">.build/strings.td</span></span>
+<span class="line"><span style="color:#FFC799">...</span></span></code></pre>
+</div><h2 id="adding-a-core-module" class="doc-h2"><a class="anchor-link" href="#adding-a-core-module">Adding a core module</a></h2>
+<ol>
+<li>Create <code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">lib/mymod.lora</span></code> with <code class="inline-code">export</code>ed declarations.</li>
+<li>Add <code class="inline-code">mymod</code> to <code class="inline-code">MODULES</code> in both the root <code class="inline-code">Makefile</code> and <code class="inline-code">cmd/lora</code>.</li>
+<li>Add its dependency rules: <code class="inline-code">$(BUILD)/mymod.ssa: $(BUILD)/&lt;deps&gt;.td</code> in the
+Makefile.</li>
+<li>Rebuild: <code class="inline-code">make stdlib</code>.</li>
+</ol>
+<h2 id="editor-support" class="doc-h2"><a class="anchor-link" href="#editor-support">Editor support</a></h2>
+<p>A full-featured VS Code extension ships in <code class="inline-code">editors/vscode-lora</code>: syntax
+highlighting, a dependency-free language server (<code class="file-chip file-chip-js"><span class="chip-badge chip-js" aria-hidden="true">JS</span><span class="chip-name">server/lora-lsp.js</span></code>),
+run/build/check commands, and the <strong>Lora Vesper</strong> color theme. The server
+gives:</p>
+<ul>
+<li>diagnostics from the compiler as you type;</li>
+<li>types from the compiler too: each check writes an index of what the
+checker inferred (<code class="inline-code">LORA_IDE_INDEX</code>, <code class="file-chip file-chip-c"><span class="chip-badge chip-c" aria-hidden="true">C</span><span class="chip-name">compiler/src/ide.c</span></code>): every binding
+and name with its type, and each type&#39;s fields, methods and parts. The
+server keeps the last one of a file that parsed, so <code class="inline-code">x.</code> completes what
+the checker says <code class="inline-code">x</code> is (an inferred <code class="inline-code">let</code>, a for-each element, an
+unpacked tuple, a generic instance, a type parameter through its
+constraint) while the line being written does not parse, and works it
+out from the text where the checker has not yet seen it;</li>
+<li>completion, hover, signature help and inlay hints with those types;</li>
+<li>go to definition, type definition and implementation (an interface to
+its impls), the call hierarchy, references, rename and highlights;</li>
+<li>document and workspace symbols, folding, selection ranges, links from
+<code class="inline-code">use</code>, semantic tokens, formatting (on save), quick fixes and organize
+imports.</li>
+</ul>
+<p>Install with:</p>
+<div class="code-frame" data-lang="sh">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">sh</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">scripts/install-vscode.sh</span></span></code></pre>
+</div><p>which packages the extension as a <code class="inline-code">.vsix</code> and installs it through
+<code class="inline-code">code --install-extension</code> (registered as <code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">lora-lang.lora</span></code> in
+<code class="inline-code">code --list-extensions</code>), then prints the reload hint. The language server
+speaks plain LSP over stdio and can be used from other editors directly.
+See <code class="inline-code">editors/vscode-lora/README.md</code> for details.</p>
+<p>Zed has an extension too, in <code class="inline-code">editors/zed-lora</code>: highlighting from a
+tree-sitter grammar (<code class="inline-code">editors/tree-sitter-lora</code>), the same language server
+(started as <code class="inline-code">lora lsp</code>), and the Lora Vesper themes, including frosted
+glass variants that use Zed&#39;s window blur. Install with
+<code class="inline-code">scripts/install-zed.sh</code>, then Zed&#39;s <strong>zed: install dev extension</strong>; see
+<code class="inline-code">editors/zed-lora/README.md</code>. Any editor that speaks LSP can run
+<code class="inline-code">lora lsp</code> the same way.</p>
+<p>After changing the grammar, check it still parses every Lora file:</p>
+<div class="code-frame" data-lang="sh">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">sh</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">cd</span><span style="color:#E6E6EB"> editors/tree-sitter-lora</span><span style="color:#C8C8C8"> &#x26;&#x26;</span><span style="color:#FFC799"> tree-sitter</span><span style="color:#E6E6EB"> generate</span></span>
+<span class="line"><span style="color:#FFC799">python3</span><span style="color:#E6E6EB"> scripts/test-tree-sitter.py</span></span></code></pre>
+</div><p>Regenerate the intellisense data after changing the core library or runtime
+signatures:</p>
+<div class="code-frame" data-lang="sh">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">sh</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">python3</span><span style="color:#E6E6EB"> scripts/gen-lsp-data.py</span></span>
+<span class="line"><span style="color:#FFC799">python3</span><span style="color:#E6E6EB"> scripts/test-lsp.py</span><span style="color:#737373">         # exercises the server over stdio</span></span>
+<span class="line"><span style="color:#FFC799">python3</span><span style="color:#E6E6EB"> scripts/test-lsp-types.py</span><span style="color:#737373">   # completion with the compiler's types, as an editor meets it</span></span></code></pre>
+</div><h2 id="tests" class="doc-h2"><a class="anchor-link" href="#tests">Tests</a></h2>
+<p>Six layers:</p>
+<ol>
+<li><strong>Compiler tests</strong> — <code class="inline-code">compiler/tests/*.lora</code>, run with <code class="inline-code">make -C compiler check</code>. Test the checker, parser and codegen directly, including
+<code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/14-match.lora</span></code> (language semantics) and <code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/39-patterns.lora</span></code>
+(structural patterns: tuples, structs, arrays, enums, strings, ranges,
+refs, <code class="inline-code">@</code> bindings, guards).</li>
+<li><strong>End-to-end tests</strong> — <code class="inline-code">tests/*.lora</code>, run with <code class="inline-code">./cmd/lora test</code>. Compile
+and execute real programs against the core library (<code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">core.lora</span></code>,
+<code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">patterns.lora</span></code>, <code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">net.lora</span></code>).</li>
+<li><strong>Leak checks</strong> — <code class="inline-code">scripts/test-leaks.py</code> (see &quot;Leak checks&quot;).</li>
+<li><strong>Documentation</strong> — <code class="inline-code">scripts/check-doc-examples.py</code> compiles and runs
+every example in <code class="inline-code">docs/language.md</code>, <code class="inline-code">errors.md</code>, <code class="inline-code">idioms.md</code>,
+<code class="inline-code">tooling.md</code>, <code class="inline-code">reading-generated-code.md</code>, <code class="inline-code">sql.md</code> and <code class="inline-code">encodings.md</code>,
+and checks each marked error, warning and abort.</li>
+<li><strong>Examples</strong> — <code class="inline-code">scripts/check-examples.py</code> runs every <code class="inline-code">examples/*.lora</code>
+with leak checks; the servers (<code class="inline-code">echo</code>, <code class="inline-code">coro_echo</code>, <code class="inline-code">http_server</code>), which
+wait for connections, are only compiled.</li>
+<li><strong>C interop</strong> — <code class="inline-code">tests/interop/run.sh</code> compiles a Lora unit to a bare
+object and links it into C and C++ (extern &quot;C&quot;) hosts: scalars, floats,
+aggregates &gt; 16 bytes by value, strings via pointer-out, allocation and
+bounds-checked functions (linked against runtime objects built without
+<code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">start.lora</span></code>), and the runtime abort path under a C host. Composites
+≤ 16 bytes by value are the one gap — QBE returns them via a hidden
+sret pointer instead of AAPCS x0:x1 registers (see the shortcut note in
+<code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/interop/interop.lora</span></code>).</li>
+</ol>
+<div class="doc-status-bar"><div class="doc-status-left"><span class="doc-status-files">1 file changed</span><span class="doc-status-counts"><span class="doc-status-add">+461</span><span class="doc-status-del">-0</span></span><span class="doc-status-chevron" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span></div><a href="/lora-docs/guides/diagnostic-catalog" class="doc-status-review" title="Review compiler diagnostic catalog"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg><span>Review</span></a></div><nav class="pager" aria-label="Page pagination"><a href="/lora-docs/getting-started/introduction" class="pager-link prev"><span class="pager-dir">← Previous</span><span class="pager-label">Introduction</span></a><a href="/lora-docs/language-design/overview" class="pager-link next"><span class="pager-dir">Next →</span><span class="pager-label">Language Design Overview</span></a></nav></article></main><aside class="toc" aria-label="On This Page"><div class="toc-title">On This Page</div><ul class="toc-list"><li><a href="#top" class="toc-link depth-2 is-active" data-toc-target="top">Table of contents</a></li><li><a href="#the-lora-driver" class="toc-link depth-2" data-toc-target="the-lora-driver">The lora driver</a></li><li><a href="#testing-benchmarks-and-fuzzing-lora-test" class="toc-link depth-3" data-toc-target="testing-benchmarks-and-fuzzing-lora-test">Testing, benchmarks, and fuzzing (lora test)</a></li><li><a href="#diagnostics" class="toc-link depth-3" data-toc-target="diagnostics">Diagnostics</a></li><li><a href="#installing-on-path" class="toc-link depth-3" data-toc-target="installing-on-path">Installing on PATH</a></li><li><a href="#build-targets" class="toc-link depth-2" data-toc-target="build-targets">Build targets</a></li><li><a href="#compiler-pipeline" class="toc-link depth-2" data-toc-target="compiler-pipeline">Compiler pipeline</a></li><li><a href="#stack-overflow-check" class="toc-link depth-2" data-toc-target="stack-overflow-check">Stack overflow check</a></li><li><a href="#leak-checks" class="toc-link depth-2" data-toc-target="leak-checks">Leak checks</a></li><li><a href="#debugging" class="toc-link depth-2" data-toc-target="debugging">Debugging</a></li><li><a href="#1-before-it-runs-let-the-compiler-find-it" class="toc-link depth-3" data-toc-target="1-before-it-runs-let-the-compiler-find-it">1. Before it runs: let the compiler find it</a></li><li><a href="#2-when-it-fails-read-what-it-prints" class="toc-link depth-3" data-toc-target="2-when-it-fails-read-what-it-prints">2. When it fails: read what it prints</a></li><li><a href="#3-make-assumptions-checkable" class="toc-link depth-3" data-toc-target="3-make-assumptions-checkable">3. Make assumptions checkable</a></li><li><a href="#4-memory" class="toc-link depth-3" data-toc-target="4-memory">4. Memory</a></li><li><a href="#5-print-what-you-need-to-see" class="toc-link depth-3" data-toc-target="5-print-what-you-need-to-see">5. Print what you need to see</a></li><li><a href="#6-look-at-what-the-compiler-made" class="toc-link depth-3" data-toc-target="6-look-at-what-the-compiler-made">6. Look at what the compiler made</a></li><li><a href="#7-native-debuggers" class="toc-link depth-3" data-toc-target="7-native-debuggers">7. Native debuggers</a></li><li><a href="#a-workflow" class="toc-link depth-3" data-toc-target="a-workflow">A workflow</a></li><li><a href="#module-typedef-environment" class="toc-link depth-2" data-toc-target="module-typedef-environment">Module typedef environment</a></li><li><a href="#adding-a-core-module" class="toc-link depth-2" data-toc-target="adding-a-core-module">Adding a core module</a></li><li><a href="#editor-support" class="toc-link depth-2" data-toc-target="editor-support">Editor support</a></li><li><a href="#tests" class="toc-link depth-2" data-toc-target="tests">Tests</a></li></ul></aside></div><dialog id="search-dialog" class="search-modal" aria-label="Search Lora documentation"><div class="search-modal-head"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><input id="search-input" class="search-input" type="search" placeholder="Search syntax, errors (L0800), or stdlib (http::get, sql::numeric_buf_size)..." autocomplete="off"><kbd class="search-kbd">ESC</kbd></div><div id="search-results" class="search-results"><div style="padding: 16px; font-size: 0.86rem; color: var(--text-muted);">Type to search pages, compiler error codes, and 2,256 stdlib exports.</div></div></dialog><script>
+      // 1. Mobile sidebar drawer
+      const menuBtn = document.getElementById('mobile-menu-btn');
+      const sidebar = document.getElementById('sidebar');
+      if (menuBtn && sidebar) {
+        menuBtn.addEventListener('click', () => {
+          const open = sidebar.classList.toggle('is-open');
+          menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+
+      // Keep active nav link scrolled comfortably into view on load
+      const activeNav = sidebar?.querySelector('.nav-link.is-active');
+      if (activeNav) {
+        activeNav.scrollIntoView({ block: 'nearest' });
+      }
+
+      // 2. Dark / Light mode toggle (keeps Lora Fjord dark surface on all code blocks & tables)
+      const themeBtn = document.getElementById('theme-toggle');
+      themeBtn?.addEventListener('click', () => {
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        if (isLight) {
+          document.documentElement.removeAttribute('data-theme');
+          try { localStorage.setItem('lora-docs-theme', 'dark'); } catch {}
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+          try { localStorage.setItem('lora-docs-theme', 'light'); } catch {}
+        }
+      });
+
+      // 3. Code block copy & wrap buttons
+      document.addEventListener('click', async (ev) => {
+        const target = ev.target instanceof Element ? ev.target : null;
+        if (!target) return;
+        const wrapBtn = target.closest('.wrap-btn');
+        if (wrapBtn) {
+          const frame = wrapBtn.closest('.code-frame');
+          frame?.classList.toggle('is-wrapped');
+          wrapBtn.classList.toggle('is-wrapped');
+          return;
+        }
+        const btn = target.closest('.copy-btn');
+        if (!btn) return;
+        const frame = btn.closest('.code-frame');
+        const codeEl = frame?.querySelector('pre code') || frame?.querySelector('pre');
+        if (!codeEl) return;
+        try {
+          await navigator.clipboard.writeText(codeEl.textContent || '');
+          btn.classList.add('copied');
+          setTimeout(() => btn.classList.remove('copied'), 1500);
+        } catch {}
+      });
+
+      // 4. Right TOC scroll-spy
+      const tocLinks = Array.from(document.querySelectorAll('.toc-link'));
+      if (tocLinks.length > 1 && 'IntersectionObserver' in window) {
+        const map = new Map(tocLinks.map((a) => [a.getAttribute('data-toc-target'), a]));
+        const targets = tocLinks
+          .map((a) => document.getElementById(a.getAttribute('data-toc-target') || ''))
+          .filter(Boolean);
+        const obs = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                tocLinks.forEach((l) => l.classList.remove('is-active'));
+                map.get(entry.target.id)?.classList.add('is-active');
+                break;
+              }
+            }
+          },
+          { rootMargin: '-72px 0px -70% 0px', threshold: 0 }
+        );
+        targets.forEach((el) => obs.observe(el));
+      }
+
+      // 5. Lazy Search Modal (Ctrl/Cmd+K or /)
+      const dialog = document.getElementById('search-dialog');
+      const openBtn = document.getElementById('open-search');
+      const input = document.getElementById('search-input');
+      const resultsEl = document.getElementById('search-results');
+      let searchEntries = null;
+
+      const baseUrl = document.body.dataset.base || '/';
+
+      async function ensureIndex() {
+        if (searchEntries) return searchEntries;
+        try {
+          const res = await fetch(baseUrl + 'search-index.json');
+          searchEntries = await res.json();
+        } catch {
+          searchEntries = [];
+        }
+        return searchEntries;
+      }
+
+      function renderResults(query) {
+        if (!resultsEl || !searchEntries) return;
+        const q = query.trim().toLowerCase();
+        const matches = (q
+          ? searchEntries.filter(
+              (item) =>
+                item.title.toLowerCase().includes(q) ||
+                item.section.toLowerCase().includes(q) ||
+                item.subtitle.toLowerCase().includes(q)
+            )
+          : searchEntries.slice(0, 18)
+        ).slice(0, 35);
+
+        if (!matches.length) {
+          resultsEl.innerHTML =
+            '<div style="padding:16px;font-size:0.86rem;color:var(--text-muted)">No matches found.</div>';
+          return;
+        }
+        resultsEl.innerHTML = '';
+        for (const m of matches) {
+          const a = document.createElement('a');
+          a.href = baseUrl + String(m.slug || '').replace(/^\/+/, '');
+          a.className = 'search-item';
+          const left = document.createElement('div');
+          const t = document.createElement('div');
+          t.className = 'search-item-title';
+          t.textContent = m.title;
+          const sub = document.createElement('div');
+          sub.className = 'search-item-sub';
+          sub.textContent = m.subtitle;
+          left.appendChild(t);
+          if (m.subtitle) left.appendChild(sub);
+          const sec = document.createElement('span');
+          sec.className = 'search-item-section';
+          sec.textContent = m.section;
+          a.appendChild(left);
+          a.appendChild(sec);
+          resultsEl.appendChild(a);
+        }
+      }
+
+      async function openSearch() {
+        if (!dialog || !(dialog instanceof HTMLDialogElement)) return;
+        dialog.showModal();
+        input?.focus();
+        await ensureIndex();
+        renderResults(input?.value || '');
+      }
+
+      openBtn?.addEventListener('click', openSearch);
+      dialog?.addEventListener('click', (e) => {
+        if (e.target === dialog) dialog.close();
+      });
+      input?.addEventListener('input', () => renderResults(input.value));
+
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          if (dialog?.open) dialog.close();
+          else openSearch();
+        } else if (
+          e.key === '/' &&
+          document.activeElement?.tagName !== 'INPUT' &&
+          document.activeElement?.tagName !== 'TEXTAREA'
+        ) {
+          e.preventDefault();
+          openSearch();
+        }
+      });
+    </script></body></html>

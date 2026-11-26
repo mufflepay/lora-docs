@@ -1,0 +1,983 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Memory &amp; Ownership Safety · Lora Language</title><meta name="description" content="Complete reference for ^T ownership, affine moves, rc/arc cycle prevention, impl drop destructors, static leak analysis, --leaks quarantine, and --guard page protection."><script>
+      try {
+        const t = localStorage.getItem('lora-docs-theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      } catch {}
+    </script><link rel="stylesheet" href="/lora-docs/_astro/PageContent.NRsqP4nx.css"></head><body data-base="/lora-docs/"><header class="topbar"><div class="topbar-left"><button id="mobile-menu-btn" class="menu-btn" type="button" aria-label="Toggle navigation" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button><a href="/lora-docs/" class="brand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="The Lora owl">
+  <title>The Lora owl</title>
+  <path d="M 48 88 L 60 24 L 96 60 Q 128 52 160 60 L 196 24 L 208 88 Q 232 120 224 160 Q 216 232 128 232 Q 40 232 32 160 Q 24 120 48 88 Z" fill="#ff9fc8"/>
+  <circle cx="92" cy="128" r="40" fill="#ffffff" stroke="#ffc799" stroke-width="13"/>
+  <circle cx="164" cy="128" r="40" fill="#ffffff" stroke="#ffc799" stroke-width="13"/>
+  <circle cx="96" cy="132" r="18" fill="#101010"/>
+  <circle cx="160" cy="132" r="18" fill="#101010"/>
+  <polygon points="114,168 142,168 128,194" fill="#ffc799"/>
+</svg>
+<span>Lora Language</span></a><span class="version-pill">v0.1.0</span></div><button id="open-search" type="button" class="search-trigger" aria-label="Search documentation"><span class="search-trigger-left"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><span>Search documentation...</span></span><kbd class="search-kbd">Ctrl K</kbd></button><div class="topbar-right"><button id="theme-toggle" type="button" class="icon-btn" aria-label="Toggle color theme" title="Toggle dark/light theme"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg></button><a href="/lora-docs/specification/standard-library" class="icon-btn" aria-label="Standard Library Index" title="Standard Library (57 modules)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg></a></div></header><div class="shell"><aside id="sidebar" class="sidebar" aria-label="Documentation Navigation"><details class="nav-group" open><summary class="nav-group-summary"><span>GETTING STARTED</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/getting-started/introduction" class="nav-link">Introduction</a></li><li><a href="/lora-docs/getting-started/toolchain-and-editors" class="nav-link">Toolchain &amp; Editors</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>LANGUAGE DESIGN</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/language-design/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/language-design/aliases" class="nav-link">Aliases &amp; Type Declarations</a></li><li><a href="/lora-docs/language-design/assignment" class="nav-link">Assignment</a></li><li><a href="/lora-docs/language-design/blocks-and-statements" class="nav-link">Blocks and Statements</a></li><li><a href="/lora-docs/language-design/structs-unions-interfaces" class="nav-link">Structs, Unions &amp; Interfaces</a></li><li><a href="/lora-docs/language-design/declaring-entities" class="nav-link">Declaring Entities</a></li><li><a href="/lora-docs/language-design/functions" class="nav-link">Functions</a></li><li><a href="/lora-docs/language-design/lambdas" class="nav-link">Lambdas &amp; Closures</a></li><li><a href="/lora-docs/language-design/metaprogramming" class="nav-link">Metaprogramming &amp; Comptime</a></li><li><a href="/lora-docs/language-design/name-lookup" class="nav-link">Name Lookup</a></li><li><a href="/lora-docs/language-design/naming-conventions" class="nav-link">Naming Conventions</a></li><li><a href="/lora-docs/language-design/pattern-matching" class="nav-link">Pattern Matching</a></li><li><a href="/lora-docs/language-design/sum-types" class="nav-link">Sum Types, Optionals &amp; Enums</a></li><li><a href="/lora-docs/language-design/tuples" class="nav-link">Tuples &amp; Named Tuples</a></li><li><a href="/lora-docs/language-design/type-inference" class="nav-link">Type Inference</a></li><li><a href="/lora-docs/language-design/values-pointers-views" class="nav-link">Values, Owners, Pointers &amp; Views</a></li><li><a href="/lora-docs/language-design/variadics" class="nav-link">Variadics</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>CODE &amp; NAME ORGANIZATION</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/organization/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/organization/source-files" class="nav-link">Source Files &amp; Modules</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>CONTROL FLOW</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/control-flow/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/control-flow/conditionals" class="nav-link">Conditionals</a></li><li><a href="/lora-docs/control-flow/loops" class="nav-link">Loops</a></li><li><a href="/lora-docs/control-flow/return-yield-defer" class="nav-link">Return, Yield &amp; Defer</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>EXPRESSIONS</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/expressions/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/expressions/arithmetic" class="nav-link">Arithmetic &amp; Overflow</a></li><li><a href="/lora-docs/expressions/as-expressions" class="nav-link">Conversions (@T) &amp; Assertions</a></li><li><a href="/lora-docs/expressions/bitwise" class="nav-link">Bitwise &amp; @bits</a></li><li><a href="/lora-docs/expressions/comparison-operators" class="nav-link">Comparison Operators</a></li><li><a href="/lora-docs/expressions/if-expressions" class="nav-link">If &amp; Match Expressions</a></li><li><a href="/lora-docs/expressions/implicit-conversions" class="nav-link">Implicit Conversions</a></li><li><a href="/lora-docs/expressions/indexing" class="nav-link">Indexing &amp; Slicing</a></li><li><a href="/lora-docs/expressions/literals" class="nav-link">Literals</a></li><li><a href="/lora-docs/expressions/logical-operators" class="nav-link">Logical Operators</a></li><li><a href="/lora-docs/expressions/member-access" class="nav-link">Member Access</a></li><li><a href="/lora-docs/expressions/pointer-operators" class="nav-link">Pointer &amp; Ownership Operators</a></li><li><a href="/lora-docs/expressions/type-operators" class="nav-link">Type &amp; Layout Operators</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>GENERICS</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/generics/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/generics/goals" class="nav-link">Goals</a></li><li><a href="/lora-docs/generics/terminology" class="nav-link">Terminology</a></li><li><a href="/lora-docs/generics/generics-overview" class="nav-link">Constraints Overview</a></li><li><a href="/lora-docs/generics/generics-details" class="nav-link">Generics Details</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>INTEROPERABILITY</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/interoperability/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/interoperability/c-abi" class="nav-link">Philosophy, Goals &amp; C ABI</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>LEXICAL CONVENTIONS</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/lexical/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/lexical/comments" class="nav-link">Comments</a></li><li><a href="/lora-docs/lexical/numeric-literals" class="nav-link">Numeric Literals</a></li><li><a href="/lora-docs/lexical/string-literals" class="nav-link">String &amp; Rune Literals</a></li><li><a href="/lora-docs/lexical/symbolic-tokens" class="nav-link">Symbolic Tokens</a></li><li><a href="/lora-docs/lexical/whitespace" class="nav-link">Whitespace &amp; Semicolons</a></li><li><a href="/lora-docs/lexical/words" class="nav-link">Words &amp; Keywords</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>SAFETY</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/safety/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/safety/terminology" class="nav-link">Terminology</a></li><li><a href="/lora-docs/safety/memory-ownership" class="nav-link is-active">Memory &amp; Ownership Safety</a></li><li><a href="/lora-docs/safety/borrow-loan-views" class="nav-link">Borrow, Loan &amp; View Safety</a></li><li><a href="/lora-docs/safety/concurrency-races" class="nav-link">Concurrency &amp; Data Races</a></li><li><a href="/lora-docs/safety/stack-overflow" class="nav-link">Stack Overflow &amp; @depth</a></li><li><a href="/lora-docs/safety/contracts-and-unit-functions" class="nav-link">Contracts &amp; Unit Functions</a></li><li><a href="/lora-docs/safety/unsafe-code" class="nav-link">Unsafe Code &amp; Hardening</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>PRINCIPLES</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/principles/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/principles/error-handling" class="nav-link">Error Handling</a></li><li><a href="/lora-docs/principles/information-accumulation" class="nav-link">Information Accumulation</a></li><li><a href="/lora-docs/principles/library-apis-only" class="nav-link">Library APIs Only</a></li><li><a href="/lora-docs/principles/low-context-sensitivity" class="nav-link">Low Context Sensitivity</a></li><li><a href="/lora-docs/principles/namespace-cleanliness" class="nav-link">Namespace Cleanliness</a></li><li><a href="/lora-docs/principles/one-way" class="nav-link">One Way</a></li><li><a href="/lora-docs/principles/progressive-disclosure" class="nav-link">Progressive Disclosure</a></li><li><a href="/lora-docs/principles/safety-strategy" class="nav-link">Safety Strategy</a></li><li><a href="/lora-docs/principles/static-open-extension" class="nav-link">Static Open Extension</a></li><li><a href="/lora-docs/principles/success-criteria" class="nav-link">Success Criteria</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>GUIDES</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/guides/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/guides/glossary" class="nav-link">Glossary</a></li><li><a href="/lora-docs/guides/idiomatic-lora" class="nav-link">Idiomatic Lora &amp; Style Guide</a></li><li><a href="/lora-docs/guides/testing-and-benchmarking" class="nav-link">Testing, Benchmarks &amp; Fuzzing</a></li><li><a href="/lora-docs/guides/concurrency-and-sync" class="nav-link">Concurrency, Sync &amp; Context</a></li><li><a href="/lora-docs/guides/containers-and-data" class="nav-link">Containers, Data &amp; Checksums</a></li><li><a href="/lora-docs/guides/web-and-auth" class="nav-link">Web, HTTP &amp; Auth</a></li><li><a href="/lora-docs/guides/resilience-and-observability" class="nav-link">Resilience &amp; Observability</a></li><li><a href="/lora-docs/guides/cli-and-markup" class="nav-link">CLI, Terminal &amp; Markup</a></li><li><a href="/lora-docs/guides/math-and-algorithms" class="nav-link">Math, Stats &amp; Algorithms</a></li><li><a href="/lora-docs/guides/allocators" class="nav-link">Allocators &amp; Memory Strategies</a></li><li><a href="/lora-docs/guides/sql-and-postgresql" class="nav-link">Typed SQL, PostgreSQL &amp; SQLite</a></li><li><a href="/lora-docs/guides/tags-and-codecs" class="nav-link">Structure Tags &amp; Codecs</a></li><li><a href="/lora-docs/guides/encodings-and-crypto" class="nav-link">Encodings &amp; Cryptography</a></li><li><a href="/lora-docs/guides/reading-generated-code" class="nav-link">Reading Generated Code</a></li><li><a href="/lora-docs/guides/diagnostic-catalog" class="nav-link">Diagnostic Catalog (L0001–L1004)</a></li><li><a href="/lora-docs/guides/roadmap" class="nav-link">Roadmap</a></li><li><a href="/lora-docs/guides/summary" class="nav-link">Stdlib &amp; Language Summary</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>SPECIFICATION</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/specification/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/specification/language-spec" class="nav-link">Language Spec (Full 27 Chapters)</a></li><li><a href="/lora-docs/specification/execution" class="nav-link">Execution &amp; Runtime</a></li><li><a href="/lora-docs/specification/lexing" class="nav-link">Lexing</a></li><li><a href="/lora-docs/specification/libraries" class="nav-link">Libraries &amp; Typedefs</a></li><li><a href="/lora-docs/specification/names" class="nav-link">Names &amp; Visibility</a></li><li><a href="/lora-docs/specification/parsing" class="nav-link">Parsing &amp; Limits</a></li><li><a href="/lora-docs/specification/semantics" class="nav-link">Semantics &amp; Checking</a></li><li><a href="/lora-docs/specification/standard-library" class="nav-link">Standard Library Index</a></li></ul><details class="nav-subdetails"><summary class="nav-subsummary"><span>Standard Library Modules (141)</span><svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/stdlib/mem" class="nav-link">mem</a></li><li><a href="/lora-docs/stdlib/expanse" class="nav-link">expanse</a></li><li><a href="/lora-docs/stdlib/pool" class="nav-link">pool</a></li><li><a href="/lora-docs/stdlib/allocator" class="nav-link">allocator</a></li><li><a href="/lora-docs/stdlib/arena" class="nav-link">arena</a></li><li><a href="/lora-docs/stdlib/scratch" class="nav-link">scratch</a></li><li><a href="/lora-docs/stdlib/rc" class="nav-link">rc</a></li><li><a href="/lora-docs/stdlib/arc" class="nav-link">arc</a></li><li><a href="/lora-docs/stdlib/slotmap" class="nav-link">slotmap</a></li><li><a href="/lora-docs/stdlib/intern" class="nav-link">intern</a></li><li><a href="/lora-docs/stdlib/strconv" class="nav-link">strconv</a></li><li><a href="/lora-docs/stdlib/utf8" class="nav-link">utf8</a></li><li><a href="/lora-docs/stdlib/utf16" class="nav-link">utf16</a></li><li><a href="/lora-docs/stdlib/unicode" class="nav-link">unicode</a></li><li><a href="/lora-docs/stdlib/ascii" class="nav-link">ascii</a></li><li><a href="/lora-docs/stdlib/strings" class="nav-link">strings</a></li><li><a href="/lora-docs/stdlib/bytes" class="nav-link">bytes</a></li><li><a href="/lora-docs/stdlib/compare" class="nav-link">compare</a></li><li><a href="/lora-docs/stdlib/sort" class="nav-link">sort</a></li><li><a href="/lora-docs/stdlib/slices" class="nav-link">slices</a></li><li><a href="/lora-docs/stdlib/iter" class="nav-link">iter</a></li><li><a href="/lora-docs/stdlib/fuzzy" class="nav-link">fuzzy</a></li><li><a href="/lora-docs/stdlib/io" class="nav-link">io</a></li><li><a href="/lora-docs/stdlib/bufio" class="nav-link">bufio</a></li><li><a href="/lora-docs/stdlib/bitio" class="nav-link">bitio</a></li><li><a href="/lora-docs/stdlib/fmt" class="nav-link">fmt</a></li><li><a href="/lora-docs/stdlib/os" class="nav-link">os</a></li><li><a href="/lora-docs/stdlib/env" class="nav-link">env</a></li><li><a href="/lora-docs/stdlib/dotenv" class="nav-link">dotenv</a></li><li><a href="/lora-docs/stdlib/path" class="nav-link">path</a></li><li><a href="/lora-docs/stdlib/fs" class="nav-link">fs</a></li><li><a href="/lora-docs/stdlib/tempfile" class="nav-link">tempfile</a></li><li><a href="/lora-docs/stdlib/glob" class="nav-link">glob</a></li><li><a href="/lora-docs/stdlib/time" class="nav-link">time</a></li><li><a href="/lora-docs/stdlib/signal" class="nav-link">signal</a></li><li><a href="/lora-docs/stdlib/process" class="nav-link">process</a></li><li><a href="/lora-docs/stdlib/mmap" class="nav-link">mmap</a></li><li><a href="/lora-docs/stdlib/dl" class="nav-link">dl</a></li><li><a href="/lora-docs/stdlib/sys" class="nav-link">sys</a></li><li><a href="/lora-docs/stdlib/ipc" class="nav-link">ipc</a></li><li><a href="/lora-docs/stdlib/math" class="nav-link">math</a></li><li><a href="/lora-docs/stdlib/stats" class="nav-link">stats</a></li><li><a href="/lora-docs/stdlib/matrix" class="nav-link">matrix</a></li><li><a href="/lora-docs/stdlib/fft" class="nav-link">fft</a></li><li><a href="/lora-docs/stdlib/geo" class="nav-link">geo</a></li><li><a href="/lora-docs/stdlib/bits" class="nav-link">bits</a></li><li><a href="/lora-docs/stdlib/bitset" class="nav-link">bitset</a></li><li><a href="/lora-docs/stdlib/bitstructs" class="nav-link">bitstructs</a></li><li><a href="/lora-docs/stdlib/vectors" class="nav-link">vectors</a></li><li><a href="/lora-docs/stdlib/decimal" class="nav-link">decimal</a></li><li><a href="/lora-docs/stdlib/rand" class="nav-link">rand</a></li><li><a href="/lora-docs/stdlib/cmplx" class="nav-link">cmplx</a></li><li><a href="/lora-docs/stdlib/big" class="nav-link">big</a></li><li><a href="/lora-docs/stdlib/color" class="nav-link">color</a></li><li><a href="/lora-docs/stdlib/qoi" class="nav-link">qoi</a></li><li><a href="/lora-docs/stdlib/hash" class="nav-link">hash</a></li><li><a href="/lora-docs/stdlib/checksum" class="nav-link">checksum</a></li><li><a href="/lora-docs/stdlib/crypto" class="nav-link">crypto</a></li><li><a href="/lora-docs/stdlib/secret" class="nav-link">secret</a></li><li><a href="/lora-docs/stdlib/otp" class="nav-link">otp</a></li><li><a href="/lora-docs/stdlib/compress" class="nav-link">compress</a></li><li><a href="/lora-docs/stdlib/tar" class="nav-link">tar</a></li><li><a href="/lora-docs/stdlib/zip" class="nav-link">zip</a></li><li><a href="/lora-docs/stdlib/map" class="nav-link">map</a></li><li><a href="/lora-docs/stdlib/set" class="nav-link">set</a></li><li><a href="/lora-docs/stdlib/deque" class="nav-link">deque</a></li><li><a href="/lora-docs/stdlib/heap" class="nav-link">heap</a></li><li><a href="/lora-docs/stdlib/btree" class="nav-link">btree</a></li><li><a href="/lora-docs/stdlib/trie" class="nav-link">trie</a></li><li><a href="/lora-docs/stdlib/ring" class="nav-link">ring</a></li><li><a href="/lora-docs/stdlib/lru" class="nav-link">lru</a></li><li><a href="/lora-docs/stdlib/cache" class="nav-link">cache</a></li><li><a href="/lora-docs/stdlib/bloom" class="nav-link">bloom</a></li><li><a href="/lora-docs/stdlib/graph" class="nav-link">graph</a></li><li><a href="/lora-docs/stdlib/dsu" class="nav-link">dsu</a></li><li><a href="/lora-docs/stdlib/interval" class="nav-link">interval</a></li><li><a href="/lora-docs/stdlib/thread" class="nav-link">thread</a></li><li><a href="/lora-docs/stdlib/sync" class="nav-link">sync</a></li><li><a href="/lora-docs/stdlib/coro" class="nav-link">coro</a></li><li><a href="/lora-docs/stdlib/context" class="nav-link">context</a></li><li><a href="/lora-docs/stdlib/channel" class="nav-link">channel</a></li><li><a href="/lora-docs/stdlib/broadcast" class="nav-link">broadcast</a></li><li><a href="/lora-docs/stdlib/workpool" class="nav-link">workpool</a></li><li><a href="/lora-docs/stdlib/errors" class="nav-link">errors</a></li><li><a href="/lora-docs/stdlib/ratelimit" class="nav-link">ratelimit</a></li><li><a href="/lora-docs/stdlib/retry" class="nav-link">retry</a></li><li><a href="/lora-docs/stdlib/metrics" class="nav-link">metrics</a></li><li><a href="/lora-docs/stdlib/trace" class="nav-link">trace</a></li><li><a href="/lora-docs/stdlib/cron" class="nav-link">cron</a></li><li><a href="/lora-docs/stdlib/log" class="nav-link">log</a></li><li><a href="/lora-docs/stdlib/config" class="nav-link">config</a></li><li><a href="/lora-docs/stdlib/ini" class="nav-link">ini</a></li><li><a href="/lora-docs/stdlib/flag" class="nav-link">flag</a></li><li><a href="/lora-docs/stdlib/term" class="nav-link">term</a></li><li><a href="/lora-docs/stdlib/unit" class="nav-link">unit</a></li><li><a href="/lora-docs/stdlib/semver" class="nav-link">semver</a></li><li><a href="/lora-docs/stdlib/regex" class="nav-link">regex</a></li><li><a href="/lora-docs/stdlib/base64" class="nav-link">base64</a></li><li><a href="/lora-docs/stdlib/base32" class="nav-link">base32</a></li><li><a href="/lora-docs/stdlib/ascii85" class="nav-link">ascii85</a></li><li><a href="/lora-docs/stdlib/hex" class="nav-link">hex</a></li><li><a href="/lora-docs/stdlib/binary" class="nav-link">binary</a></li><li><a href="/lora-docs/stdlib/encoding" class="nav-link">encoding</a></li><li><a href="/lora-docs/stdlib/pem" class="nav-link">pem</a></li><li><a href="/lora-docs/stdlib/asn1" class="nav-link">asn1</a></li><li><a href="/lora-docs/stdlib/json" class="nav-link">json</a></li><li><a href="/lora-docs/stdlib/csv" class="nav-link">csv</a></li><li><a href="/lora-docs/stdlib/xml" class="nav-link">xml</a></li><li><a href="/lora-docs/stdlib/html" class="nav-link">html</a></li><li><a href="/lora-docs/stdlib/template" class="nav-link">template</a></li><li><a href="/lora-docs/stdlib/markdown" class="nav-link">markdown</a></li><li><a href="/lora-docs/stdlib/pack" class="nav-link">pack</a></li><li><a href="/lora-docs/stdlib/cbor" class="nav-link">cbor</a></li><li><a href="/lora-docs/stdlib/msgpack" class="nav-link">msgpack</a></li><li><a href="/lora-docs/stdlib/toml" class="nav-link">toml</a></li><li><a href="/lora-docs/stdlib/yaml" class="nav-link">yaml</a></li><li><a href="/lora-docs/stdlib/netip" class="nav-link">netip</a></li><li><a href="/lora-docs/stdlib/net" class="nav-link">net</a></li><li><a href="/lora-docs/stdlib/dns" class="nav-link">dns</a></li><li><a href="/lora-docs/stdlib/url" class="nav-link">url</a></li><li><a href="/lora-docs/stdlib/textproto" class="nav-link">textproto</a></li><li><a href="/lora-docs/stdlib/hpack" class="nav-link">hpack</a></li><li><a href="/lora-docs/stdlib/http" class="nav-link">http</a></li><li><a href="/lora-docs/stdlib/cookie" class="nav-link">cookie</a></li><li><a href="/lora-docs/stdlib/mime" class="nav-link">mime</a></li><li><a href="/lora-docs/stdlib/multipart" class="nav-link">multipart</a></li><li><a href="/lora-docs/stdlib/websocket" class="nav-link">websocket</a></li><li><a href="/lora-docs/stdlib/sse" class="nav-link">sse</a></li><li><a href="/lora-docs/stdlib/jwt" class="nav-link">jwt</a></li><li><a href="/lora-docs/stdlib/x509" class="nav-link">x509</a></li><li><a href="/lora-docs/stdlib/tls" class="nav-link">tls</a></li><li><a href="/lora-docs/stdlib/smtp" class="nav-link">smtp</a></li><li><a href="/lora-docs/stdlib/sql" class="nav-link">sql</a></li><li><a href="/lora-docs/stdlib/pg" class="nav-link">pg</a></li><li><a href="/lora-docs/stdlib/sqlite" class="nav-link">sqlite</a></li><li><a href="/lora-docs/stdlib/kv" class="nav-link">kv</a></li><li><a href="/lora-docs/stdlib/uuid" class="nav-link">uuid</a></li><li><a href="/lora-docs/stdlib/ulid" class="nav-link">ulid</a></li><li><a href="/lora-docs/stdlib/diff" class="nav-link">diff</a></li><li><a href="/lora-docs/stdlib/testing" class="nav-link">testing</a></li><li><a href="/lora-docs/stdlib/rt" class="nav-link">rt</a></li></ul></details></details></aside><main class="content-wrap"><article class="article"><div class="breadcrumbs">Safety</div><h1 id="top" class="page-title">Memory &amp; Ownership Safety</h1><p class="lead">Complete reference for <code class="inline-code">^T</code> ownership, affine moves, <code class="inline-code">rc</code>/<code class="inline-code">arc</code> cycle prevention, <code class="inline-code">impl drop</code> destructors, static leak analysis, <code class="inline-code">--leaks</code> quarantine, and <code class="inline-code">--guard</code> page protection.</p><section><h2 id="overview" class="doc-h2"><a class="anchor-link" href="#overview">Overview</a></h2><p>Lora manages heap memory without a garbage collector by combining <strong>affine unique owners</strong> (<code class="inline-code">^T</code>, <code class="inline-code">^[]T</code>, <code class="inline-code">^str</code>), <strong>deterministic destructors</strong> (<code class="inline-code">impl drop</code>), <strong>acyclic reference counting</strong> (<code class="inline-code">rc</code> / <code class="inline-code">arc</code> with <code class="inline-code">weak</code>), and <strong>static raw-pointer leak analysis</strong> (<code class="file-chip file-chip-c"><span class="chip-badge chip-c" aria-hidden="true">C</span><span class="chip-name">leak.c</span></code>):</p>
+<div class="table-wrap"><table><thead><tr><th>Mechanism</th><th>Type / Form</th><th>Cleanup &amp; Safety Rule</th></tr></thead><tbody><tr><td><strong>Unique Owner</strong></td><td><code class="inline-code">^T</code>, <code class="inline-code">^[]T</code>, <code class="inline-code">^str</code></td><td>Moves on assignment/pass/return; freed automatically on scope exit, overwrite, or <code class="inline-code">free(owner)</code>.</td></tr>
+<tr><td><strong>Destructor</strong></td><td><code class="inline-code">impl drop for T</code></td><td>Runs deterministically when a value or <code class="inline-code">^T</code> leaves scope, on early return, or in <code class="inline-code">delete</code>.</td></tr>
+<tr><td><strong>Shared Owner</strong></td><td><code class="inline-code">rc::rc[T]</code>, <code class="inline-code">arc::arc[T]</code></td><td>Reference-counted handle; use <code class="inline-code">rc::weak[T]</code> / <code class="inline-code">arc::weak[T]</code> to break parent/child cycles.</td></tr>
+<tr><td><strong>Raw Memory</strong></td><td><code class="inline-code">release(o)</code>, <code class="inline-code">mem::new</code></td><td>Tracked by <code class="file-chip file-chip-c"><span class="chip-badge chip-c" aria-hidden="true">C</span><span class="chip-name">leak.c</span></code> (<code class="inline-code">L0100</code>–<code class="inline-code">L0106</code>) so every path frees or adopts it.</td></tr></tbody></table></div>
+</section><h2 id="ownership-moves-drops-specification" class="doc-h2"><a class="anchor-link" href="#ownership-moves-drops-specification">Ownership, Moves &amp; Drops Specification</a></h2>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> f</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#C8C8C8">:</span><span style="color:#E8E8E8"> (</span><span style="color:#7DCFFF">int</span><span style="color:#C8C8C8">,</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8">))</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> match</span><span style="color:#FFD479"> p</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#E8E8E8">	(</span><span style="color:#FFFFFF">a</span><span style="color:#C8C8C8"> |</span><span style="color:#99FFE4"> 2</span><span style="color:#C8C8C8">,</span><span style="color:#E8E8ED"> _</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> =></span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">,</span><span style="color:#737373"> // error: The alternatives of an or-pattern (a | b) cannot bind names</span></span>
+<span class="line"><span style="color:#E8E8ED">	_ </span><span style="color:#FFC799">=></span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">,</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><ul>
+<li><strong>Type patterns</strong> (<code class="inline-code">let x: T</code>) apply only at the top of a match on a
+tagged union:</li>
+</ul>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> t</span><span style="color:#C8C8C8">:</span><span style="color:#E8E8E8"> ((</span><span style="color:#7DCFFF">int</span><span style="color:#C8C8C8"> |</span><span style="color:#7DCFFF"> str</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">,</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> (</span><span style="color:#99FFE4">1</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 2</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">match</span><span style="color:#FFD479"> t</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#E8E8E8">	(</span><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> a</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8">,</span><span style="color:#E8E8ED"> _</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> =></span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">,</span><span style="color:#737373"> // error: Type patterns cannot be used inside structural patterns</span></span>
+<span class="line"><span style="color:#E8E8ED">	_ </span><span style="color:#FFC799">=></span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">,</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><ul>
+<li><strong><code class="inline-code">..</code></strong> in array and struct patterns must come last; <code class="inline-code">[1, .., 3]</code> is a
+syntax error.</li>
+<li><strong>An empty range</strong> such as <code class="inline-code">5..2</code> matches nothing.</li>
+<li><strong><code class="inline-code">break :label</code></strong> cannot be an arm&#39;s whole expression; put it in a
+block: <code class="inline-code">5 =&gt; { break :outer; },</code>.</li>
+<li>Bindings are immutable; use <code class="inline-code">ref x</code> to change the matched value.</li>
+</ul>
+<h2 id="12-memory" class="doc-h2"><a class="anchor-link" href="#12-memory">12. Memory</a></h2>
+<p>Locals live on the stack and are freed when their block ends. Heap memory
+comes from <code class="inline-code">alloc</code>, which gives an <strong>owner</strong>, <code class="inline-code">^T</code>: a pointer that owns
+what it points to and frees it when it goes out of scope (see
+<a href="#ownership">Ownership</a>). There is no garbage collector, and no counting:
+an owner is as small and fast as a raw pointer. Allocation can fail, so
+<code class="inline-code">alloc</code>, <code class="inline-code">append</code> and <code class="inline-code">insert</code> return <code class="inline-code">nomem</code> as an error to handle with
+<code class="inline-code">!</code>, <code class="inline-code">?</code> or <code class="inline-code">match</code>. An <code class="inline-code">append</code> or <code class="inline-code">insert</code> that fails leaves the slice as it was,
+and drops what it was given.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> node</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> next</span><span style="color:#C8C8C8">:</span><span style="color:#FFC799"> nullable</span><span style="color:#C8C8C8"> ^</span><span style="color:#FFFFFF">node</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> alloc</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">42</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span><span style="color:#737373">                      // ^int, freed at the end of main</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> alloc</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">node</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> next</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> null</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> xs</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> alloc</span><span style="color:#E8E8E8">([</span><span style="color:#99FFE4">1</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 2</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 3</span><span style="color:#E8E8E8">])</span><span style="color:#C8C8C8">!;</span><span style="color:#737373">              // ^[3]int, a heap copy</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> zeros</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> alloc</span><span style="color:#E8E8E8">([</span><span style="color:#99FFE4">0u8</span><span style="color:#FFC799">..</span><span style="color:#C8C8C8">.</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 1024</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span><span style="color:#737373">      // 1024 zeroed bytes, not written</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> buf</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#E8E8E8">[]</span><span style="color:#7DCFFF">int</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> alloc</span><span style="color:#E8E8E8">([]</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 16</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span><span style="color:#737373">        // empty, room for 16</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">	append</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">buf</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	append</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">buf</span><span style="color:#C8C8C8">,</span><span style="color:#E8E8E8"> [</span><span style="color:#99FFE4">2</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 3</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 4</span><span style="color:#E8E8E8">]</span><span style="color:#FFC799">..</span><span style="color:#C8C8C8">.</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span><span style="color:#737373">              // several</span></span>
+<span class="line"><span style="color:#FFC799">	insert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">buf</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">0</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 0</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span><span style="color:#737373">                      // at an index</span></span>
+<span class="line"><span style="color:#FFC799">	delete</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">buf</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">1</span><span style="color:#E8E8E8">])</span><span style="color:#C8C8C8">;</span><span style="color:#737373">                          // one element</span></span>
+<span class="line"><span style="color:#FFC799">	delete</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">buf</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">0</span><span style="color:#FFC799">..</span><span style="color:#99FFE4">2</span><span style="color:#E8E8E8">])</span><span style="color:#C8C8C8">;</span><span style="color:#737373">                       // a range</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">len</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">buf</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 2</span><span style="color:#C8C8C8"> &#x26;&#x26;</span><span style="color:#FFFFFF"> buf</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">0</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 3</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">	match</span><span style="color:#E8E8E8"> (</span><span style="color:#FFD479">alloc</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">5</span><span style="color:#E8E8E8">))</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">		let</span><span style="color:#FFFFFF"> q</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#7DCFFF">int</span><span style="color:#FFC799"> =></span><span style="color:#FFC799"> free</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">q</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">,</span><span style="color:#737373">                 // freed now, not later</span></span>
+<span class="line"><span style="color:#FFC799">		nomem</span><span style="color:#FFC799"> =></span><span style="color:#FFC799"> abort</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"out of memory"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">,</span></span>
+<span class="line"><span style="color:#E8E8E8">	}</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>A fill of zeroes, <code class="inline-code">alloc([0...], n)</code> with any value that is all zero
+bytes (<code class="inline-code">0</code>, <code class="inline-code">false</code>, <code class="inline-code">0.0</code>, a struct of them), takes memory the system
+gives already zeroed, so a large buffer costs only the pages that are
+used. Any other fill, <code class="inline-code">-0.0</code> among them, is written into every element.</p>
+<h3 id="ownership" class="doc-h3"><a class="anchor-link" href="#ownership">Ownership</a></h3>
+<p><code class="inline-code">^T</code> owns a <code class="inline-code">T</code> on the heap. Lora prefers unique ownership and borrowing:</p>
+<ul>
+<li><strong>One owner.</strong> An owner cannot be copied; it <strong>moves</strong> where ownership
+goes: to a <code class="inline-code">^T</code> parameter, into a binding, a field or an array, or a
+return. A move must be the owner&#39;s last use: using it afterwards is an
+error, and so is a move inside a loop that the next turn would repeat.</li>
+<li><strong>Dropped automatically.</strong> An owner that has not moved is <strong>dropped</strong>
+when its scope ends, on every way out (<code class="inline-code">return</code>, <code class="inline-code">?</code>, <code class="inline-code">break</code>, the end of
+the block): what it owns is dropped too, and its memory freed. <code class="inline-code">free(p)</code>
+drops it early. Owners that move somewhere carry a hidden flag so a path
+where they moved does not drop them; others cost nothing but the free.</li>
+<li><strong>Borrowed as <code class="inline-code">*T</code>.</strong> <code class="inline-code">&amp;p</code>, or passing <code class="inline-code">p</code> where a <code class="inline-code">*T</code> (or <code class="inline-code">*const T</code>,
+or a view <code class="inline-code">*T.{a}</code>) is taken, lends it without moving it. A loan may not
+outlive its owner: it cannot be returned or stored in a global.</li>
+<li><strong>Fields.</strong> A field <code class="inline-code">^T</code> is owned by what holds it: it is dropped with
+it, and replaced values are dropped when a new one is assigned. Moving
+out of a field is an error; lend it instead.</li>
+<li><strong>Escapes.</strong> <code class="inline-code">release(p)</code> gives up ownership and returns the raw <code class="inline-code">*T</code>,
+for code (or C) that frees it itself; <code class="inline-code">adopt(raw)</code> takes ownership of a
+raw pointer. Both need <code class="inline-code">unsafe</code>, as does growing a slice that isn&#39;t a <code class="inline-code">^[]T</code>
+with <code class="inline-code">append</code> or <code class="inline-code">insert</code>. Outside <code class="inline-code">unsafe</code>, all heap memory has an owner.
+What is certain is checked in <code class="inline-code">unsafe</code> code too: <code class="inline-code">adopt</code> or <code class="inline-code">free</code> of
+memory no allocation made, a local&#39;s, a global&#39;s or a temporary&#39;s, is an
+error (L0105), as is adopting what an owner lends (a double free), and
+a raw pointer to memory an owner gave up leaks if it is given a new value
+before that memory is freed.</li>
+<li><strong>The library&#39;s types are owners too.</strong> <code class="inline-code">map</code>, <code class="inline-code">set</code>, <code class="inline-code">pool::pool</code>, <code class="inline-code">regex::regex</code>,
+<code class="inline-code">json::document</code>, <code class="inline-code">expanse::region</code> and <code class="inline-code">coro::chan</code> free themselves when
+they are dropped, and so move as an owner does. <code class="inline-code">finish</code> frees one earlier.</li>
+<li><strong>Nothing is lost.</strong> Unpacking, <code class="inline-code">if let</code>, <code class="inline-code">delete</code> and a failed <code class="inline-code">append</code> all
+drop what they hold. What could not be dropped is an error
+(<a href="/lora-docs/guides/diagnostic-catalog">L0607</a>): leaving with <code class="inline-code">?</code> after an owner was handed to a call or
+literal still being built, or from inside <code class="inline-code">alloc</code>; <code class="inline-code">or</code> with no name for an
+error that owns memory.</li>
+</ul>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> node</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> next</span><span style="color:#C8C8C8">:</span><span style="color:#FFC799"> nullable</span><span style="color:#C8C8C8"> ^</span><span style="color:#FFFFFF">node</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> push</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">head</span><span style="color:#C8C8C8">:</span><span style="color:#FFC799"> nullable</span><span style="color:#C8C8C8"> ^</span><span style="color:#FFFFFF">node</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#C8C8C8">^</span><span style="color:#FFFFFF">node</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span></span>
+<span class="line"><span style="color:#FFC799">	alloc</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">node</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> next</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> head</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">;</span><span style="color:#737373">   // head moves into the node</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> sum</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">list</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">node</span><span style="color:#E8E8E8">)</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span><span style="color:#737373">                  // borrows</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> total</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8">:</span><span style="color:#FFC799"> nullable</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">node</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> list</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	for</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">true</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">		match</span><span style="color:#E8E8E8"> (</span><span style="color:#FFD479">p</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">			null</span><span style="color:#FFC799"> =></span><span style="color:#FFC799"> break</span><span style="color:#C8C8C8">,</span></span>
+<span class="line"><span style="color:#FFC799">			let</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">node</span><span style="color:#FFC799"> =></span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFFFFF">				total</span><span style="color:#C8C8C8"> +=</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">value</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFFFFF">				p</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">next</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">			}</span><span style="color:#C8C8C8">,</span></span>
+<span class="line"><span style="color:#E8E8E8">		}</span></span>
+<span class="line"><span style="color:#E8E8E8">	}</span></span>
+<span class="line"><span style="color:#FFC799">	return</span><span style="color:#FFFFFF"> total</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">void</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> list</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> push</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">null</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">?;</span></span>
+<span class="line"><span style="color:#FFFFFF">	list</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> push</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">list</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 2</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">?;</span><span style="color:#737373">     // list moves into push, then owns the new head</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">sum</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">list</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 3</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373">   // &#x26;list lends it</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span><span style="color:#737373">                             // the whole list is freed here</span></span></code></pre>
+</div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> node</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> keep</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">n</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#FFFFFF">node</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> alloc</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">node</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	keep</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-error"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">value</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: `p` is used after it moved so it can't be used here</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> node</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> keep</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">n</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#FFFFFF">node</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> alloc</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">node</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	for</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> i</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">;</span><span style="color:#FFFFFF"> i</span><span style="color:#C8C8C8"> &#x3C;</span><span style="color:#99FFE4"> 3</span><span style="color:#C8C8C8">;</span><span style="color:#FFFFFF"> i</span><span style="color:#C8C8C8"> +=</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> {</span></span></code></pre>
+</div>
+<h2 id="shared-owners-rcarc-impl-drop-leak-checks" class="doc-h2"><a class="anchor-link" href="#shared-owners-rcarc-impl-drop-leak-checks">Shared Owners (rc/arc), impl drop &amp; Leak Checks</a></h2>
+<p>export fn main() void = {
+	let line = strings::clone(&quot;hello&quot;)!;
+	let w = word(line);
+	free(line);
+	assert(w == &quot;h&quot;); // error: <code class="inline-code">w</code> views <code class="inline-code">line</code>, which was freed on line 8
+}</p>
+<div class="code-frame" data-lang="text">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">text</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code>
+```lora
+export fn main() void = {
+	let b: ^[]u8 = alloc([1u8, 2], 2)!;
+	let head = b[..1];
+	append(b, 3)!;
+	assert(head[0] == 1); // error: `head` views `b`, which grew on line 4
+}</code></pre>
+</div><p>Growing a list reached through a pointer moves that list. What the list
+holds views of doesn&#39;t move: views of those stay good, and views of the list
+itself don&#39;t:</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> keeper</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> vals</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#E8E8E8">[]</span><span style="color:#7DCFFF">str</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> keep_all</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">k</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">keeper</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> args</span><span style="color:#C8C8C8">:</span><span style="color:#E8E8E8"> []</span><span style="color:#FFC799">const</span><span style="color:#7DCFFF"> str</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#C8C8C8">^</span><span style="color:#E8E8E8">[]</span><span style="color:#7DCFFF">str</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> rest</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#E8E8E8">[]</span><span style="color:#7DCFFF">str</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> []</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	for</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> a</span><span style="color:#FFC799"> ..</span><span style="color:#FFFFFF"> args</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">		append</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">rest</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> a</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">?;</span><span style="color:#737373">     // views of args</span></span>
+<span class="line"><span style="color:#FFC799">		append</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">k</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">vals</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> a</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">?;</span><span style="color:#737373">   // moves k.vals, not args</span></span>
+<span class="line"><span style="color:#E8E8E8">	}</span></span>
+<span class="line"><span style="color:#FFC799">	return</span><span style="color:#FFFFFF"> rest</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> k</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> keeper</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> vals</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> []</span><span style="color:#E8E8E8"> }</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> rest</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> keep_all</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">k</span><span style="color:#C8C8C8">,</span><span style="color:#E8E8E8"> [</span><span style="color:#99FFE4">"a"</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> "b"</span><span style="color:#E8E8E8">])</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">len</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">rest</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 2</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>A pointer that was made to point elsewhere, or that was stored and then
+followed, still moves what it points to:</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> set</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> vals</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#E8E8E8">[]</span><span style="color:#7DCFFF">int</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> f</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">set</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> t</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">set</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">void</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	append</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">t</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">vals</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">?;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> t</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">vals</span><span style="color:#E8E8E8">[</span><span style="color:#FFC799">..</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFFFFF">	s</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> t</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	append</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">vals</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 2</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">?;</span></span>
+<span class="line line-error"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">v</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">0</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: `v` views `t`, which grew on line 7</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> set</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> vals</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#E8E8E8">[]</span><span style="color:#7DCFFF">int</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> outer</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> in</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">set</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> g</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">o</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">outer</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> other</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">set</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">void</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	append</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">other</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">vals</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">?;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> other</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">vals</span><span style="color:#E8E8E8">[</span><span style="color:#FFC799">..</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFFFFF">	o</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">in</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> other</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	append</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">o</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">in</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">vals</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 2</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">?;</span></span>
+<span class="line line-error"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">v</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">0</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: `v` views `other`, which grew on line 8</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> keeper</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> vals</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#E8E8E8">[]</span><span style="color:#7DCFFF">str</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> grow</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">k</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">keeper</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">void</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	append</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">k</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">vals</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> "a"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">?;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> k</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">vals</span><span style="color:#E8E8E8">[</span><span style="color:#FFC799">..</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	append</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">k</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">vals</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> "b"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">?;</span></span>
+<span class="line line-error"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">v</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">0</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> "a"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: `v` views `k`, which grew on line 6</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><p>Where a function&#39;s result comes from is worked out from its body, across
+modules. A call the compiler can&#39;t see into, of a closure, a function pointer or
+an interface method, is taken to view all its arguments and to change what they
+point to, though not what is stored behind those. A value with no pointers,
+slices or strings anywhere in it, as a socket of numbers and addresses, is
+the exception: changing it only changes its bytes, so views of it stay
+good. When it isn&#39;t sure, it refuses.
+What <code class="inline-code">unsafe { ... }</code> does is its author&#39;s to get right: <code class="inline-code">free</code> of what no owner
+holds needs it too, as it may be a view.</p>
+<h4 id="several-owners-rc-and-arc" class="doc-h4"><a class="anchor-link" href="#several-owners-rc-and-arc">Several owners: <code class="inline-code">rc</code> and <code class="inline-code">arc</code></a></h4>
+<p>When data genuinely needs several owners (a graph, a cache), the library&#39;s
+<code class="inline-code">rc[T]</code> counts them, and drops the value with the last; <code class="inline-code">rc::weak[T]</code>
+points at it without keeping it alive; <code class="inline-code">arc[T]</code> is the same across threads.
+Sharing is always explicit, <code class="inline-code">rc::share(&amp;r)</code>, never a copy.</p>
+<p><strong>A value can&#39;t own itself.</strong> Values in a cycle of owners keep each other&#39;s
+counts above zero, and are never freed. So <code class="inline-code">rc::new</code> and <code class="inline-code">arc::new</code> refuse a type
+that could form one: nothing in it, at any depth, may lead back to it through
+<code class="inline-code">rc</code> or <code class="inline-code">arc</code>. No such type means no such value, whatever the program does. A
+link back is an <code class="inline-code">rc::weak</code>, and a graph has one owner of all its nodes, with weak
+links between them:</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> rc</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> node</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> next</span><span style="color:#C8C8C8">:</span><span style="color:#E8E8E8"> (</span><span style="color:#FF9FC8">rc</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">weak</span><span style="color:#E8E8E8">[</span><span style="color:#FFFFFF">node</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> void</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> nodes</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#E8E8E8">[]</span><span style="color:#FF9FC8">rc</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">rc</span><span style="color:#E8E8E8">[</span><span style="color:#FFFFFF">node</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> []</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	append</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">nodes</span><span style="color:#C8C8C8">,</span><span style="color:#FF9FC8"> rc</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">new</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">node</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> next</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">!</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	append</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">nodes</span><span style="color:#C8C8C8">,</span><span style="color:#FF9FC8"> rc</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">new</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">node</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 2</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> next</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">!</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FF9FC8">	rc</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">get</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">nodes</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">0</span><span style="color:#E8E8E8">])</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">next</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> rc</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">downgrade</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">nodes</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">1</span><span style="color:#E8E8E8">])</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FF9FC8">	rc</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">get</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">nodes</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">1</span><span style="color:#E8E8E8">])</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">next</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> rc</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">downgrade</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">nodes</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">0</span><span style="color:#E8E8E8">])</span><span style="color:#C8C8C8">;</span><span style="color:#737373">   // a cycle of weak links</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><div class="code-frame" data-lang="text">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">text</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code>type node = struct { next: (rc::rc[node] | void) };
+
+let n = rc::new(node { next = void })!; // error: This value could own itself through rc</code></pre>
+</div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> rc</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> config</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> port</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> a</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> rc</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">new</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">config</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> port</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 80</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> b</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> rc</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">share</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">a</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373">                 // two owners</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">rc</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">count</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">a</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 2</span><span style="color:#C8C8C8"> &#x26;&#x26;</span><span style="color:#FF9FC8"> rc</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">get</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">b</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">port</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 80</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span><span style="color:#737373">                                         // the last one drops the config</span></span></code></pre>
+</div><h4 id="cleaning-up-impl-drop" class="doc-h4"><a class="anchor-link" href="#cleaning-up-impl-drop">Cleaning up: <code class="inline-code">impl drop</code></a></h4>
+<p>A type can say what dropping a value of it does first, by implementing
+<code class="inline-code">drop</code> (<code class="inline-code">export impl drop for T</code> lets other modules&#39; owners run it too). A value of such a type is an owner too, even on the stack: it
+moves rather than copies, and its drop runs when its owner ends, so files,
+sockets and locks clean themselves up (RAII). <code class="inline-code">net::listener</code>,
+<code class="inline-code">net::conn</code> and <code class="inline-code">fs::file</code> close themselves this way.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> open_files</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> file</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> fd</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">impl</span><span style="color:#FFFFFF"> drop</span><span style="color:#FFC799"> for</span><span style="color:#FF9FC8"> file</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	fn</span><span style="color:#FFC799"> drop</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">f</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">file</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> open_files</span><span style="color:#C8C8C8"> -=</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">;</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> open</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">fd</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8">)</span><span style="color:#FFFFFF"> file</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFFFFF">	open_files</span><span style="color:#C8C8C8"> +=</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	return</span><span style="color:#FF9FC8"> file</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> fd</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> fd</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#E8E8E8">	{</span></span>
+<span class="line"><span style="color:#FFC799">		let</span><span style="color:#FFFFFF"> a</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> open</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">3</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">		let</span><span style="color:#FFFFFF"> b</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> open</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">4</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">		assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">open_files</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 2</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">	}</span><span style="color:#737373">                          // b, then a, are dropped: closed</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">open_files</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 0</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p><code class="inline-code">static append</code> and <code class="inline-code">static insert</code> add to a slice of a fixed array without
+allocating, aborting if it is full:</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> storage</span><span style="color:#C8C8C8">:</span><span style="color:#E8E8E8"> [</span><span style="color:#99FFE4">8</span><span style="color:#E8E8E8">]</span><span style="color:#7DCFFF">int</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> [</span><span style="color:#99FFE4">0</span><span style="color:#FFC799">..</span><span style="color:#C8C8C8">.</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> s</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> storage</span><span style="color:#E8E8E8">[</span><span style="color:#FFC799">..</span><span style="color:#99FFE4">0</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">static</span><span style="color:#FFC799"> append</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">static</span><span style="color:#FFC799"> append</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 2</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">len</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 2</span><span style="color:#C8C8C8"> &#x26;&#x26;</span><span style="color:#FFFFFF"> storage</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">1</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 2</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><p>Ignoring a possible allocation failure is an error:</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> s</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#E8E8E8">[]</span><span style="color:#7DCFFF">int</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> []</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-error"><span style="color:#FFC799">append</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: Cannot ignore an error here</span></span></code></pre>
+</div><p>Conventions:</p>
+<ul>
+<li>Whoever allocates frees, usually with <code class="inline-code">defer free(x)</code> right after the
+allocation.</li>
+<li>Library functions that return new memory say so (<code class="inline-code">strings::concat</code>,
+<code class="inline-code">fmt::format</code>, <code class="inline-code">strings::split</code>, …); the caller frees the result.</li>
+<li>Slices returned by slicing (<code class="inline-code">a[1..]</code>) share memory: never free those.</li>
+</ul>
+<h3 id="finding-leaks" class="doc-h3"><a class="anchor-link" href="#finding-leaks">Finding leaks</a></h3>
+<p>Memory that is never freed is found two ways.</p>
+<p>Memory an owner holds (<code class="inline-code">^T</code>, <code class="inline-code">^str</code>, <code class="inline-code">^[]T</code>, a closure) frees itself, so it
+cannot leak. Raw memory only exists through <code class="inline-code">unsafe</code>: what an owner gave up with
+<code class="inline-code">release</code>, memory from C, and plain slices grown with <code class="inline-code">append</code>. These checks
+are for that memory.</p>
+<p><strong>As you compile</strong>, the compiler follows each local that holds new raw
+memory along every path out of its scope, and it is an error where the memory is certain to
+be unfreed: at a <code class="inline-code">return</code> (a failed <code class="inline-code">?</code> included), a <code class="inline-code">break</code> or <code class="inline-code">continue</code>
+leaving its loop, the end of its block, or an assignment that overwrites the
+only pointer to it. The editor shows these errors as you type, with a
+quick fix that adds <code class="inline-code">defer free(x);</code>.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> fmt</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> strings</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> parse_error</span><span style="color:#C8C8C8"> =</span><span style="color:#C8C8C8"> !</span><span style="color:#FFC799">void</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> check</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> str</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">void</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> parse_error</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> if</span><span style="color:#E8E8E8"> (</span><span style="color:#FFFFFF">s</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> ""</span><span style="color:#E8E8E8">)</span><span style="color:#FFFFFF"> parse_error</span><span style="color:#FFC799"> else</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> greet</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">name</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> str</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> s</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> release</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">strings</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">concat</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"hello, "</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> name</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> }</span><span style="color:#737373"> // error: `s` holds the memory allocated on line 9, and nothing frees it: it leaks when its block ends</span></span>
+<span class="line"><span style="color:#FF9FC8">	fmt</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">println</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> first_word</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">text</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> str</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#7DCFFF">str</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> parse_error</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> copy</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> release</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">strings</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">clone</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">text</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line line-error"><span style="color:#FFC799">	check</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">text</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">?;</span><span style="color:#737373"> // error: `copy` still holds the memory allocated on line 14 when the function returns here, and nothing frees it: it leaks</span></span>
+<span class="line"><span style="color:#FFC799">	return</span><span style="color:#FFFFFF"> copy</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> shout</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> str</span><span style="color:#E8E8E8">)</span><span style="color:#7DCFFF"> str</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> out</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> release</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">strings</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">clone</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line line-error"><span style="color:#FFFFFF">	out</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> release</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">strings</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">concat</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">out</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> "!"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> }</span><span style="color:#737373"> // error: `out` is given a new value here, but it is the only pointer to the memory allocated on line 20, which is never freed: it leaks</span></span>
+<span class="line"><span style="color:#FFC799">	return</span><span style="color:#FFFFFF"> out</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	greet</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"lora"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> w</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> first_word</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"hi"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	defer</span><span style="color:#FFC799"> unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> free</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">w</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> x</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> shout</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"hey"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	defer</span><span style="color:#FFC799"> unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> free</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">x</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>A local holds new raw memory when it is bound to <code class="inline-code">release(...)</code> of an
+owner, to a library call returning raw memory
+(<code class="inline-code">(str | nomem)</code>, <code class="inline-code">([]T | nomem)</code> or <code class="inline-code">(*T | nomem)</code>), or to an empty slice
+that is later appended to. The error goes away once the memory is freed,
+deferred, returned, stored (in a struct, array, slice or global), captured by
+a closure, has its address taken, or is passed to one of your own functions,
+which may keep it. These are not reported, to keep false alarms rare:</p>
+<ul>
+<li>memory freed on some paths but not others;</li>
+<li>paths taken only when memory runs out (a <code class="inline-code">?</code> on <code class="inline-code">nomem</code>);</li>
+<li>memory from your own functions, which may hand out memory they keep
+(an arena, say): the run-time check covers those.</li>
+</ul>
+<p>Raw memory is also reported when it goes nowhere it could be freed from:
+a statement whose value is dropped, an operand of a comparison, a
+condition, <code class="inline-code">len</code>, or an argument to a call that only borrows it. (An owned
+result used this way is simply freed once the call or comparison is done.)</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> strings</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> release</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">strings</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">concat</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"a"</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> "b"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> }</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> "ab"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: `strings::concat` returns memory the caller must free, and nothing frees it here: it leaks</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">strings</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">concat</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"a"</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> "b"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> "ab"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373">          // an owner: freed after the comparison</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><section><h2 id="valid-usage" class="doc-h2"><a class="anchor-link" href="#valid-usage">Valid Usage &amp; Examples</a></h2><h3 id="allowed-affine-moves-and-conditional-ownership-transfer-t" class="doc-h3"><a class="anchor-link" href="#allowed-affine-moves-and-conditional-ownership-transfer-t">Affine moves and conditional ownership transfer (`^T`)</a></h3><p>An owner moved on one branch is not dropped there, while the non-moving branch drops it automatically.</p>
+<div class="code-frame" data-lang="lora" data-variant="allowed">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-allowed">Allowed</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> node</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> next</span><span style="color:#C8C8C8">:</span><span style="color:#FFC799"> nullable</span><span style="color:#C8C8C8"> ^</span><span style="color:#FFFFFF">node</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> maybe</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">n</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#FFFFFF">node</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> give</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> bool</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#C8C8C8">^</span><span style="color:#FFFFFF">node</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> void</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-allowed"><span style="color:#FFC799">	if</span><span style="color:#E8E8E8"> (</span><span style="color:#FFFFFF">give</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> return</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // moves out on this path</span></span>
+<span class="line line-allowed"><span style="color:#FFC799">	return</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span><span style="color:#737373">        // dropped automatically on this path</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> a</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> alloc</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">node</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 10</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> next</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> null</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> res</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> maybe</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">a</span><span style="color:#C8C8C8">,</span><span style="color:#FFC799"> false</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">res</span><span style="color:#FFC799"> is</span><span style="color:#FFC799"> void</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> b</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> alloc</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">node</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 20</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> next</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> null</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> kept</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> maybe</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">b</span><span style="color:#C8C8C8">,</span><span style="color:#FFC799"> true</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> as</span><span style="color:#C8C8C8"> ^</span><span style="color:#FFFFFF">node</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">kept</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">value</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 20</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><h3 id="allowed-deterministic-cleanup-with-impl-drop-and-cycle-free-rc-trees" class="doc-h3"><a class="anchor-link" href="#allowed-deterministic-cleanup-with-impl-drop-and-cycle-free-rc-trees">Deterministic cleanup with `impl drop` and cycle-free `rc` trees</a></h3><p><code class="inline-code">impl drop</code> runs on scope exit for both stack values and heap <code class="inline-code">^T</code> owners; <code class="inline-code">rc::weak</code> avoids reference cycles.</p>
+<div class="code-frame" data-lang="lora" data-variant="allowed">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-allowed">Allowed</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> rc</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> closed</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> handle</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> id</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"><span style="color:#FFC799">impl</span><span style="color:#FFFFFF"> drop</span><span style="color:#FFC799"> for</span><span style="color:#FF9FC8"> handle</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	fn</span><span style="color:#FFC799"> drop</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">h</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">handle</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> closed</span><span style="color:#C8C8C8"> +=</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">;</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> tree</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFFFFF">	value</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8">,</span></span>
+<span class="line"><span style="color:#FFFFFF">	parent</span><span style="color:#C8C8C8">:</span><span style="color:#E8E8E8"> (</span><span style="color:#FF9FC8">rc</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">weak</span><span style="color:#E8E8E8">[</span><span style="color:#FFFFFF">tree</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> void</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">,</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#E8E8E8">	{</span></span>
+<span class="line"><span style="color:#FFC799">		let</span><span style="color:#FFFFFF"> h</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> handle</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> id</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8"> }</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">		assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">h</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">id</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">	}</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">closed</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> root</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> rc</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">new</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">tree</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> parent</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> child</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> rc</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">new</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">tree</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 2</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> parent</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> rc</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">downgrade</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">root</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">rc</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">get</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">child</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">value</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 2</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><h3 id="allowed-explicit-raw-memory-lifetime-with-release-and-defer-unsafe-freep" class="doc-h3"><a class="anchor-link" href="#allowed-explicit-raw-memory-lifetime-with-release-and-defer-unsafe-freep">Explicit raw memory lifetime with `release` and `defer unsafe { free(p) }`</a></h3><p>When interfacing with C or custom allocators, <code class="inline-code">defer unsafe { free(p) }</code> ensures cleanup on every path.</p>
+<div class="code-frame" data-lang="lora" data-variant="allowed">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-allowed">Allowed</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> release</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">alloc</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">99</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> }</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	defer</span><span style="color:#FFC799"> unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> free</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">*</span><span style="color:#FFFFFF">p</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 99</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div></section><section><h2 id="disallowed-forms" class="doc-h2"><a class="anchor-link" href="#disallowed-forms">Disallowed Forms &amp; Diagnostics</a></h2><h3 id="rejected-leaking-raw-memory-from-release-l0100" class="doc-h3"><a class="anchor-link" href="#rejected-leaking-raw-memory-from-release-l0100">Leaking raw memory from `release` (`L0100`)</a></h3><p><code class="file-chip file-chip-c"><span class="chip-badge chip-c" aria-hidden="true">C</span><span class="chip-name">leak.c</span></code> verifies that raw memory obtained from <code class="inline-code">release</code> is freed or adopted on every control-flow path.</p>
+<div class="diag-callout"><strong>L0100: </strong>`s` holds the memory allocated, and nothing frees it: it leaks when its block ends</div><div class="code-frame" data-lang="lora" data-variant="error">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-error">Rejected</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> strings</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> greet</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">name</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> str</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> s</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> release</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">strings</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">concat</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"hi "</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> name</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> }</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error[L0100]: leaks</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">len</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ></span><span style="color:#99FFE4"> 0z</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> greet</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"lora"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><div class="code-frame" data-lang="lora" data-variant="allowed">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-allowed">Allowed</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> strings</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> greet</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">name</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> str</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-allowed"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> s</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> strings</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">concat</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"hi "</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> name</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span><span style="color:#737373"> // ok: ^str owner frees itself</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">len</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ></span><span style="color:#99FFE4"> 0z</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><h3 id="rejected-using-a-freed-owner-or-raw-pointer-l0102" class="doc-h3"><a class="anchor-link" href="#rejected-using-a-freed-owner-or-raw-pointer-l0102">Using a freed owner or raw pointer (`L0102`)</a></h3><p>Touching memory after <code class="inline-code">free(p)</code> is rejected statically.</p>
+<div class="diag-callout"><strong>L0102: </strong>`p` is used here, but the memory it owned was freed</div><div class="code-frame" data-lang="lora" data-variant="error">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-error">Rejected</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> node</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> alloc</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">node</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	free</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-error"><span style="color:#FFFFFF">	p</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">v</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 2</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error[L0102]: use after free</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><div class="code-frame" data-lang="lora" data-variant="allowed">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-allowed">Allowed</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> node</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> alloc</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">node</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFFFFF">	p</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">v</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 2</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-allowed"><span style="color:#FFC799">	free</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // ok: free after last use</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div></section><section><h2 id="runtime-aborts" class="doc-h2"><a class="anchor-link" href="#runtime-aborts">Runtime Aborts</a></h2><h3 id="abort-double-free-or-write-after-free-under-loraleaks1-leaks" class="doc-h3"><a class="anchor-link" href="#abort-double-free-or-write-after-free-under-loraleaks1-leaks">Double-free or write-after-free under `LORA_LEAKS=1` / `--leaks`</a></h3><p>Quarantine poison checks report exact allocation and free sites and abort; unfreed leaks exit with status <code class="inline-code">23</code>.</p>
+<div class="code-frame" data-lang="lora" data-variant="abort">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-abort">Aborts</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> mem</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	unsafe</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">		let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> mem</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">new</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">16z</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FF9FC8">		mem</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">release</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-abort"><span style="color:#FF9FC8">		mem</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">release</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // runtime abort under --leaks: double free</span></span>
+<span class="line"><span style="color:#E8E8E8">	}</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><div class="code-frame" data-lang="lora" data-variant="allowed">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-allowed">Allowed</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-allowed"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> buf</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#E8E8E8">[]</span><span style="color:#7DCFFF">u8</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> alloc</span><span style="color:#E8E8E8">([</span><span style="color:#99FFE4">0u8</span><span style="color:#FFC799">..</span><span style="color:#C8C8C8">.</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 16z</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span><span style="color:#737373"> // ok: unique owner freed once via defer</span></span>
+<span class="line"><span style="color:#FFC799">	defer</span><span style="color:#FFC799"> free</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">buf</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><h3 id="abort-out-of-bounds-or-uaf-access-under-guard-loraleaksguard" class="doc-h3"><a class="anchor-link" href="#abort-out-of-bounds-or-uaf-access-under-guard-loraleaksguard">Out-of-bounds or UAF access under `--guard` / `LORA_LEAKS=guard`</a></h3><p>Every heap allocation is placed against a <code class="inline-code">PROT_NONE</code> guard page so any OOB read/write or UAF triggers an immediate hardware <code class="inline-code">SIGSEGV</code>.</p>
+<div class="code-frame" data-lang="lora" data-variant="abort">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-abort">Aborts</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> mem</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	unsafe</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">		let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> mem</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">new</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">16z</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">		let</span><span style="color:#FFFFFF"> b</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> p</span><span style="color:#FFC799"> as</span><span style="color:#C8C8C8"> *</span><span style="color:#7DCFFF">u8</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-abort"><span style="color:#C8C8C8">		*</span><span style="color:#FF9FC8">mem</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">ptr_add</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">b</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 16z</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1u8</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // SIGSEGV on PROT_NONE guard page under --guard</span></span>
+<span class="line"><span style="color:#FF9FC8">		mem</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">release</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">	}</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><div class="code-frame" data-lang="lora" data-variant="allowed">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-allowed">Allowed</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> mem</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	unsafe</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">		let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> mem</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">new</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">16z</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line line-allowed"><span style="color:#FFFFFF">		p</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">15</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1u8</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // ok: access stays within the allocated 16-byte slice</span></span>
+<span class="line"><span style="color:#FF9FC8">		mem</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">release</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">0</span><span style="color:#E8E8E8">])</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">	}</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div></section><section><h2 id="constraints-and-limits" class="doc-h2"><a class="anchor-link" href="#constraints-and-limits">Constraints &amp; Limits</a></h2><div class="limits-grid"><div class="limit-item"><div class="limit-label">Quarantine Capacity</div><div class="limit-value">1,024 blocks / 16 MiB</div><div class="limit-note">Retains poisoned freed &amp; realloc-moved blocks under `LORA_LEAKS=1`.</div></div><div class="limit-item"><div class="limit-label">Leak Exit Status</div><div class="limit-value">23</div><div class="limit-note">Use `LORA_LEAKS=report` to report leaks while keeping exit status.</div></div><div class="limit-item"><div class="limit-label">OOM Testing Flag</div><div class="limit-value">LORA_FAIL_ALLOC=n</div><div class="limit-note">Fails the n-th allocation deterministically under leak checks.</div></div></div></section><div class="doc-status-bar"><div class="doc-status-left"><span class="doc-status-files">1 file changed</span><span class="doc-status-counts"><span class="doc-status-add">+438</span><span class="doc-status-del">-7</span></span><span class="doc-status-chevron" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span></div><a href="/lora-docs/specification/language-spec" class="doc-status-review" title="Review full language specification"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg><span>Review</span></a></div><nav class="pager" aria-label="Page pagination"><a href="/lora-docs/safety/terminology" class="pager-link prev"><span class="pager-dir">← Previous</span><span class="pager-label">Safety Terminology</span></a><a href="/lora-docs/safety/borrow-loan-views" class="pager-link next"><span class="pager-dir">Next →</span><span class="pager-label">Borrow, Loan &amp; View Safety</span></a></nav></article></main><aside class="toc" aria-label="On This Page"><div class="toc-title">On This Page</div><ul class="toc-list"><li><a href="#top" class="toc-link depth-2 is-active" data-toc-target="top">Table of contents</a></li><li><a href="#overview" class="toc-link depth-2" data-toc-target="overview">Overview</a></li><li><a href="#ownership-moves-drops-specification" class="toc-link depth-2" data-toc-target="ownership-moves-drops-specification">Ownership, Moves &amp; Drops Specification</a></li><li><a href="#12-memory" class="toc-link depth-2" data-toc-target="12-memory">12. Memory</a></li><li><a href="#ownership" class="toc-link depth-3" data-toc-target="ownership">Ownership</a></li><li><a href="#shared-owners-rcarc-impl-drop-leak-checks" class="toc-link depth-2" data-toc-target="shared-owners-rcarc-impl-drop-leak-checks">Shared Owners (rc/arc), impl drop &amp; Leak Checks</a></li><li><a href="#finding-leaks" class="toc-link depth-3" data-toc-target="finding-leaks">Finding leaks</a></li><li><a href="#valid-usage" class="toc-link depth-2" data-toc-target="valid-usage">Valid Usage &amp; Examples</a></li><li><a href="#allowed-affine-moves-and-conditional-ownership-transfer-t" class="toc-link depth-3" data-toc-target="allowed-affine-moves-and-conditional-ownership-transfer-t">Affine moves and conditional ownership transfer (`^T`)</a></li><li><a href="#allowed-deterministic-cleanup-with-impl-drop-and-cycle-free-rc-trees" class="toc-link depth-3" data-toc-target="allowed-deterministic-cleanup-with-impl-drop-and-cycle-free-rc-trees">Deterministic cleanup with `impl drop` and cycle-free `rc` trees</a></li><li><a href="#allowed-explicit-raw-memory-lifetime-with-release-and-defer-unsafe-freep" class="toc-link depth-3" data-toc-target="allowed-explicit-raw-memory-lifetime-with-release-and-defer-unsafe-freep">Explicit raw memory lifetime with `release` and `defer unsafe { free(p) }`</a></li><li><a href="#disallowed-forms" class="toc-link depth-2" data-toc-target="disallowed-forms">Disallowed Forms &amp; Diagnostics</a></li><li><a href="#rejected-leaking-raw-memory-from-release-l0100" class="toc-link depth-3" data-toc-target="rejected-leaking-raw-memory-from-release-l0100">Leaking raw memory from `release` (`L0100`)</a></li><li><a href="#rejected-using-a-freed-owner-or-raw-pointer-l0102" class="toc-link depth-3" data-toc-target="rejected-using-a-freed-owner-or-raw-pointer-l0102">Using a freed owner or raw pointer (`L0102`)</a></li><li><a href="#runtime-aborts" class="toc-link depth-2" data-toc-target="runtime-aborts">Runtime Aborts</a></li><li><a href="#abort-double-free-or-write-after-free-under-loraleaks1-leaks" class="toc-link depth-3" data-toc-target="abort-double-free-or-write-after-free-under-loraleaks1-leaks">Double-free or write-after-free under `LORA_LEAKS=1` / `--leaks`</a></li><li><a href="#abort-out-of-bounds-or-uaf-access-under-guard-loraleaksguard" class="toc-link depth-3" data-toc-target="abort-out-of-bounds-or-uaf-access-under-guard-loraleaksguard">Out-of-bounds or UAF access under `--guard` / `LORA_LEAKS=guard`</a></li><li><a href="#constraints-and-limits" class="toc-link depth-2" data-toc-target="constraints-and-limits">Constraints &amp; Limits</a></li></ul></aside></div><dialog id="search-dialog" class="search-modal" aria-label="Search Lora documentation"><div class="search-modal-head"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><input id="search-input" class="search-input" type="search" placeholder="Search syntax, errors (L0800), or stdlib (http::get, sql::numeric_buf_size)..." autocomplete="off"><kbd class="search-kbd">ESC</kbd></div><div id="search-results" class="search-results"><div style="padding: 16px; font-size: 0.86rem; color: var(--text-muted);">Type to search pages, compiler error codes, and 2,256 stdlib exports.</div></div></dialog><script>
+      // 1. Mobile sidebar drawer
+      const menuBtn = document.getElementById('mobile-menu-btn');
+      const sidebar = document.getElementById('sidebar');
+      if (menuBtn && sidebar) {
+        menuBtn.addEventListener('click', () => {
+          const open = sidebar.classList.toggle('is-open');
+          menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+
+      // Keep active nav link scrolled comfortably into view on load
+      const activeNav = sidebar?.querySelector('.nav-link.is-active');
+      if (activeNav) {
+        activeNav.scrollIntoView({ block: 'nearest' });
+      }
+
+      // 2. Dark / Light mode toggle (keeps Lora Fjord dark surface on all code blocks & tables)
+      const themeBtn = document.getElementById('theme-toggle');
+      themeBtn?.addEventListener('click', () => {
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        if (isLight) {
+          document.documentElement.removeAttribute('data-theme');
+          try { localStorage.setItem('lora-docs-theme', 'dark'); } catch {}
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+          try { localStorage.setItem('lora-docs-theme', 'light'); } catch {}
+        }
+      });
+
+      // 3. Code block copy & wrap buttons
+      document.addEventListener('click', async (ev) => {
+        const target = ev.target instanceof Element ? ev.target : null;
+        if (!target) return;
+        const wrapBtn = target.closest('.wrap-btn');
+        if (wrapBtn) {
+          const frame = wrapBtn.closest('.code-frame');
+          frame?.classList.toggle('is-wrapped');
+          wrapBtn.classList.toggle('is-wrapped');
+          return;
+        }
+        const btn = target.closest('.copy-btn');
+        if (!btn) return;
+        const frame = btn.closest('.code-frame');
+        const codeEl = frame?.querySelector('pre code') || frame?.querySelector('pre');
+        if (!codeEl) return;
+        try {
+          await navigator.clipboard.writeText(codeEl.textContent || '');
+          btn.classList.add('copied');
+          setTimeout(() => btn.classList.remove('copied'), 1500);
+        } catch {}
+      });
+
+      // 4. Right TOC scroll-spy
+      const tocLinks = Array.from(document.querySelectorAll('.toc-link'));
+      if (tocLinks.length > 1 && 'IntersectionObserver' in window) {
+        const map = new Map(tocLinks.map((a) => [a.getAttribute('data-toc-target'), a]));
+        const targets = tocLinks
+          .map((a) => document.getElementById(a.getAttribute('data-toc-target') || ''))
+          .filter(Boolean);
+        const obs = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                tocLinks.forEach((l) => l.classList.remove('is-active'));
+                map.get(entry.target.id)?.classList.add('is-active');
+                break;
+              }
+            }
+          },
+          { rootMargin: '-72px 0px -70% 0px', threshold: 0 }
+        );
+        targets.forEach((el) => obs.observe(el));
+      }
+
+      // 5. Lazy Search Modal (Ctrl/Cmd+K or /)
+      const dialog = document.getElementById('search-dialog');
+      const openBtn = document.getElementById('open-search');
+      const input = document.getElementById('search-input');
+      const resultsEl = document.getElementById('search-results');
+      let searchEntries = null;
+
+      const baseUrl = document.body.dataset.base || '/';
+
+      async function ensureIndex() {
+        if (searchEntries) return searchEntries;
+        try {
+          const res = await fetch(baseUrl + 'search-index.json');
+          searchEntries = await res.json();
+        } catch {
+          searchEntries = [];
+        }
+        return searchEntries;
+      }
+
+      function renderResults(query) {
+        if (!resultsEl || !searchEntries) return;
+        const q = query.trim().toLowerCase();
+        const matches = (q
+          ? searchEntries.filter(
+              (item) =>
+                item.title.toLowerCase().includes(q) ||
+                item.section.toLowerCase().includes(q) ||
+                item.subtitle.toLowerCase().includes(q)
+            )
+          : searchEntries.slice(0, 18)
+        ).slice(0, 35);
+
+        if (!matches.length) {
+          resultsEl.innerHTML =
+            '<div style="padding:16px;font-size:0.86rem;color:var(--text-muted)">No matches found.</div>';
+          return;
+        }
+        resultsEl.innerHTML = '';
+        for (const m of matches) {
+          const a = document.createElement('a');
+          a.href = baseUrl + String(m.slug || '').replace(/^\/+/, '');
+          a.className = 'search-item';
+          const left = document.createElement('div');
+          const t = document.createElement('div');
+          t.className = 'search-item-title';
+          t.textContent = m.title;
+          const sub = document.createElement('div');
+          sub.className = 'search-item-sub';
+          sub.textContent = m.subtitle;
+          left.appendChild(t);
+          if (m.subtitle) left.appendChild(sub);
+          const sec = document.createElement('span');
+          sec.className = 'search-item-section';
+          sec.textContent = m.section;
+          a.appendChild(left);
+          a.appendChild(sec);
+          resultsEl.appendChild(a);
+        }
+      }
+
+      async function openSearch() {
+        if (!dialog || !(dialog instanceof HTMLDialogElement)) return;
+        dialog.showModal();
+        input?.focus();
+        await ensureIndex();
+        renderResults(input?.value || '');
+      }
+
+      openBtn?.addEventListener('click', openSearch);
+      dialog?.addEventListener('click', (e) => {
+        if (e.target === dialog) dialog.close();
+      });
+      input?.addEventListener('input', () => renderResults(input.value));
+
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          if (dialog?.open) dialog.close();
+          else openSearch();
+        } else if (
+          e.key === '/' &&
+          document.activeElement?.tagName !== 'INPUT' &&
+          document.activeElement?.tagName !== 'TEXTAREA'
+        ) {
+          e.preventDefault();
+          openSearch();
+        }
+      });
+    </script></body></html>

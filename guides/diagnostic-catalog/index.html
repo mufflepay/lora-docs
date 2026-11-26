@@ -1,0 +1,1184 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Diagnostic Error Catalog (L0001–L1004) · Lora Language</title><meta name="description" content="Complete reference of every compiler error and warning code (docs/errors.md), matching lora explain <code> and IDE hover badges."><script>
+      try {
+        const t = localStorage.getItem('lora-docs-theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      } catch {}
+    </script><link rel="stylesheet" href="/lora-docs/_astro/PageContent.NRsqP4nx.css"></head><body data-base="/lora-docs/"><header class="topbar"><div class="topbar-left"><button id="mobile-menu-btn" class="menu-btn" type="button" aria-label="Toggle navigation" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button><a href="/lora-docs/" class="brand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="The Lora owl">
+  <title>The Lora owl</title>
+  <path d="M 48 88 L 60 24 L 96 60 Q 128 52 160 60 L 196 24 L 208 88 Q 232 120 224 160 Q 216 232 128 232 Q 40 232 32 160 Q 24 120 48 88 Z" fill="#ff9fc8"/>
+  <circle cx="92" cy="128" r="40" fill="#ffffff" stroke="#ffc799" stroke-width="13"/>
+  <circle cx="164" cy="128" r="40" fill="#ffffff" stroke="#ffc799" stroke-width="13"/>
+  <circle cx="96" cy="132" r="18" fill="#101010"/>
+  <circle cx="160" cy="132" r="18" fill="#101010"/>
+  <polygon points="114,168 142,168 128,194" fill="#ffc799"/>
+</svg>
+<span>Lora Language</span></a><span class="version-pill">v0.1.0</span></div><button id="open-search" type="button" class="search-trigger" aria-label="Search documentation"><span class="search-trigger-left"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><span>Search documentation...</span></span><kbd class="search-kbd">Ctrl K</kbd></button><div class="topbar-right"><button id="theme-toggle" type="button" class="icon-btn" aria-label="Toggle color theme" title="Toggle dark/light theme"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg></button><a href="/lora-docs/specification/standard-library" class="icon-btn" aria-label="Standard Library Index" title="Standard Library (57 modules)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg></a></div></header><div class="shell"><aside id="sidebar" class="sidebar" aria-label="Documentation Navigation"><details class="nav-group" open><summary class="nav-group-summary"><span>GETTING STARTED</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/getting-started/introduction" class="nav-link">Introduction</a></li><li><a href="/lora-docs/getting-started/toolchain-and-editors" class="nav-link">Toolchain &amp; Editors</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>LANGUAGE DESIGN</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/language-design/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/language-design/aliases" class="nav-link">Aliases &amp; Type Declarations</a></li><li><a href="/lora-docs/language-design/assignment" class="nav-link">Assignment</a></li><li><a href="/lora-docs/language-design/blocks-and-statements" class="nav-link">Blocks and Statements</a></li><li><a href="/lora-docs/language-design/structs-unions-interfaces" class="nav-link">Structs, Unions &amp; Interfaces</a></li><li><a href="/lora-docs/language-design/declaring-entities" class="nav-link">Declaring Entities</a></li><li><a href="/lora-docs/language-design/functions" class="nav-link">Functions</a></li><li><a href="/lora-docs/language-design/lambdas" class="nav-link">Lambdas &amp; Closures</a></li><li><a href="/lora-docs/language-design/metaprogramming" class="nav-link">Metaprogramming &amp; Comptime</a></li><li><a href="/lora-docs/language-design/name-lookup" class="nav-link">Name Lookup</a></li><li><a href="/lora-docs/language-design/naming-conventions" class="nav-link">Naming Conventions</a></li><li><a href="/lora-docs/language-design/pattern-matching" class="nav-link">Pattern Matching</a></li><li><a href="/lora-docs/language-design/sum-types" class="nav-link">Sum Types, Optionals &amp; Enums</a></li><li><a href="/lora-docs/language-design/tuples" class="nav-link">Tuples &amp; Named Tuples</a></li><li><a href="/lora-docs/language-design/type-inference" class="nav-link">Type Inference</a></li><li><a href="/lora-docs/language-design/values-pointers-views" class="nav-link">Values, Owners, Pointers &amp; Views</a></li><li><a href="/lora-docs/language-design/variadics" class="nav-link">Variadics</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>CODE &amp; NAME ORGANIZATION</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/organization/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/organization/source-files" class="nav-link">Source Files &amp; Modules</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>CONTROL FLOW</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/control-flow/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/control-flow/conditionals" class="nav-link">Conditionals</a></li><li><a href="/lora-docs/control-flow/loops" class="nav-link">Loops</a></li><li><a href="/lora-docs/control-flow/return-yield-defer" class="nav-link">Return, Yield &amp; Defer</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>EXPRESSIONS</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/expressions/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/expressions/arithmetic" class="nav-link">Arithmetic &amp; Overflow</a></li><li><a href="/lora-docs/expressions/as-expressions" class="nav-link">Conversions (@T) &amp; Assertions</a></li><li><a href="/lora-docs/expressions/bitwise" class="nav-link">Bitwise &amp; @bits</a></li><li><a href="/lora-docs/expressions/comparison-operators" class="nav-link">Comparison Operators</a></li><li><a href="/lora-docs/expressions/if-expressions" class="nav-link">If &amp; Match Expressions</a></li><li><a href="/lora-docs/expressions/implicit-conversions" class="nav-link">Implicit Conversions</a></li><li><a href="/lora-docs/expressions/indexing" class="nav-link">Indexing &amp; Slicing</a></li><li><a href="/lora-docs/expressions/literals" class="nav-link">Literals</a></li><li><a href="/lora-docs/expressions/logical-operators" class="nav-link">Logical Operators</a></li><li><a href="/lora-docs/expressions/member-access" class="nav-link">Member Access</a></li><li><a href="/lora-docs/expressions/pointer-operators" class="nav-link">Pointer &amp; Ownership Operators</a></li><li><a href="/lora-docs/expressions/type-operators" class="nav-link">Type &amp; Layout Operators</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>GENERICS</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/generics/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/generics/goals" class="nav-link">Goals</a></li><li><a href="/lora-docs/generics/terminology" class="nav-link">Terminology</a></li><li><a href="/lora-docs/generics/generics-overview" class="nav-link">Constraints Overview</a></li><li><a href="/lora-docs/generics/generics-details" class="nav-link">Generics Details</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>INTEROPERABILITY</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/interoperability/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/interoperability/c-abi" class="nav-link">Philosophy, Goals &amp; C ABI</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>LEXICAL CONVENTIONS</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/lexical/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/lexical/comments" class="nav-link">Comments</a></li><li><a href="/lora-docs/lexical/numeric-literals" class="nav-link">Numeric Literals</a></li><li><a href="/lora-docs/lexical/string-literals" class="nav-link">String &amp; Rune Literals</a></li><li><a href="/lora-docs/lexical/symbolic-tokens" class="nav-link">Symbolic Tokens</a></li><li><a href="/lora-docs/lexical/whitespace" class="nav-link">Whitespace &amp; Semicolons</a></li><li><a href="/lora-docs/lexical/words" class="nav-link">Words &amp; Keywords</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>SAFETY</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/safety/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/safety/terminology" class="nav-link">Terminology</a></li><li><a href="/lora-docs/safety/memory-ownership" class="nav-link">Memory &amp; Ownership Safety</a></li><li><a href="/lora-docs/safety/borrow-loan-views" class="nav-link">Borrow, Loan &amp; View Safety</a></li><li><a href="/lora-docs/safety/concurrency-races" class="nav-link">Concurrency &amp; Data Races</a></li><li><a href="/lora-docs/safety/stack-overflow" class="nav-link">Stack Overflow &amp; @depth</a></li><li><a href="/lora-docs/safety/contracts-and-unit-functions" class="nav-link">Contracts &amp; Unit Functions</a></li><li><a href="/lora-docs/safety/unsafe-code" class="nav-link">Unsafe Code &amp; Hardening</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>PRINCIPLES</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/principles/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/principles/error-handling" class="nav-link">Error Handling</a></li><li><a href="/lora-docs/principles/information-accumulation" class="nav-link">Information Accumulation</a></li><li><a href="/lora-docs/principles/library-apis-only" class="nav-link">Library APIs Only</a></li><li><a href="/lora-docs/principles/low-context-sensitivity" class="nav-link">Low Context Sensitivity</a></li><li><a href="/lora-docs/principles/namespace-cleanliness" class="nav-link">Namespace Cleanliness</a></li><li><a href="/lora-docs/principles/one-way" class="nav-link">One Way</a></li><li><a href="/lora-docs/principles/progressive-disclosure" class="nav-link">Progressive Disclosure</a></li><li><a href="/lora-docs/principles/safety-strategy" class="nav-link">Safety Strategy</a></li><li><a href="/lora-docs/principles/static-open-extension" class="nav-link">Static Open Extension</a></li><li><a href="/lora-docs/principles/success-criteria" class="nav-link">Success Criteria</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>GUIDES</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/guides/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/guides/glossary" class="nav-link">Glossary</a></li><li><a href="/lora-docs/guides/idiomatic-lora" class="nav-link">Idiomatic Lora &amp; Style Guide</a></li><li><a href="/lora-docs/guides/testing-and-benchmarking" class="nav-link">Testing, Benchmarks &amp; Fuzzing</a></li><li><a href="/lora-docs/guides/concurrency-and-sync" class="nav-link">Concurrency, Sync &amp; Context</a></li><li><a href="/lora-docs/guides/containers-and-data" class="nav-link">Containers, Data &amp; Checksums</a></li><li><a href="/lora-docs/guides/web-and-auth" class="nav-link">Web, HTTP &amp; Auth</a></li><li><a href="/lora-docs/guides/resilience-and-observability" class="nav-link">Resilience &amp; Observability</a></li><li><a href="/lora-docs/guides/cli-and-markup" class="nav-link">CLI, Terminal &amp; Markup</a></li><li><a href="/lora-docs/guides/math-and-algorithms" class="nav-link">Math, Stats &amp; Algorithms</a></li><li><a href="/lora-docs/guides/allocators" class="nav-link">Allocators &amp; Memory Strategies</a></li><li><a href="/lora-docs/guides/sql-and-postgresql" class="nav-link">Typed SQL, PostgreSQL &amp; SQLite</a></li><li><a href="/lora-docs/guides/tags-and-codecs" class="nav-link">Structure Tags &amp; Codecs</a></li><li><a href="/lora-docs/guides/encodings-and-crypto" class="nav-link">Encodings &amp; Cryptography</a></li><li><a href="/lora-docs/guides/reading-generated-code" class="nav-link">Reading Generated Code</a></li><li><a href="/lora-docs/guides/diagnostic-catalog" class="nav-link is-active">Diagnostic Catalog (L0001–L1004)</a></li><li><a href="/lora-docs/guides/roadmap" class="nav-link">Roadmap</a></li><li><a href="/lora-docs/guides/summary" class="nav-link">Stdlib &amp; Language Summary</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>SPECIFICATION</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/specification/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/specification/language-spec" class="nav-link">Language Spec (Full 27 Chapters)</a></li><li><a href="/lora-docs/specification/execution" class="nav-link">Execution &amp; Runtime</a></li><li><a href="/lora-docs/specification/lexing" class="nav-link">Lexing</a></li><li><a href="/lora-docs/specification/libraries" class="nav-link">Libraries &amp; Typedefs</a></li><li><a href="/lora-docs/specification/names" class="nav-link">Names &amp; Visibility</a></li><li><a href="/lora-docs/specification/parsing" class="nav-link">Parsing &amp; Limits</a></li><li><a href="/lora-docs/specification/semantics" class="nav-link">Semantics &amp; Checking</a></li><li><a href="/lora-docs/specification/standard-library" class="nav-link">Standard Library Index</a></li></ul><details class="nav-subdetails"><summary class="nav-subsummary"><span>Standard Library Modules (141)</span><svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/stdlib/mem" class="nav-link">mem</a></li><li><a href="/lora-docs/stdlib/expanse" class="nav-link">expanse</a></li><li><a href="/lora-docs/stdlib/pool" class="nav-link">pool</a></li><li><a href="/lora-docs/stdlib/allocator" class="nav-link">allocator</a></li><li><a href="/lora-docs/stdlib/arena" class="nav-link">arena</a></li><li><a href="/lora-docs/stdlib/scratch" class="nav-link">scratch</a></li><li><a href="/lora-docs/stdlib/rc" class="nav-link">rc</a></li><li><a href="/lora-docs/stdlib/arc" class="nav-link">arc</a></li><li><a href="/lora-docs/stdlib/slotmap" class="nav-link">slotmap</a></li><li><a href="/lora-docs/stdlib/intern" class="nav-link">intern</a></li><li><a href="/lora-docs/stdlib/strconv" class="nav-link">strconv</a></li><li><a href="/lora-docs/stdlib/utf8" class="nav-link">utf8</a></li><li><a href="/lora-docs/stdlib/utf16" class="nav-link">utf16</a></li><li><a href="/lora-docs/stdlib/unicode" class="nav-link">unicode</a></li><li><a href="/lora-docs/stdlib/ascii" class="nav-link">ascii</a></li><li><a href="/lora-docs/stdlib/strings" class="nav-link">strings</a></li><li><a href="/lora-docs/stdlib/bytes" class="nav-link">bytes</a></li><li><a href="/lora-docs/stdlib/compare" class="nav-link">compare</a></li><li><a href="/lora-docs/stdlib/sort" class="nav-link">sort</a></li><li><a href="/lora-docs/stdlib/slices" class="nav-link">slices</a></li><li><a href="/lora-docs/stdlib/iter" class="nav-link">iter</a></li><li><a href="/lora-docs/stdlib/fuzzy" class="nav-link">fuzzy</a></li><li><a href="/lora-docs/stdlib/io" class="nav-link">io</a></li><li><a href="/lora-docs/stdlib/bufio" class="nav-link">bufio</a></li><li><a href="/lora-docs/stdlib/bitio" class="nav-link">bitio</a></li><li><a href="/lora-docs/stdlib/fmt" class="nav-link">fmt</a></li><li><a href="/lora-docs/stdlib/os" class="nav-link">os</a></li><li><a href="/lora-docs/stdlib/env" class="nav-link">env</a></li><li><a href="/lora-docs/stdlib/dotenv" class="nav-link">dotenv</a></li><li><a href="/lora-docs/stdlib/path" class="nav-link">path</a></li><li><a href="/lora-docs/stdlib/fs" class="nav-link">fs</a></li><li><a href="/lora-docs/stdlib/tempfile" class="nav-link">tempfile</a></li><li><a href="/lora-docs/stdlib/glob" class="nav-link">glob</a></li><li><a href="/lora-docs/stdlib/time" class="nav-link">time</a></li><li><a href="/lora-docs/stdlib/signal" class="nav-link">signal</a></li><li><a href="/lora-docs/stdlib/process" class="nav-link">process</a></li><li><a href="/lora-docs/stdlib/mmap" class="nav-link">mmap</a></li><li><a href="/lora-docs/stdlib/dl" class="nav-link">dl</a></li><li><a href="/lora-docs/stdlib/sys" class="nav-link">sys</a></li><li><a href="/lora-docs/stdlib/ipc" class="nav-link">ipc</a></li><li><a href="/lora-docs/stdlib/math" class="nav-link">math</a></li><li><a href="/lora-docs/stdlib/stats" class="nav-link">stats</a></li><li><a href="/lora-docs/stdlib/matrix" class="nav-link">matrix</a></li><li><a href="/lora-docs/stdlib/fft" class="nav-link">fft</a></li><li><a href="/lora-docs/stdlib/geo" class="nav-link">geo</a></li><li><a href="/lora-docs/stdlib/bits" class="nav-link">bits</a></li><li><a href="/lora-docs/stdlib/bitset" class="nav-link">bitset</a></li><li><a href="/lora-docs/stdlib/bitstructs" class="nav-link">bitstructs</a></li><li><a href="/lora-docs/stdlib/vectors" class="nav-link">vectors</a></li><li><a href="/lora-docs/stdlib/decimal" class="nav-link">decimal</a></li><li><a href="/lora-docs/stdlib/rand" class="nav-link">rand</a></li><li><a href="/lora-docs/stdlib/cmplx" class="nav-link">cmplx</a></li><li><a href="/lora-docs/stdlib/big" class="nav-link">big</a></li><li><a href="/lora-docs/stdlib/color" class="nav-link">color</a></li><li><a href="/lora-docs/stdlib/qoi" class="nav-link">qoi</a></li><li><a href="/lora-docs/stdlib/hash" class="nav-link">hash</a></li><li><a href="/lora-docs/stdlib/checksum" class="nav-link">checksum</a></li><li><a href="/lora-docs/stdlib/crypto" class="nav-link">crypto</a></li><li><a href="/lora-docs/stdlib/secret" class="nav-link">secret</a></li><li><a href="/lora-docs/stdlib/otp" class="nav-link">otp</a></li><li><a href="/lora-docs/stdlib/compress" class="nav-link">compress</a></li><li><a href="/lora-docs/stdlib/tar" class="nav-link">tar</a></li><li><a href="/lora-docs/stdlib/zip" class="nav-link">zip</a></li><li><a href="/lora-docs/stdlib/map" class="nav-link">map</a></li><li><a href="/lora-docs/stdlib/set" class="nav-link">set</a></li><li><a href="/lora-docs/stdlib/deque" class="nav-link">deque</a></li><li><a href="/lora-docs/stdlib/heap" class="nav-link">heap</a></li><li><a href="/lora-docs/stdlib/btree" class="nav-link">btree</a></li><li><a href="/lora-docs/stdlib/trie" class="nav-link">trie</a></li><li><a href="/lora-docs/stdlib/ring" class="nav-link">ring</a></li><li><a href="/lora-docs/stdlib/lru" class="nav-link">lru</a></li><li><a href="/lora-docs/stdlib/cache" class="nav-link">cache</a></li><li><a href="/lora-docs/stdlib/bloom" class="nav-link">bloom</a></li><li><a href="/lora-docs/stdlib/graph" class="nav-link">graph</a></li><li><a href="/lora-docs/stdlib/dsu" class="nav-link">dsu</a></li><li><a href="/lora-docs/stdlib/interval" class="nav-link">interval</a></li><li><a href="/lora-docs/stdlib/thread" class="nav-link">thread</a></li><li><a href="/lora-docs/stdlib/sync" class="nav-link">sync</a></li><li><a href="/lora-docs/stdlib/coro" class="nav-link">coro</a></li><li><a href="/lora-docs/stdlib/context" class="nav-link">context</a></li><li><a href="/lora-docs/stdlib/channel" class="nav-link">channel</a></li><li><a href="/lora-docs/stdlib/broadcast" class="nav-link">broadcast</a></li><li><a href="/lora-docs/stdlib/workpool" class="nav-link">workpool</a></li><li><a href="/lora-docs/stdlib/errors" class="nav-link">errors</a></li><li><a href="/lora-docs/stdlib/ratelimit" class="nav-link">ratelimit</a></li><li><a href="/lora-docs/stdlib/retry" class="nav-link">retry</a></li><li><a href="/lora-docs/stdlib/metrics" class="nav-link">metrics</a></li><li><a href="/lora-docs/stdlib/trace" class="nav-link">trace</a></li><li><a href="/lora-docs/stdlib/cron" class="nav-link">cron</a></li><li><a href="/lora-docs/stdlib/log" class="nav-link">log</a></li><li><a href="/lora-docs/stdlib/config" class="nav-link">config</a></li><li><a href="/lora-docs/stdlib/ini" class="nav-link">ini</a></li><li><a href="/lora-docs/stdlib/flag" class="nav-link">flag</a></li><li><a href="/lora-docs/stdlib/term" class="nav-link">term</a></li><li><a href="/lora-docs/stdlib/unit" class="nav-link">unit</a></li><li><a href="/lora-docs/stdlib/semver" class="nav-link">semver</a></li><li><a href="/lora-docs/stdlib/regex" class="nav-link">regex</a></li><li><a href="/lora-docs/stdlib/base64" class="nav-link">base64</a></li><li><a href="/lora-docs/stdlib/base32" class="nav-link">base32</a></li><li><a href="/lora-docs/stdlib/ascii85" class="nav-link">ascii85</a></li><li><a href="/lora-docs/stdlib/hex" class="nav-link">hex</a></li><li><a href="/lora-docs/stdlib/binary" class="nav-link">binary</a></li><li><a href="/lora-docs/stdlib/encoding" class="nav-link">encoding</a></li><li><a href="/lora-docs/stdlib/pem" class="nav-link">pem</a></li><li><a href="/lora-docs/stdlib/asn1" class="nav-link">asn1</a></li><li><a href="/lora-docs/stdlib/json" class="nav-link">json</a></li><li><a href="/lora-docs/stdlib/csv" class="nav-link">csv</a></li><li><a href="/lora-docs/stdlib/xml" class="nav-link">xml</a></li><li><a href="/lora-docs/stdlib/html" class="nav-link">html</a></li><li><a href="/lora-docs/stdlib/template" class="nav-link">template</a></li><li><a href="/lora-docs/stdlib/markdown" class="nav-link">markdown</a></li><li><a href="/lora-docs/stdlib/pack" class="nav-link">pack</a></li><li><a href="/lora-docs/stdlib/cbor" class="nav-link">cbor</a></li><li><a href="/lora-docs/stdlib/msgpack" class="nav-link">msgpack</a></li><li><a href="/lora-docs/stdlib/toml" class="nav-link">toml</a></li><li><a href="/lora-docs/stdlib/yaml" class="nav-link">yaml</a></li><li><a href="/lora-docs/stdlib/netip" class="nav-link">netip</a></li><li><a href="/lora-docs/stdlib/net" class="nav-link">net</a></li><li><a href="/lora-docs/stdlib/dns" class="nav-link">dns</a></li><li><a href="/lora-docs/stdlib/url" class="nav-link">url</a></li><li><a href="/lora-docs/stdlib/textproto" class="nav-link">textproto</a></li><li><a href="/lora-docs/stdlib/hpack" class="nav-link">hpack</a></li><li><a href="/lora-docs/stdlib/http" class="nav-link">http</a></li><li><a href="/lora-docs/stdlib/cookie" class="nav-link">cookie</a></li><li><a href="/lora-docs/stdlib/mime" class="nav-link">mime</a></li><li><a href="/lora-docs/stdlib/multipart" class="nav-link">multipart</a></li><li><a href="/lora-docs/stdlib/websocket" class="nav-link">websocket</a></li><li><a href="/lora-docs/stdlib/sse" class="nav-link">sse</a></li><li><a href="/lora-docs/stdlib/jwt" class="nav-link">jwt</a></li><li><a href="/lora-docs/stdlib/x509" class="nav-link">x509</a></li><li><a href="/lora-docs/stdlib/tls" class="nav-link">tls</a></li><li><a href="/lora-docs/stdlib/smtp" class="nav-link">smtp</a></li><li><a href="/lora-docs/stdlib/sql" class="nav-link">sql</a></li><li><a href="/lora-docs/stdlib/pg" class="nav-link">pg</a></li><li><a href="/lora-docs/stdlib/sqlite" class="nav-link">sqlite</a></li><li><a href="/lora-docs/stdlib/kv" class="nav-link">kv</a></li><li><a href="/lora-docs/stdlib/uuid" class="nav-link">uuid</a></li><li><a href="/lora-docs/stdlib/ulid" class="nav-link">ulid</a></li><li><a href="/lora-docs/stdlib/diff" class="nav-link">diff</a></li><li><a href="/lora-docs/stdlib/testing" class="nav-link">testing</a></li><li><a href="/lora-docs/stdlib/rt" class="nav-link">rt</a></li></ul></details></details></aside><main class="content-wrap"><article class="article"><div class="breadcrumbs">Guides</div><h1 id="top" class="page-title">Diagnostic Error Catalog (L0001–L1004)</h1><p class="lead">Complete reference of every compiler error and warning code (<code class="inline-code">docs/errors.md</code>), matching <code class="inline-code">lora explain &lt;code&gt;</code> and IDE hover badges.</p><p>Each diagnostic with a code, such as <code class="inline-code">error[L0003]</code>, is explained here.
+<code class="inline-code">lora explain L0003</code> prints its entry.</p>
+<h2 id="l0001-unknown-name" class="doc-h2"><a class="anchor-link" href="#l0001-unknown-name">L0001 Unknown name</a></h2>
+<p>A name is used that is not declared where it is used, or its module is
+not imported.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> lenght</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"abc"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: `lenght` is an unknown object</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>Check the spelling. A name from another module needs <code class="inline-code">use module;</code> first
+(<code class="inline-code">fmt</code> is the exception: its names are always known).</p>
+<h2 id="l0002-wrong-type" class="doc-h2"><a class="anchor-link" href="#l0002-wrong-type">L0002 Wrong type</a></h2>
+<p>A value of one type is used where another is expected, and converting it
+could lose something or is not allowed implicitly.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> big</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> u64</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 300</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-error"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> small</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> u8</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> big</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: Initializer of type u64 is not assignable to binding type u8</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>Convert explicitly with <code class="inline-code">@u8(big)</code>, which keeps the low bits, or change the
+type the value goes to.</p>
+<p>Lora&#39;s types are nominal: each <code class="inline-code">type</code> declaration is a type of its own, so
+two declarations with the same definition are not interchangeable.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> rect</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> w</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> f64</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> h</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> f64</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> square</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> w</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> f64</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> h</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> f64</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> fill</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">r</span><span style="color:#C8C8C8">:</span><span style="color:#FFFFFF"> rect</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FFC799">	fill</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">square</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> w</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1.0</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> h</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1.0</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: Argument type square is not assignable to parameter type rect</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>Convert it, <code class="inline-code">fill(@rect(s))</code>; for a tagged union, convert it or add the type
+to the union.</p>
+<h2 id="l0003-unhandled-error" class="doc-h2"><a class="anchor-link" href="#l0003-unhandled-error">L0003 Unhandled error</a></h2>
+<p>A call (or other expression) may give an error, and its value is dropped.
+Lora never drops an error silently: say what happens when it fails.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> io</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> save</span><span style="color:#E8E8E8">()</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">void</span><span style="color:#C8C8C8"> |</span><span style="color:#FF9FC8"> io</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">error</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FFC799">	save</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: Cannot ignore an error here</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><ul>
+<li><code class="inline-code">save()!</code> stops the program with the error, if there is one.</li>
+<li><code class="inline-code">save()?</code> returns the error to the caller (in a function that can
+return it); <code class="inline-code">save() ? &quot;saving the settings&quot;</code> adds a note for the trace.</li>
+<li><code class="inline-code">save() or |e| { ... }</code> handles it here; <code class="inline-code">x or y</code> gives <code class="inline-code">y</code> instead.</li>
+</ul>
+<p>Keeping the result in a variable that nothing reads drops it just the same:</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> io</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> load</span><span style="color:#E8E8E8">()</span><span style="color:#E8E8E8"> (</span><span style="color:#7DCFFF">int</span><span style="color:#C8C8C8"> |</span><span style="color:#FF9FC8"> io</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">error</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> load</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: Cannot ignore an error here: `n` may hold one</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><h2 id="l0004-no-error-can-happen" class="doc-h2"><a class="anchor-link" href="#l0004-no-error-can-happen">L0004 No error can happen</a></h2>
+<p><code class="inline-code">!</code> or <code class="inline-code">?</code> is applied to a value that cannot be an error.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> n</span><span style="color:#E8E8E8">()</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 3</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> x</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> n</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8">!;</span><span style="color:#737373"> // error: Cannot use error assertion on an int, which can never be an error</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>Drop the <code class="inline-code">!</code> or <code class="inline-code">?</code>.</p>
+<h2 id="l0005-fallback-with-or" class="doc-h2"><a class="anchor-link" href="#l0005-fallback-with-or">L0005 Fallback with or</a></h2>
+<p><code class="inline-code">x or y</code> handles errors: it gives <code class="inline-code">x</code>&#39;s value, or <code class="inline-code">y</code> when <code class="inline-code">x</code> is an
+error. It applies to values that may be errors, and what it gives must be
+of <code class="inline-code">x</code>&#39;s value&#39;s type, unless it leaves with <code class="inline-code">return</code>, <code class="inline-code">break</code>,
+<code class="inline-code">continue</code> or <code class="inline-code">abort</code>. For an optional <code class="inline-code">(T | void)</code>, use <code class="inline-code">??</code>.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> strconv</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> port</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> strconv</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">parse_int</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"80"</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> or</span><span style="color:#99FFE4"> 8080</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> name</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ?</span><span style="color:#7DCFFF">str</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> shown</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> name</span><span style="color:#C8C8C8"> ??</span><span style="color:#99FFE4"> "nobody"</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><h2 id="l0006-dropped-error" class="doc-h2"><a class="anchor-link" href="#l0006-dropped-error">L0006 Dropped error</a></h2>
+<p>A <code class="inline-code">match</code> arm <code class="inline-code">_</code> takes errors no other arm names. An arm that goes on,
+giving a value or returning, is an error: the program carries on as if
+nothing had failed.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> strconv</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> workers</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> str</span><span style="color:#E8E8E8">)</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> match</span><span style="color:#E8E8E8"> (</span><span style="color:#FFD479">strconv::parse_int</span><span style="color:#E8E8E8">(</span><span style="color:#FFD479">s</span><span style="color:#E8E8E8">))</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#FFC799"> =></span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8">,</span></span>
+<span class="line line-error"><span style="color:#E8E8ED">	_ </span><span style="color:#FFC799">=></span><span style="color:#99FFE4"> 4</span><span style="color:#C8C8C8">,</span><span style="color:#737373"> // error: This `_ =>` arm drops a strconv::invalid_number error, and goes on</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">workers</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"8"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 8</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><p>An arm that stops the program, with <code class="inline-code">abort</code> or a function that never
+returns, is warned about: it says where, but not what went wrong.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> net</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> os</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> l</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> match</span><span style="color:#E8E8E8"> (</span><span style="color:#FFD479">net::listen_at</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"127.0.0.1:8080"</span><span style="color:#E8E8E8">))</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">		let</span><span style="color:#FFFFFF"> l</span><span style="color:#C8C8C8">:</span><span style="color:#FF9FC8"> net</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">listener</span><span style="color:#FFC799"> =></span><span style="color:#FFFFFF"> l</span><span style="color:#C8C8C8">,</span></span>
+<span class="line"><span style="color:#E8E8ED">		_ </span><span style="color:#FFC799">=></span><span style="color:#FF9FC8"> os</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">exit</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">,</span><span style="color:#737373"> // warning: This `_ =>` arm drops or hides errors</span></span>
+<span class="line"><span style="color:#E8E8E8">	}</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>Name the error and say something with it, or let <code class="inline-code">main</code> return it, which
+prints it with its trace:</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> net</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> netip</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> serve</span><span style="color:#E8E8E8">()</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">void</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#C8C8C8"> |</span><span style="color:#FF9FC8"> net</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">error</span><span style="color:#C8C8C8"> |</span><span style="color:#FF9FC8"> netip</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">invalid</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> l</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> net</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">listen_at</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"127.0.0.1:8080"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ?</span><span style="color:#99FFE4"> "listening on port 8080"</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">void</span><span style="color:#C8C8C8"> |</span><span style="color:#FFC799"> nomem</span><span style="color:#C8C8C8"> |</span><span style="color:#FF9FC8"> net</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">error</span><span style="color:#C8C8C8"> |</span><span style="color:#FF9FC8"> netip</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">invalid</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	if</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">false</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> serve</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8">?;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><h2 id="l0007-error-message" class="doc-h2"><a class="anchor-link" href="#l0007-error-message">L0007 Error message</a></h2>
+<p>An error type may declare its message: a template whose <code class="inline-code">{placeholders}</code>
+are fields of the error, or a function that describes a value of it.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> quota</span><span style="color:#C8C8C8"> =</span><span style="color:#C8C8C8"> !</span><span style="color:#FFC799">struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> user</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> str</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> limit</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> usize</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"><span style="color:#99FFE4">"user </span><span style="color:#FFC799">{</span><span style="color:#FFFFFF">user</span><span style="color:#FFC799">}</span><span style="color:#99FFE4"> is over the limit of </span><span style="color:#FFC799">{</span><span style="color:#FFFFFF">limit</span><span style="color:#FFC799">}</span><span style="color:#99FFE4">"</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> code</span><span style="color:#C8C8C8"> =</span><span style="color:#C8C8C8"> !</span><span style="color:#7DCFFF">u32</span><span style="color:#FFFFFF"> describe_code</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> describe_code</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">c</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFC799">const</span><span style="color:#FFFFFF"> code</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> buf</span><span style="color:#C8C8C8">:</span><span style="color:#E8E8E8"> []</span><span style="color:#7DCFFF">u8</span><span style="color:#E8E8E8">)</span><span style="color:#7DCFFF"> str</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> "a code"</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><p>Only an error type (<code class="inline-code">!T</code>) has a message; a placeholder must name a field;
+a describe function is <code class="inline-code">fn(e: *const T, buf: []u8) str</code>.</p>
+<h2 id="l0008-error-the-function-cant-return" class="doc-h2"><a class="anchor-link" href="#l0008-error-the-function-cant-return">L0008 Error the function can&#39;t return</a></h2>
+<p><code class="inline-code">x?</code> returns <code class="inline-code">x</code>&#39;s error, so the function&#39;s result type must include it.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> strconv</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line line-error"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> port</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> str</span><span style="color:#E8E8E8">)</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> strconv</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">parse_int</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">?;</span><span style="color:#737373"> // error: Error type strconv::invalid_number is not assignable to function result type int</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><p>Add it to the result type, <code class="inline-code">(int | strconv::invalid_number)</code>, or handle it
+here: <code class="inline-code">strconv::parse_int(s) or 8080</code>.</p>
+<h2 id="l0009-integer-overflow" class="doc-h2"><a class="anchor-link" href="#l0009-integer-overflow">L0009 Integer overflow</a></h2>
+<p>A constant computation does not fit its type. At run time the same
+overflow stops the program, saying with what values.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line line-error"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> main_count</span><span style="color:#E8E8E8">()</span><span style="color:#7DCFFF"> i32</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 2147483647i32</span><span style="color:#C8C8C8"> +</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: Integer overflow: 2147483647 + 1 is out of range for i32</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><p>Use a wider type, such as <code class="inline-code">i64</code>, or wrap on purpose with <code class="inline-code">+%</code>, <code class="inline-code">-%</code> or
+<code class="inline-code">*%</code>, as hashes and random number generators do.</p>
+<h2 id="l0100-memory-leak" class="doc-h2"><a class="anchor-link" href="#l0100-memory-leak">L0100 Memory leak</a></h2>
+<p>Raw memory a local holds (what an owner gave up with <code class="inline-code">release</code>, or an
+empty slice grown with <code class="inline-code">append</code>) is certainly not freed on some path out of its
+scope: it leaks. Owners, <code class="inline-code">^T</code>, <code class="inline-code">^str</code> and <code class="inline-code">^[]T</code>, free themselves.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> strings</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> greet</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">name</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> str</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> s</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> release</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">strings</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">concat</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"hi "</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> name</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> }</span><span style="color:#737373"> // error: `s` holds the memory allocated on line 4, and nothing frees it: it leaks when its block ends</span></span>
+<span class="line"><span style="color:#FF9FC8">	fmt</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">println</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> greet</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"x"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><p>Add <code class="inline-code">defer free(s);</code> right after it is made.</p>
+<h2 id="l0101-owned-result-dropped" class="doc-h2"><a class="anchor-link" href="#l0101-owned-result-dropped">L0101 Owned result dropped</a></h2>
+<p>A library call returns new memory, and it is used where it cannot be
+freed afterwards: as a statement, an operand, or an argument that is only
+borrowed.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> strings</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> release</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">strings</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">concat</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"a"</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> "b"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> }</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> "ab"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: `strings::concat` returns memory the caller must free, and nothing frees it here: it leaks</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>Bind it, use it, and free it: <code class="inline-code">let s = strings::concat(&quot;a&quot;, &quot;b&quot;)!; defer free(s);</code>.</p>
+<h2 id="l0102-use-after-free" class="doc-h2"><a class="anchor-link" href="#l0102-use-after-free">L0102 Use after free</a></h2>
+<p>Memory is used after <code class="inline-code">free</code> on every path that reaches the use.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> node</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> alloc</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">node</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	free</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-error"><span style="color:#FFFFFF">	p</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">v</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 2</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: `p` is used here, but the memory it owned was freed on line 5: this would touch freed memory</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>Use it before freeing it, or free it later. A copy of the pointer is the
+same memory: <code class="inline-code">let q = p</code>, or <code class="inline-code">let q = f(p)</code> with an <code class="inline-code">f</code> that returns what it
+is given, so using <code class="inline-code">q</code> after <code class="inline-code">free(p)</code> is also a use after free.</p>
+<h2 id="l0103-double-free" class="doc-h2"><a class="anchor-link" href="#l0103-double-free">L0103 Double free</a></h2>
+<p>Raw memory (a <code class="inline-code">*T</code>, or memory an owner gave up with <code class="inline-code">release</code>) is freed
+again, or freed when a <code class="inline-code">defer</code> frees it already. An owner, <code class="inline-code">^T</code>, cannot be
+freed twice: <code class="inline-code">free(p)</code> moves it.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> node</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> release</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">alloc</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">node</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">!</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"><span style="color:#FFC799">	defer</span><span style="color:#FFC799"> unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> free</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line line-error"><span style="color:#FFC799">	unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> free</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> }</span><span style="color:#737373"> // error: `p` is freed here, and the defer on line 5 frees it again when its block ends: freeing it twice would crash</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><h2 id="l0104-dangling-stack-pointer" class="doc-h2"><a class="anchor-link" href="#l0104-dangling-stack-pointer">L0104 Dangling stack pointer</a></h2>
+<p>A pointer to a local, a parameter or a temporary is returned, stored where
+it outlives the function (a global, the heap, what a parameter points to),
+or given to a function that keeps it; the memory is gone once the function
+returns.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> saved</span><span style="color:#C8C8C8">:</span><span style="color:#FFC799"> nullable</span><span style="color:#C8C8C8"> *</span><span style="color:#7DCFFF">int</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> null</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> stash</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#7DCFFF">int</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> saved</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8">;</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> counter</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8"> *</span><span style="color:#7DCFFF">int</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-error"><span style="color:#FFC799">	return</span><span style="color:#C8C8C8"> &#x26;</span><span style="color:#FFFFFF">n</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: This returns a pointer to `n`, which is gone when the function returns</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> f</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> x</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 5</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-error"><span style="color:#FFC799">	stash</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">x</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: A pointer to `x` is kept by stash after it returns, but `x` is gone once f returns.</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><p>Allocate it (<code class="inline-code">alloc</code>) and free it later, let the caller pass a pointer to
+fill in, or keep a copy of the value instead of a pointer. What a function
+keeps is inferred from its body (see &quot;What calls do with pointers&quot; in the
+language reference). Code that makes sure itself that the pointer is not
+used after the function returns says so with <code class="inline-code">unsafe { &amp;x }</code>.</p>
+<h2 id="l0105-not-memory-from-alloc" class="doc-h2"><a class="anchor-link" href="#l0105-not-memory-from-alloc">L0105 Not memory from alloc</a></h2>
+<p><code class="inline-code">free</code> or <code class="inline-code">adopt</code> is given memory no allocation made: a local&#39;s, a
+global&#39;s, or a temporary&#39;s. Freeing it would fail, as the program ends at
+the latest, so it is an error in <code class="inline-code">unsafe</code> code too, when it is certain.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#C8C8C8"> &#x26;</span><span style="color:#FF9FC8">@int</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">12</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-error"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> a</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> adopt</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> }</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: `adopt` takes memory from `alloc`, but `p` points to a temporary, `@int(12)` on line 2, which no allocation made</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>Give them memory from <code class="inline-code">alloc</code>, or from <code class="inline-code">release</code> of an owner. Adopting
+what an owner lends, <code class="inline-code">adopt(&amp;n)</code> for an <code class="inline-code">n: ^T</code>, is a double free
+(L0103): <code class="inline-code">n</code> frees it too; move the owner instead.</p>
+<h2 id="l0106-defer-that-runs-at-once" class="doc-h2"><a class="anchor-link" href="#l0106-defer-that-runs-at-once">L0106 Defer that runs at once</a></h2>
+<p>A <code class="inline-code">defer</code> runs when its own block ends. As the last thing in an
+<code class="inline-code">unsafe { ... }</code> it runs as soon as it is reached, which is never what it
+is written for: in <code class="inline-code">unsafe { defer free(p) }</code> the block is the
+<code class="inline-code">unsafe { ... }</code>, so <code class="inline-code">p</code> is freed on that line, and using it after is a
+use after free.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> release</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">alloc</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> }</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-error"><span style="color:#FFC799">	unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> defer</span><span style="color:#FFC799"> free</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> }</span><span style="color:#737373"> // error: This `defer` runs right away</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>Put the <code class="inline-code">unsafe</code> inside the defer, <code class="inline-code">defer unsafe { free(p) }</code>, which then
+runs when the block around it ends.</p>
+<h2 id="l0200-outside-the-view" class="doc-h2"><a class="anchor-link" href="#l0200-outside-the-view">L0200 Outside the view</a></h2>
+<p>A view, <code class="inline-code">*T.{fields}</code>, reaches only the fields it names.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> foo</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> a</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> usize</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> b</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> u32</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line line-error"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> peek</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">f</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">foo</span><span style="color:#C8C8C8">.</span><span style="color:#E8E8E8">{</span><span style="color:#FFFFFF">b</span><span style="color:#E8E8E8">})</span><span style="color:#7DCFFF"> usize</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> f</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">a</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: `a` is not part of the view *foo.{b}: a view reaches only the fields it names</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><h2 id="l0201-overlapping-views" class="doc-h2"><a class="anchor-link" href="#l0201-overlapping-views">L0201 Overlapping views</a></h2>
+<p>A view promises its callee that the fields it names are reached no other
+way during the call.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> foo</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> a</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> usize</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> b</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> u32</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> twice</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">f</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">foo</span><span style="color:#C8C8C8">.</span><span style="color:#E8E8E8">{</span><span style="color:#FFFFFF">b</span><span style="color:#E8E8E8">}</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> b</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#7DCFFF">u32</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> x</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> foo</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> a</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> b</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 2</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line line-error"><span style="color:#FFC799">	twice</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">x</span><span style="color:#C8C8C8">,</span><span style="color:#C8C8C8"> &#x26;</span><span style="color:#FFFFFF">x</span><span style="color:#C8C8C8">.</span><span style="color:#FFFFFF">b</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: Arguments 1 and 2 both reach 'x.b', and one can change it</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><h2 id="l0202-const-field-of-a-view" class="doc-h2"><a class="anchor-link" href="#l0202-const-field-of-a-view">L0202 Const field of a view</a></h2>
+<p>A view may let a field be read but not changed: <code class="inline-code">*T.{const a}</code>.</p>
+<h2 id="l0203-cant-change-this" class="doc-h2"><a class="anchor-link" href="#l0203-cant-change-this">L0203 Can&#39;t change this</a></h2>
+<p>The value is const, or reached through a <code class="inline-code">*const</code> pointer or a view that
+only reads it.</p>
+<h2 id="l0300-missing-format-value" class="doc-h2"><a class="anchor-link" href="#l0300-missing-format-value">L0300 Missing format value</a></h2>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FF9FC8">	fmt</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">printfn</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"{} and {}"</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span><span style="color:#737373"> // error: This format string needs 2 values, but 1 is given</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><h2 id="l0301-bad-format-placeholder" class="doc-h2"><a class="anchor-link" href="#l0301-bad-format-placeholder">L0301 Bad format placeholder</a></h2>
+<p>Placeholders are <code class="inline-code">{}</code>, <code class="inline-code">{0}</code> (by position) or <code class="inline-code">{:spec}</code>, such as <code class="inline-code">{:x}</code>,
+<code class="inline-code">{:&gt;8}</code>, <code class="inline-code">{:.2}</code> or <code class="inline-code">{:?}</code>; see the fmt reference.</p>
+<h2 id="l0400-outside-the-pattern-type" class="doc-h2"><a class="anchor-link" href="#l0400-outside-the-pattern-type">L0400 Outside the pattern type</a></h2>
+<p>A constant given to a pattern type, such as <code class="inline-code">type port = u16 is 1..</code>, is
+outside its pattern. Values known only at run time are checked by <code class="inline-code">@T(x)</code>.</p>
+<h2 id="l0500-wrong-number-of-arguments" class="doc-h2"><a class="anchor-link" href="#l0500-wrong-number-of-arguments">L0500 Wrong number of arguments</a></h2>
+<p>A call passes more or fewer arguments than the function takes.</p>
+<h2 id="l0600-used-after-move" class="doc-h2"><a class="anchor-link" href="#l0600-used-after-move">L0600 Used after move</a></h2>
+<p>An owner, <code class="inline-code">^T</code>, moved (to a <code class="inline-code">^T</code> parameter, a binding, a field, a return)
+and is used afterwards; or it moved on some path to the use. A move must be
+an owner&#39;s last use.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> node</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> keep</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">n</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#FFFFFF">node</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> show</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">n</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">node</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> alloc</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">node</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	keep</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-error"><span style="color:#FFC799">	show</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: `p` is used after it moved so it can't be used here</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>Lend it to the first call if it only reads it (<code class="inline-code">show(&amp;p)</code> before
+<code class="inline-code">keep(p)</code>), or move it last.</p>
+<h2 id="l0601-moved-in-a-loop" class="doc-h2"><a class="anchor-link" href="#l0601-moved-in-a-loop">L0601 Moved in a loop</a></h2>
+<p>An owner made outside a loop moves inside it: the second turn would move
+what the first already gave away.</p>
+<h2 id="l0602-loan-outlives-its-owner" class="doc-h2"><a class="anchor-link" href="#l0602-loan-outlives-its-owner">L0602 Loan outlives its owner</a></h2>
+<p>A borrow of an owner (<code class="inline-code">&amp;p</code>, or <code class="inline-code">p</code> passed as <code class="inline-code">*T</code>) is returned or stored
+in a global, which outlive the owner, freed when its scope ends.</p>
+<h2 id="l0604-owned-value-not-kept" class="doc-h2"><a class="anchor-link" href="#l0604-owned-value-not-kept">L0604 Owned value not kept</a></h2>
+<p><code class="inline-code">alloc</code> (or a function returning <code class="inline-code">^T</code>) gives an owner that is neither
+bound nor moved anywhere: it would be freed at once.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> node</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> show</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">n</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">node</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> raw</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">node</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> alloc</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">node</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> value</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">!;</span><span style="color:#737373"> // error: This owned value is not kept by anything</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>Lent to a call or a comparison, an owned value lives until it is done;
+kept as a raw pointer, it would be freed at once. Bind it first,
+<code class="inline-code">let p = alloc(...)!;</code>, or <code class="inline-code">release(...)</code> it to manage it yourself.</p>
+<p>A temporary lent to a call lives only as long as the call, so a call
+whose result may view it, as a struct holding a <code class="inline-code">str</code>, is an error too,
+even when the result also owns memory of its own:</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> strings</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> request</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> url</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> str</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> body</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#E8E8E8">[]</span><span style="color:#7DCFFF">u8</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> request_of</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">url</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> str</span><span style="color:#E8E8E8">)</span><span style="color:#FFFFFF"> request</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> request</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> url</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> url</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> body</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> []</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> r</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> request_of</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">strings</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">concat</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"https://"</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> "example.com"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: This owned value is not kept by anything</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><h2 id="l0605-move-out-of-a-field" class="doc-h2"><a class="anchor-link" href="#l0605-move-out-of-a-field">L0605 Move out of a field</a></h2>
+<p>A field <code class="inline-code">^T</code> is owned by what holds it, which drops it; moving it out would
+drop it twice. Lend it (<code class="inline-code">&amp;x.f</code>), or move what holds it.</p>
+<h2 id="l0606-owner-overwritten" class="doc-h2"><a class="anchor-link" href="#l0606-owner-overwritten">L0606 Owner overwritten</a></h2>
+<p>An owner that still owns its value is given a new one, which would leak
+the old. Free it first (<code class="inline-code">free(p)</code>) or move it.</p>
+<h2 id="l0607-would-lose-an-owner" class="doc-h2"><a class="anchor-link" href="#l0607-would-lose-an-owner">L0607 Would lose an owner</a></h2>
+<p>Code that would abandon something that owns memory, on a path where nothing
+could drop it: <code class="inline-code">?</code> or another exit after an owner was handed to a call or literal
+still being built, or inside <code class="inline-code">alloc</code>; <code class="inline-code">or</code> with no name for an error that owns
+memory; <code class="inline-code">if let</code> on a temporary whose other members own memory; a closure
+capturing an owner; a <code class="inline-code">delete</code> of owners whose index calls something; <code class="inline-code">append</code>
+of several owners at once, which would copy them.
+Give the value a name first, so it is dropped on every path.</p>
+<h2 id="l0608-view-outlives-its-source" class="doc-h2"><a class="anchor-link" href="#l0608-view-outlives-its-source">L0608 View outlives its source</a></h2>
+<p>A <code class="inline-code">str</code>, <code class="inline-code">[]T</code> or <code class="inline-code">*T</code> is used, returned or stored after what it points into is
+freed, moved or out of scope, or where it would outlive it. What a region holds
+is a view of the region. A function that keeps what it is given can&#39;t be made a
+function value (<code class="inline-code">&amp;f</code>), as calls through one are taken not to keep it; nor can a
+type be made an interface value if one of its methods does.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> tail</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> str</span><span style="color:#E8E8E8">)</span><span style="color:#7DCFFF"> str</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> s</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">1</span><span style="color:#FFC799">..</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> f</span><span style="color:#E8E8E8">()</span><span style="color:#7DCFFF"> str</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> o</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> $</span><span style="color:#99FFE4">"owned"</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-error"><span style="color:#FFC799">	return</span><span style="color:#FFC799"> tail</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">o</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: This returns a view of `o`, which ends with f</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><p>Use it sooner, or keep a copy with <code class="inline-code">strings::clone</code>.</p>
+<h2 id="l0609-source-changed-under-a-view" class="doc-h2"><a class="anchor-link" href="#l0609-source-changed-under-a-view">L0609 Source changed under a view</a></h2>
+<p>A view is used, read or written through, after what it points into may have
+moved: an <code class="inline-code">append</code>, <code class="inline-code">insert</code> or <code class="inline-code">delete</code> (of the owner, or through a pointer to
+it), an assignment, or a call that changes it.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> b</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#E8E8E8">[]</span><span style="color:#7DCFFF">u8</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> alloc</span><span style="color:#E8E8E8">([</span><span style="color:#99FFE4">1u8</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> b</span><span style="color:#E8E8E8">[</span><span style="color:#FFC799">..</span><span style="color:#99FFE4">1</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	append</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">b</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 2</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line line-error"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">v</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">0</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: `v` views `b`, which grew on line 4</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>Take the view after the change.</p>
+<p>The same holds inside one call: given a view of what another of its
+arguments changes, a function that uses the view after that change would
+see moved memory. Each function&#39;s typedef says which of its arguments it
+uses after changing which others, so a call is only an error when it uses
+the view after the change, not before:</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> grow</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">a</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *^</span><span style="color:#E8E8E8">[]</span><span style="color:#7DCFFF">int</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> b</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#7DCFFF">int</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	append</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">a</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#C8C8C8">	*</span><span style="color:#FFFFFF">b</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 5</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> xs</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#E8E8E8">[]</span><span style="color:#7DCFFF">int</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> []</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	append</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">xs</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line line-error"><span style="color:#FFC799">	grow</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">xs</span><span style="color:#C8C8C8">,</span><span style="color:#C8C8C8"> &#x26;</span><span style="color:#FFFFFF">xs</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">0</span><span style="color:#E8E8E8">])</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: This argument views `xs`, which `grow` may change through its argument 1</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>Give the value instead of a view of it, or make the change and the use two
+calls. Arguments that can&#39;t overlap are fine: different fields of one
+value (<code class="inline-code">f(&amp;b.items, &amp;b.count)</code>), and a field held in place beside what
+grows (<code class="inline-code">next(c, &amp;c.cur)</code>).</p>
+<h2 id="l0700-data-race" class="doc-h2"><a class="anchor-link" href="#l0700-data-race">L0700 Data race</a></h2>
+<p>Code started on another thread (a closure given to <code class="inline-code">thread::spawn</code>,
+<code class="inline-code">coro::detach</code>, <code class="inline-code">@all</code>&#39;s children and the like, or a function it calls) changes data other
+threads may use at the same time: a mutable global, or what a pointer
+shared by several running closures points to.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> thread</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> counter</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> t</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> thread</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">spawn</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">fn</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FFFFFF">		counter</span><span style="color:#C8C8C8"> +=</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: `counter` is changed by a thread while other threads may use it.</span></span>
+<span class="line"><span style="color:#E8E8E8">	})</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FF9FC8">	thread</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">join</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">t</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>Make the data thread-safe: a <code class="inline-code">thread::atomic</code>, or a value guarded by a
+lock, <code class="inline-code">thread::new_shared(v)</code>, reached with <code class="inline-code">thread::with</code>. Changes between
+<code class="inline-code">thread::lock(m)</code> and <code class="inline-code">thread::unlock(m)</code> are fine, as is a global its
+module guards itself, marked <code class="inline-code">@synchronised</code>.</p>
+<p>Children that run at the same time may not reach the same data when one of
+them may change it, whatever pointer leads there:</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> coro</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> bump</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#7DCFFF">int</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">p</span><span style="color:#C8C8C8"> +=</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">;</span><span style="color:#E8E8E8"> }</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#C8C8C8"> &#x26;</span><span style="color:#FFFFFF">n</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-error"><span style="color:#FF9FC8">	@all</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">bump</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">,</span><span style="color:#FFC799"> bump</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">))</span><span style="color:#C8C8C8">!;</span><span style="color:#737373"> // error: `p` reaches data (an int) that may change while another thread uses it.</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>Give each child its own data and gather the results, share it read-only
+(<code class="inline-code">*const T</code>), or make it thread-safe. A value holding connections, such as
+a <code class="inline-code">kv::client</code> or <code class="inline-code">kv::cluster</code>, belongs to one child: each opens its own.</p>
+<h2 id="l0800-unsafe-operation" class="doc-h2"><a class="anchor-link" href="#l0800-unsafe-operation">L0800 Unsafe operation</a></h2>
+<p>Converting between unrelated pointer types, from an integer or <code class="inline-code">null</code> to a
+non-nullable pointer (<code class="inline-code">@*T(x)</code>), changing ownership or slice element types by
+conversion, pointer arithmetic or subtraction, indexing or slicing a <code class="inline-code">[*]T</code>
+array, shrinking a non-owned slice with <code class="inline-code">delete</code>, calling C, and calling an
+<code class="inline-code">@unsafe</code> function or method can&#39;t be checked by the compiler, so each
+needs <code class="inline-code">unsafe { ... }</code>. The impls of an <code class="inline-code">@unsafe</code> interface method are
+<code class="inline-code">@unsafe</code> too, and only those.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> x</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-error"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> @</span><span style="color:#C8C8C8">*</span><span style="color:#E8E8E8">[</span><span style="color:#C8C8C8">*</span><span style="color:#E8E8E8">]</span><span style="color:#7DCFFF">u64</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">x</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: Converting *int to *[*]u64 can make a pointer to memory that isn't what it says, so it needs `unsafe { ... }`.</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>Make sure it is right, then mark it: <code class="inline-code">unsafe { @*[*]u64(&amp;x) }</code>.</p>
+<h2 id="l0801-unneeded-unsafe-block" class="doc-h2"><a class="anchor-link" href="#l0801-unneeded-unsafe-block">L0801 Unneeded unsafe block</a></h2>
+<p>An <code class="inline-code">unsafe { ... }</code> holds nothing unsafe: no unsafe operation, and no
+pointer it vouches for. Each block marks code to read with care, so one
+that needs no care is an error.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line line-error"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> twice</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">x</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8">)</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> unsafe</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> x</span><span style="color:#C8C8C8"> *</span><span style="color:#99FFE4"> 2</span><span style="color:#E8E8E8"> }</span><span style="color:#737373"> // error: This unsafe block does nothing unsafe.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">twice</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">2</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 4</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><p>Remove it, keeping what is inside: <code class="inline-code">fn twice(x: int) int = x * 2;</code>. A block
+inside an <code class="inline-code">@unsafe</code> function is unneeded for its operations, which the
+function allows already.</p>
+<h2 id="l0900-unknown-tag" class="doc-h2"><a class="anchor-link" href="#l0900-unknown-tag">L0900 Unknown tag</a></h2>
+<p>A field has a tag no imported module defines. It is an error, so that a
+misspelt tag is never quietly ignored.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> json</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> user</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FF9FC8">	@josn</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"id"</span><span style="color:#E8E8E8">)</span><span style="color:#FFFFFF"> id</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8">,</span><span style="color:#737373"> // error: @josn is an unknown tag</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><p>Check the spelling, and that the module defining it is imported.</p>
+<h2 id="l0901-ambiguous-tag" class="doc-h2"><a class="anchor-link" href="#l0901-ambiguous-tag">L0901 Ambiguous tag</a></h2>
+<p>Two modules this file can see define the same shorthand. Name the one you
+mean, as <code class="inline-code">@json::field(...)</code>, or write the long form,
+<code class="inline-code">@tag(json::field { ... })</code>.</p>
+<h2 id="l0902-bad-tag-value" class="doc-h2"><a class="anchor-link" href="#l0902-bad-tag-value">L0902 Bad tag value</a></h2>
+<p>A tag must be a constant of a declared struct type: <code class="inline-code">@tag(5)</code> is not one, and
+neither is a value only known when the program runs.</p>
+<h2 id="l0903-bad-tag-arguments" class="doc-h2"><a class="anchor-link" href="#l0903-bad-tag-arguments">L0903 Bad tag arguments</a></h2>
+<p>A tag&#39;s arguments name fields of its type, or set them in order.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> json</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> user</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FF9FC8">	@json</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"id"</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> nope</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#FFFFFF"> id</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8">,</span><span style="color:#737373"> // error: @json has no argument `nope`</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><h2 id="l0904-repeated-tag" class="doc-h2"><a class="anchor-link" href="#l0904-repeated-tag">L0904 Repeated tag</a></h2>
+<p>A field has two tags of one type. Remove one.</p>
+<h2 id="l0905-a-tags-rule-failed" class="doc-h2"><a class="anchor-link" href="#l0905-a-tags-rule-failed">L0905 A tag&#39;s rule failed</a></h2>
+<p>The library that defines a tag checks how it is used, while compiling.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> config</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> server</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> struct</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FF9FC8">	@config</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"port"</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> default</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> "8080"</span><span style="color:#E8E8E8">)</span><span style="color:#FFFFFF"> port</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8">,</span><span style="color:#737373"> // error: Bad tag on field `port` of server: its default is not of the field's type</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><h2 id="l0906-generator-error" class="doc-h2"><a class="anchor-link" href="#l0906-generator-error">L0906 Generator error</a></h2>
+<p>A generator such as <code class="inline-code">config::load[T]</code> cannot handle a field of <code class="inline-code">T</code>, or
+<code class="inline-code">@for</code>, <code class="inline-code">@fields</code> or <code class="inline-code">@if</code> is misused.</p>
+<div class="code-frame" data-lang="text">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">text</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code>type server = struct { ratio: f64 };
+
+let s = config::load::[server]()?;
+
+error[L0906]: this field has no @config tag: field `ratio` of server.</code></pre>
+</div><h2 id="l1000-a-failure-would-lose-an-owner" class="doc-h2"><a class="anchor-link" href="#l1000-a-failure-would-lose-an-owner">L1000 A failure would lose an owner</a></h2>
+<p>With <code class="inline-code">unit::error</code> in the result, a false condition returns. A false <code class="inline-code">ensures</code>
+would drop an owner the function returned, and a false <code class="inline-code">requires</code> an owner
+passed to it.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> unit</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line line-error"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> take</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#7DCFFF">int</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#7DCFFF">int</span><span style="color:#C8C8C8"> |</span><span style="color:#FF9FC8"> unit</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">error</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> requires</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">n</span><span style="color:#C8C8C8"> ></span><span style="color:#99FFE4"> 0</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span><span style="color:#737373"> // error: A requires clause can't return a failure from a function that takes an owner</span></span>
+<span class="line"><span style="color:#FFC799">	free</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	return</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><p>Take <code class="inline-code">unit::error</code> out of the result, so that a false condition stops the
+program, or check it in the body and free the owner there.</p>
+<h2 id="l1001-a-failures-message-owns-memory" class="doc-h2"><a class="anchor-link" href="#l1001-a-failures-message-owns-memory">L1001 A failure&#39;s message owns memory</a></h2>
+<p>A failure returned as a value holds its message, and nothing would free
+<code class="inline-code">$&quot;...&quot;</code>.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> unit</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line line-error"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> half</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">n</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#7DCFFF">int</span><span style="color:#C8C8C8"> |</span><span style="color:#FF9FC8"> unit</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">error</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> requires</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">n</span><span style="color:#C8C8C8"> %</span><span style="color:#99FFE4"> 2</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">,</span><span style="color:#FFC799"> $</span><span style="color:#99FFE4">"</span><span style="color:#FFC799">{</span><span style="color:#FFFFFF">n</span><span style="color:#FFC799">}</span><span style="color:#99FFE4"> is odd"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8"> /</span><span style="color:#99FFE4"> 2</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: A failure returned as a value holds its message, so it must be a plain str</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><h2 id="l1002-expect-with-nowhere-to-fail" class="doc-h2"><a class="anchor-link" href="#l1002-expect-with-nowhere-to-fail">L1002 @expect with nowhere to fail</a></h2>
+<p>When its time runs out, <code class="inline-code">@expect</code> returns <code class="inline-code">unit::expectation_failed</code>, so the
+function&#39;s result must hold it.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> ready</span><span style="color:#E8E8E8">()</span><span style="color:#7DCFFF"> bool</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> true</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> wait</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FF9FC8">	@expect</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">within</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 100</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> {</span><span style="color:#737373"> // error: @expect needs unit::error in the function's result</span></span>
+<span class="line"><span style="color:#FFC799">		assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">ready</span><span style="color:#E8E8E8">())</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">	}</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><p>Add <code class="inline-code">unit::error</code> to the result.</p>
+<h2 id="l1003-an-expects-time" class="doc-h2"><a class="anchor-link" href="#l1003-an-expects-time">L1003 An @expect&#39;s time</a></h2>
+<p>Nothing waits forever by accident: <code class="inline-code">within</code> is required, and it and <code class="inline-code">every</code> are
+whole numbers of milliseconds, of any integer type.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> unit</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> ready</span><span style="color:#E8E8E8">()</span><span style="color:#7DCFFF"> bool</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> true</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> wait</span><span style="color:#E8E8E8">()</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">void</span><span style="color:#C8C8C8"> |</span><span style="color:#FF9FC8"> unit</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">error</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FF9FC8">	@expect</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">every</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 10</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> {</span><span style="color:#737373"> // error: @expect needs to know how long to wait</span></span>
+<span class="line"><span style="color:#FFC799">		assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">ready</span><span style="color:#E8E8E8">())</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">	}</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><h2 id="l1004-a-condition-that-can-wait" class="doc-h2"><a class="anchor-link" href="#l1004-a-condition-that-can-wait">L1004 A condition that can wait</a></h2>
+<p><code class="inline-code">requires</code> and <code class="inline-code">ensures</code> are checked once, and never wait, so a condition can&#39;t
+call anything that runs an <code class="inline-code">@expect</code>, however many calls away it is. Calls through
+function pointers and closures can&#39;t be followed.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> unit</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> ready</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">n</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#7DCFFF">bool</span><span style="color:#C8C8C8"> |</span><span style="color:#FF9FC8"> unit</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">error</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	return</span><span style="color:#FF9FC8"> @expect</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">within</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 10</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">		yield</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8"> ></span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">	}</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> check</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">n</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8">)</span><span style="color:#7DCFFF"> bool</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> ready</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">n</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> or</span><span style="color:#FFC799"> false</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line line-error"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> half</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">n</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8">)</span><span style="color:#7DCFFF"> int</span><span style="color:#FFC799"> requires</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">check</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">n</span><span style="color:#E8E8E8">))</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8"> /</span><span style="color:#99FFE4"> 2</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error: This condition can wait</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><p>Wait in the body, with <code class="inline-code">@expect</code>, before the check.</p>
+<div class="doc-status-bar"><div class="doc-status-left"><span class="doc-status-files">1 file changed</span><span class="doc-status-counts"><span class="doc-status-add">+798</span><span class="doc-status-del">-0</span></span><span class="doc-status-chevron" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span></div><a href="/lora-docs/specification/language-spec" class="doc-status-review" title="Review full language specification"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg><span>Review</span></a></div><nav class="pager" aria-label="Page pagination"><a href="/lora-docs/guides/reading-generated-code" class="pager-link prev"><span class="pager-dir">← Previous</span><span class="pager-label">Reading Generated QBE &amp; Assembly</span></a><a href="/lora-docs/guides/roadmap" class="pager-link next"><span class="pager-dir">Next →</span><span class="pager-label">Lora Roadmap</span></a></nav></article></main><aside class="toc" aria-label="On This Page"><div class="toc-title">On This Page</div><ul class="toc-list"><li><a href="#top" class="toc-link depth-2 is-active" data-toc-target="top">Table of contents</a></li><li><a href="#l0001-unknown-name" class="toc-link depth-2" data-toc-target="l0001-unknown-name">L0001 Unknown name</a></li><li><a href="#l0002-wrong-type" class="toc-link depth-2" data-toc-target="l0002-wrong-type">L0002 Wrong type</a></li><li><a href="#l0003-unhandled-error" class="toc-link depth-2" data-toc-target="l0003-unhandled-error">L0003 Unhandled error</a></li><li><a href="#l0004-no-error-can-happen" class="toc-link depth-2" data-toc-target="l0004-no-error-can-happen">L0004 No error can happen</a></li><li><a href="#l0005-fallback-with-or" class="toc-link depth-2" data-toc-target="l0005-fallback-with-or">L0005 Fallback with or</a></li><li><a href="#l0006-dropped-error" class="toc-link depth-2" data-toc-target="l0006-dropped-error">L0006 Dropped error</a></li><li><a href="#l0007-error-message" class="toc-link depth-2" data-toc-target="l0007-error-message">L0007 Error message</a></li><li><a href="#l0008-error-the-function-cant-return" class="toc-link depth-2" data-toc-target="l0008-error-the-function-cant-return">L0008 Error the function can&#39;t return</a></li><li><a href="#l0009-integer-overflow" class="toc-link depth-2" data-toc-target="l0009-integer-overflow">L0009 Integer overflow</a></li><li><a href="#l0100-memory-leak" class="toc-link depth-2" data-toc-target="l0100-memory-leak">L0100 Memory leak</a></li><li><a href="#l0101-owned-result-dropped" class="toc-link depth-2" data-toc-target="l0101-owned-result-dropped">L0101 Owned result dropped</a></li><li><a href="#l0102-use-after-free" class="toc-link depth-2" data-toc-target="l0102-use-after-free">L0102 Use after free</a></li><li><a href="#l0103-double-free" class="toc-link depth-2" data-toc-target="l0103-double-free">L0103 Double free</a></li><li><a href="#l0104-dangling-stack-pointer" class="toc-link depth-2" data-toc-target="l0104-dangling-stack-pointer">L0104 Dangling stack pointer</a></li><li><a href="#l0105-not-memory-from-alloc" class="toc-link depth-2" data-toc-target="l0105-not-memory-from-alloc">L0105 Not memory from alloc</a></li><li><a href="#l0106-defer-that-runs-at-once" class="toc-link depth-2" data-toc-target="l0106-defer-that-runs-at-once">L0106 Defer that runs at once</a></li><li><a href="#l0200-outside-the-view" class="toc-link depth-2" data-toc-target="l0200-outside-the-view">L0200 Outside the view</a></li><li><a href="#l0201-overlapping-views" class="toc-link depth-2" data-toc-target="l0201-overlapping-views">L0201 Overlapping views</a></li><li><a href="#l0202-const-field-of-a-view" class="toc-link depth-2" data-toc-target="l0202-const-field-of-a-view">L0202 Const field of a view</a></li><li><a href="#l0203-cant-change-this" class="toc-link depth-2" data-toc-target="l0203-cant-change-this">L0203 Can&#39;t change this</a></li><li><a href="#l0300-missing-format-value" class="toc-link depth-2" data-toc-target="l0300-missing-format-value">L0300 Missing format value</a></li><li><a href="#l0301-bad-format-placeholder" class="toc-link depth-2" data-toc-target="l0301-bad-format-placeholder">L0301 Bad format placeholder</a></li><li><a href="#l0400-outside-the-pattern-type" class="toc-link depth-2" data-toc-target="l0400-outside-the-pattern-type">L0400 Outside the pattern type</a></li><li><a href="#l0500-wrong-number-of-arguments" class="toc-link depth-2" data-toc-target="l0500-wrong-number-of-arguments">L0500 Wrong number of arguments</a></li><li><a href="#l0600-used-after-move" class="toc-link depth-2" data-toc-target="l0600-used-after-move">L0600 Used after move</a></li><li><a href="#l0601-moved-in-a-loop" class="toc-link depth-2" data-toc-target="l0601-moved-in-a-loop">L0601 Moved in a loop</a></li><li><a href="#l0602-loan-outlives-its-owner" class="toc-link depth-2" data-toc-target="l0602-loan-outlives-its-owner">L0602 Loan outlives its owner</a></li><li><a href="#l0604-owned-value-not-kept" class="toc-link depth-2" data-toc-target="l0604-owned-value-not-kept">L0604 Owned value not kept</a></li><li><a href="#l0605-move-out-of-a-field" class="toc-link depth-2" data-toc-target="l0605-move-out-of-a-field">L0605 Move out of a field</a></li><li><a href="#l0606-owner-overwritten" class="toc-link depth-2" data-toc-target="l0606-owner-overwritten">L0606 Owner overwritten</a></li><li><a href="#l0607-would-lose-an-owner" class="toc-link depth-2" data-toc-target="l0607-would-lose-an-owner">L0607 Would lose an owner</a></li><li><a href="#l0608-view-outlives-its-source" class="toc-link depth-2" data-toc-target="l0608-view-outlives-its-source">L0608 View outlives its source</a></li><li><a href="#l0609-source-changed-under-a-view" class="toc-link depth-2" data-toc-target="l0609-source-changed-under-a-view">L0609 Source changed under a view</a></li><li><a href="#l0700-data-race" class="toc-link depth-2" data-toc-target="l0700-data-race">L0700 Data race</a></li><li><a href="#l0800-unsafe-operation" class="toc-link depth-2" data-toc-target="l0800-unsafe-operation">L0800 Unsafe operation</a></li><li><a href="#l0801-unneeded-unsafe-block" class="toc-link depth-2" data-toc-target="l0801-unneeded-unsafe-block">L0801 Unneeded unsafe block</a></li><li><a href="#l0900-unknown-tag" class="toc-link depth-2" data-toc-target="l0900-unknown-tag">L0900 Unknown tag</a></li><li><a href="#l0901-ambiguous-tag" class="toc-link depth-2" data-toc-target="l0901-ambiguous-tag">L0901 Ambiguous tag</a></li><li><a href="#l0902-bad-tag-value" class="toc-link depth-2" data-toc-target="l0902-bad-tag-value">L0902 Bad tag value</a></li><li><a href="#l0903-bad-tag-arguments" class="toc-link depth-2" data-toc-target="l0903-bad-tag-arguments">L0903 Bad tag arguments</a></li><li><a href="#l0904-repeated-tag" class="toc-link depth-2" data-toc-target="l0904-repeated-tag">L0904 Repeated tag</a></li><li><a href="#l0905-a-tags-rule-failed" class="toc-link depth-2" data-toc-target="l0905-a-tags-rule-failed">L0905 A tag&#39;s rule failed</a></li><li><a href="#l0906-generator-error" class="toc-link depth-2" data-toc-target="l0906-generator-error">L0906 Generator error</a></li><li><a href="#l1000-a-failure-would-lose-an-owner" class="toc-link depth-2" data-toc-target="l1000-a-failure-would-lose-an-owner">L1000 A failure would lose an owner</a></li><li><a href="#l1001-a-failures-message-owns-memory" class="toc-link depth-2" data-toc-target="l1001-a-failures-message-owns-memory">L1001 A failure&#39;s message owns memory</a></li><li><a href="#l1002-expect-with-nowhere-to-fail" class="toc-link depth-2" data-toc-target="l1002-expect-with-nowhere-to-fail">L1002 @expect with nowhere to fail</a></li><li><a href="#l1003-an-expects-time" class="toc-link depth-2" data-toc-target="l1003-an-expects-time">L1003 An @expect&#39;s time</a></li><li><a href="#l1004-a-condition-that-can-wait" class="toc-link depth-2" data-toc-target="l1004-a-condition-that-can-wait">L1004 A condition that can wait</a></li></ul></aside></div><dialog id="search-dialog" class="search-modal" aria-label="Search Lora documentation"><div class="search-modal-head"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><input id="search-input" class="search-input" type="search" placeholder="Search syntax, errors (L0800), or stdlib (http::get, sql::numeric_buf_size)..." autocomplete="off"><kbd class="search-kbd">ESC</kbd></div><div id="search-results" class="search-results"><div style="padding: 16px; font-size: 0.86rem; color: var(--text-muted);">Type to search pages, compiler error codes, and 2,256 stdlib exports.</div></div></dialog><script>
+      // 1. Mobile sidebar drawer
+      const menuBtn = document.getElementById('mobile-menu-btn');
+      const sidebar = document.getElementById('sidebar');
+      if (menuBtn && sidebar) {
+        menuBtn.addEventListener('click', () => {
+          const open = sidebar.classList.toggle('is-open');
+          menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+
+      // Keep active nav link scrolled comfortably into view on load
+      const activeNav = sidebar?.querySelector('.nav-link.is-active');
+      if (activeNav) {
+        activeNav.scrollIntoView({ block: 'nearest' });
+      }
+
+      // 2. Dark / Light mode toggle (keeps Lora Fjord dark surface on all code blocks & tables)
+      const themeBtn = document.getElementById('theme-toggle');
+      themeBtn?.addEventListener('click', () => {
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        if (isLight) {
+          document.documentElement.removeAttribute('data-theme');
+          try { localStorage.setItem('lora-docs-theme', 'dark'); } catch {}
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+          try { localStorage.setItem('lora-docs-theme', 'light'); } catch {}
+        }
+      });
+
+      // 3. Code block copy & wrap buttons
+      document.addEventListener('click', async (ev) => {
+        const target = ev.target instanceof Element ? ev.target : null;
+        if (!target) return;
+        const wrapBtn = target.closest('.wrap-btn');
+        if (wrapBtn) {
+          const frame = wrapBtn.closest('.code-frame');
+          frame?.classList.toggle('is-wrapped');
+          wrapBtn.classList.toggle('is-wrapped');
+          return;
+        }
+        const btn = target.closest('.copy-btn');
+        if (!btn) return;
+        const frame = btn.closest('.code-frame');
+        const codeEl = frame?.querySelector('pre code') || frame?.querySelector('pre');
+        if (!codeEl) return;
+        try {
+          await navigator.clipboard.writeText(codeEl.textContent || '');
+          btn.classList.add('copied');
+          setTimeout(() => btn.classList.remove('copied'), 1500);
+        } catch {}
+      });
+
+      // 4. Right TOC scroll-spy
+      const tocLinks = Array.from(document.querySelectorAll('.toc-link'));
+      if (tocLinks.length > 1 && 'IntersectionObserver' in window) {
+        const map = new Map(tocLinks.map((a) => [a.getAttribute('data-toc-target'), a]));
+        const targets = tocLinks
+          .map((a) => document.getElementById(a.getAttribute('data-toc-target') || ''))
+          .filter(Boolean);
+        const obs = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                tocLinks.forEach((l) => l.classList.remove('is-active'));
+                map.get(entry.target.id)?.classList.add('is-active');
+                break;
+              }
+            }
+          },
+          { rootMargin: '-72px 0px -70% 0px', threshold: 0 }
+        );
+        targets.forEach((el) => obs.observe(el));
+      }
+
+      // 5. Lazy Search Modal (Ctrl/Cmd+K or /)
+      const dialog = document.getElementById('search-dialog');
+      const openBtn = document.getElementById('open-search');
+      const input = document.getElementById('search-input');
+      const resultsEl = document.getElementById('search-results');
+      let searchEntries = null;
+
+      const baseUrl = document.body.dataset.base || '/';
+
+      async function ensureIndex() {
+        if (searchEntries) return searchEntries;
+        try {
+          const res = await fetch(baseUrl + 'search-index.json');
+          searchEntries = await res.json();
+        } catch {
+          searchEntries = [];
+        }
+        return searchEntries;
+      }
+
+      function renderResults(query) {
+        if (!resultsEl || !searchEntries) return;
+        const q = query.trim().toLowerCase();
+        const matches = (q
+          ? searchEntries.filter(
+              (item) =>
+                item.title.toLowerCase().includes(q) ||
+                item.section.toLowerCase().includes(q) ||
+                item.subtitle.toLowerCase().includes(q)
+            )
+          : searchEntries.slice(0, 18)
+        ).slice(0, 35);
+
+        if (!matches.length) {
+          resultsEl.innerHTML =
+            '<div style="padding:16px;font-size:0.86rem;color:var(--text-muted)">No matches found.</div>';
+          return;
+        }
+        resultsEl.innerHTML = '';
+        for (const m of matches) {
+          const a = document.createElement('a');
+          a.href = baseUrl + String(m.slug || '').replace(/^\/+/, '');
+          a.className = 'search-item';
+          const left = document.createElement('div');
+          const t = document.createElement('div');
+          t.className = 'search-item-title';
+          t.textContent = m.title;
+          const sub = document.createElement('div');
+          sub.className = 'search-item-sub';
+          sub.textContent = m.subtitle;
+          left.appendChild(t);
+          if (m.subtitle) left.appendChild(sub);
+          const sec = document.createElement('span');
+          sec.className = 'search-item-section';
+          sec.textContent = m.section;
+          a.appendChild(left);
+          a.appendChild(sec);
+          resultsEl.appendChild(a);
+        }
+      }
+
+      async function openSearch() {
+        if (!dialog || !(dialog instanceof HTMLDialogElement)) return;
+        dialog.showModal();
+        input?.focus();
+        await ensureIndex();
+        renderResults(input?.value || '');
+      }
+
+      openBtn?.addEventListener('click', openSearch);
+      dialog?.addEventListener('click', (e) => {
+        if (e.target === dialog) dialog.close();
+      });
+      input?.addEventListener('input', () => renderResults(input.value));
+
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          if (dialog?.open) dialog.close();
+          else openSearch();
+        } else if (
+          e.key === '/' &&
+          document.activeElement?.tagName !== 'INPUT' &&
+          document.activeElement?.tagName !== 'TEXTAREA'
+        ) {
+          e.preventDefault();
+          openSearch();
+        }
+      });
+    </script></body></html>

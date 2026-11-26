@@ -1,0 +1,910 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Concurrency &amp; Data Races · Lora Language</title><meta name="description" content="M:N cooperative coroutines (@all, @first, @scope, @go, @each), structured cancellation &amp; deadlines, task-locals (coro::local), coro::serial, thread::shared, and compile-time data-race proofs (L0700)."><script>
+      try {
+        const t = localStorage.getItem('lora-docs-theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      } catch {}
+    </script><link rel="stylesheet" href="/lora-docs/_astro/PageContent.NRsqP4nx.css"></head><body data-base="/lora-docs/"><header class="topbar"><div class="topbar-left"><button id="mobile-menu-btn" class="menu-btn" type="button" aria-label="Toggle navigation" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button><a href="/lora-docs/" class="brand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="The Lora owl">
+  <title>The Lora owl</title>
+  <path d="M 48 88 L 60 24 L 96 60 Q 128 52 160 60 L 196 24 L 208 88 Q 232 120 224 160 Q 216 232 128 232 Q 40 232 32 160 Q 24 120 48 88 Z" fill="#ff9fc8"/>
+  <circle cx="92" cy="128" r="40" fill="#ffffff" stroke="#ffc799" stroke-width="13"/>
+  <circle cx="164" cy="128" r="40" fill="#ffffff" stroke="#ffc799" stroke-width="13"/>
+  <circle cx="96" cy="132" r="18" fill="#101010"/>
+  <circle cx="160" cy="132" r="18" fill="#101010"/>
+  <polygon points="114,168 142,168 128,194" fill="#ffc799"/>
+</svg>
+<span>Lora Language</span></a><span class="version-pill">v0.1.0</span></div><button id="open-search" type="button" class="search-trigger" aria-label="Search documentation"><span class="search-trigger-left"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><span>Search documentation...</span></span><kbd class="search-kbd">Ctrl K</kbd></button><div class="topbar-right"><button id="theme-toggle" type="button" class="icon-btn" aria-label="Toggle color theme" title="Toggle dark/light theme"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg></button><a href="/lora-docs/specification/standard-library" class="icon-btn" aria-label="Standard Library Index" title="Standard Library (57 modules)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg></a></div></header><div class="shell"><aside id="sidebar" class="sidebar" aria-label="Documentation Navigation"><details class="nav-group" open><summary class="nav-group-summary"><span>GETTING STARTED</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/getting-started/introduction" class="nav-link">Introduction</a></li><li><a href="/lora-docs/getting-started/toolchain-and-editors" class="nav-link">Toolchain &amp; Editors</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>LANGUAGE DESIGN</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/language-design/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/language-design/aliases" class="nav-link">Aliases &amp; Type Declarations</a></li><li><a href="/lora-docs/language-design/assignment" class="nav-link">Assignment</a></li><li><a href="/lora-docs/language-design/blocks-and-statements" class="nav-link">Blocks and Statements</a></li><li><a href="/lora-docs/language-design/structs-unions-interfaces" class="nav-link">Structs, Unions &amp; Interfaces</a></li><li><a href="/lora-docs/language-design/declaring-entities" class="nav-link">Declaring Entities</a></li><li><a href="/lora-docs/language-design/functions" class="nav-link">Functions</a></li><li><a href="/lora-docs/language-design/lambdas" class="nav-link">Lambdas &amp; Closures</a></li><li><a href="/lora-docs/language-design/metaprogramming" class="nav-link">Metaprogramming &amp; Comptime</a></li><li><a href="/lora-docs/language-design/name-lookup" class="nav-link">Name Lookup</a></li><li><a href="/lora-docs/language-design/naming-conventions" class="nav-link">Naming Conventions</a></li><li><a href="/lora-docs/language-design/pattern-matching" class="nav-link">Pattern Matching</a></li><li><a href="/lora-docs/language-design/sum-types" class="nav-link">Sum Types, Optionals &amp; Enums</a></li><li><a href="/lora-docs/language-design/tuples" class="nav-link">Tuples &amp; Named Tuples</a></li><li><a href="/lora-docs/language-design/type-inference" class="nav-link">Type Inference</a></li><li><a href="/lora-docs/language-design/values-pointers-views" class="nav-link">Values, Owners, Pointers &amp; Views</a></li><li><a href="/lora-docs/language-design/variadics" class="nav-link">Variadics</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>CODE &amp; NAME ORGANIZATION</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/organization/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/organization/source-files" class="nav-link">Source Files &amp; Modules</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>CONTROL FLOW</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/control-flow/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/control-flow/conditionals" class="nav-link">Conditionals</a></li><li><a href="/lora-docs/control-flow/loops" class="nav-link">Loops</a></li><li><a href="/lora-docs/control-flow/return-yield-defer" class="nav-link">Return, Yield &amp; Defer</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>EXPRESSIONS</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/expressions/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/expressions/arithmetic" class="nav-link">Arithmetic &amp; Overflow</a></li><li><a href="/lora-docs/expressions/as-expressions" class="nav-link">Conversions (@T) &amp; Assertions</a></li><li><a href="/lora-docs/expressions/bitwise" class="nav-link">Bitwise &amp; @bits</a></li><li><a href="/lora-docs/expressions/comparison-operators" class="nav-link">Comparison Operators</a></li><li><a href="/lora-docs/expressions/if-expressions" class="nav-link">If &amp; Match Expressions</a></li><li><a href="/lora-docs/expressions/implicit-conversions" class="nav-link">Implicit Conversions</a></li><li><a href="/lora-docs/expressions/indexing" class="nav-link">Indexing &amp; Slicing</a></li><li><a href="/lora-docs/expressions/literals" class="nav-link">Literals</a></li><li><a href="/lora-docs/expressions/logical-operators" class="nav-link">Logical Operators</a></li><li><a href="/lora-docs/expressions/member-access" class="nav-link">Member Access</a></li><li><a href="/lora-docs/expressions/pointer-operators" class="nav-link">Pointer &amp; Ownership Operators</a></li><li><a href="/lora-docs/expressions/type-operators" class="nav-link">Type &amp; Layout Operators</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>GENERICS</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/generics/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/generics/goals" class="nav-link">Goals</a></li><li><a href="/lora-docs/generics/terminology" class="nav-link">Terminology</a></li><li><a href="/lora-docs/generics/generics-overview" class="nav-link">Constraints Overview</a></li><li><a href="/lora-docs/generics/generics-details" class="nav-link">Generics Details</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>INTEROPERABILITY</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/interoperability/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/interoperability/c-abi" class="nav-link">Philosophy, Goals &amp; C ABI</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>LEXICAL CONVENTIONS</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/lexical/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/lexical/comments" class="nav-link">Comments</a></li><li><a href="/lora-docs/lexical/numeric-literals" class="nav-link">Numeric Literals</a></li><li><a href="/lora-docs/lexical/string-literals" class="nav-link">String &amp; Rune Literals</a></li><li><a href="/lora-docs/lexical/symbolic-tokens" class="nav-link">Symbolic Tokens</a></li><li><a href="/lora-docs/lexical/whitespace" class="nav-link">Whitespace &amp; Semicolons</a></li><li><a href="/lora-docs/lexical/words" class="nav-link">Words &amp; Keywords</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>SAFETY</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/safety/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/safety/terminology" class="nav-link">Terminology</a></li><li><a href="/lora-docs/safety/memory-ownership" class="nav-link">Memory &amp; Ownership Safety</a></li><li><a href="/lora-docs/safety/borrow-loan-views" class="nav-link">Borrow, Loan &amp; View Safety</a></li><li><a href="/lora-docs/safety/concurrency-races" class="nav-link is-active">Concurrency &amp; Data Races</a></li><li><a href="/lora-docs/safety/stack-overflow" class="nav-link">Stack Overflow &amp; @depth</a></li><li><a href="/lora-docs/safety/contracts-and-unit-functions" class="nav-link">Contracts &amp; Unit Functions</a></li><li><a href="/lora-docs/safety/unsafe-code" class="nav-link">Unsafe Code &amp; Hardening</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>PRINCIPLES</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/principles/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/principles/error-handling" class="nav-link">Error Handling</a></li><li><a href="/lora-docs/principles/information-accumulation" class="nav-link">Information Accumulation</a></li><li><a href="/lora-docs/principles/library-apis-only" class="nav-link">Library APIs Only</a></li><li><a href="/lora-docs/principles/low-context-sensitivity" class="nav-link">Low Context Sensitivity</a></li><li><a href="/lora-docs/principles/namespace-cleanliness" class="nav-link">Namespace Cleanliness</a></li><li><a href="/lora-docs/principles/one-way" class="nav-link">One Way</a></li><li><a href="/lora-docs/principles/progressive-disclosure" class="nav-link">Progressive Disclosure</a></li><li><a href="/lora-docs/principles/safety-strategy" class="nav-link">Safety Strategy</a></li><li><a href="/lora-docs/principles/static-open-extension" class="nav-link">Static Open Extension</a></li><li><a href="/lora-docs/principles/success-criteria" class="nav-link">Success Criteria</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>GUIDES</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/guides/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/guides/glossary" class="nav-link">Glossary</a></li><li><a href="/lora-docs/guides/idiomatic-lora" class="nav-link">Idiomatic Lora &amp; Style Guide</a></li><li><a href="/lora-docs/guides/testing-and-benchmarking" class="nav-link">Testing, Benchmarks &amp; Fuzzing</a></li><li><a href="/lora-docs/guides/concurrency-and-sync" class="nav-link">Concurrency, Sync &amp; Context</a></li><li><a href="/lora-docs/guides/containers-and-data" class="nav-link">Containers, Data &amp; Checksums</a></li><li><a href="/lora-docs/guides/web-and-auth" class="nav-link">Web, HTTP &amp; Auth</a></li><li><a href="/lora-docs/guides/resilience-and-observability" class="nav-link">Resilience &amp; Observability</a></li><li><a href="/lora-docs/guides/cli-and-markup" class="nav-link">CLI, Terminal &amp; Markup</a></li><li><a href="/lora-docs/guides/math-and-algorithms" class="nav-link">Math, Stats &amp; Algorithms</a></li><li><a href="/lora-docs/guides/allocators" class="nav-link">Allocators &amp; Memory Strategies</a></li><li><a href="/lora-docs/guides/sql-and-postgresql" class="nav-link">Typed SQL, PostgreSQL &amp; SQLite</a></li><li><a href="/lora-docs/guides/tags-and-codecs" class="nav-link">Structure Tags &amp; Codecs</a></li><li><a href="/lora-docs/guides/encodings-and-crypto" class="nav-link">Encodings &amp; Cryptography</a></li><li><a href="/lora-docs/guides/reading-generated-code" class="nav-link">Reading Generated Code</a></li><li><a href="/lora-docs/guides/diagnostic-catalog" class="nav-link">Diagnostic Catalog (L0001–L1004)</a></li><li><a href="/lora-docs/guides/roadmap" class="nav-link">Roadmap</a></li><li><a href="/lora-docs/guides/summary" class="nav-link">Stdlib &amp; Language Summary</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>SPECIFICATION</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/specification/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/specification/language-spec" class="nav-link">Language Spec (Full 27 Chapters)</a></li><li><a href="/lora-docs/specification/execution" class="nav-link">Execution &amp; Runtime</a></li><li><a href="/lora-docs/specification/lexing" class="nav-link">Lexing</a></li><li><a href="/lora-docs/specification/libraries" class="nav-link">Libraries &amp; Typedefs</a></li><li><a href="/lora-docs/specification/names" class="nav-link">Names &amp; Visibility</a></li><li><a href="/lora-docs/specification/parsing" class="nav-link">Parsing &amp; Limits</a></li><li><a href="/lora-docs/specification/semantics" class="nav-link">Semantics &amp; Checking</a></li><li><a href="/lora-docs/specification/standard-library" class="nav-link">Standard Library Index</a></li></ul><details class="nav-subdetails"><summary class="nav-subsummary"><span>Standard Library Modules (141)</span><svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/stdlib/mem" class="nav-link">mem</a></li><li><a href="/lora-docs/stdlib/expanse" class="nav-link">expanse</a></li><li><a href="/lora-docs/stdlib/pool" class="nav-link">pool</a></li><li><a href="/lora-docs/stdlib/allocator" class="nav-link">allocator</a></li><li><a href="/lora-docs/stdlib/arena" class="nav-link">arena</a></li><li><a href="/lora-docs/stdlib/scratch" class="nav-link">scratch</a></li><li><a href="/lora-docs/stdlib/rc" class="nav-link">rc</a></li><li><a href="/lora-docs/stdlib/arc" class="nav-link">arc</a></li><li><a href="/lora-docs/stdlib/slotmap" class="nav-link">slotmap</a></li><li><a href="/lora-docs/stdlib/intern" class="nav-link">intern</a></li><li><a href="/lora-docs/stdlib/strconv" class="nav-link">strconv</a></li><li><a href="/lora-docs/stdlib/utf8" class="nav-link">utf8</a></li><li><a href="/lora-docs/stdlib/utf16" class="nav-link">utf16</a></li><li><a href="/lora-docs/stdlib/unicode" class="nav-link">unicode</a></li><li><a href="/lora-docs/stdlib/ascii" class="nav-link">ascii</a></li><li><a href="/lora-docs/stdlib/strings" class="nav-link">strings</a></li><li><a href="/lora-docs/stdlib/bytes" class="nav-link">bytes</a></li><li><a href="/lora-docs/stdlib/compare" class="nav-link">compare</a></li><li><a href="/lora-docs/stdlib/sort" class="nav-link">sort</a></li><li><a href="/lora-docs/stdlib/slices" class="nav-link">slices</a></li><li><a href="/lora-docs/stdlib/iter" class="nav-link">iter</a></li><li><a href="/lora-docs/stdlib/fuzzy" class="nav-link">fuzzy</a></li><li><a href="/lora-docs/stdlib/io" class="nav-link">io</a></li><li><a href="/lora-docs/stdlib/bufio" class="nav-link">bufio</a></li><li><a href="/lora-docs/stdlib/bitio" class="nav-link">bitio</a></li><li><a href="/lora-docs/stdlib/fmt" class="nav-link">fmt</a></li><li><a href="/lora-docs/stdlib/os" class="nav-link">os</a></li><li><a href="/lora-docs/stdlib/env" class="nav-link">env</a></li><li><a href="/lora-docs/stdlib/dotenv" class="nav-link">dotenv</a></li><li><a href="/lora-docs/stdlib/path" class="nav-link">path</a></li><li><a href="/lora-docs/stdlib/fs" class="nav-link">fs</a></li><li><a href="/lora-docs/stdlib/tempfile" class="nav-link">tempfile</a></li><li><a href="/lora-docs/stdlib/glob" class="nav-link">glob</a></li><li><a href="/lora-docs/stdlib/time" class="nav-link">time</a></li><li><a href="/lora-docs/stdlib/signal" class="nav-link">signal</a></li><li><a href="/lora-docs/stdlib/process" class="nav-link">process</a></li><li><a href="/lora-docs/stdlib/mmap" class="nav-link">mmap</a></li><li><a href="/lora-docs/stdlib/dl" class="nav-link">dl</a></li><li><a href="/lora-docs/stdlib/sys" class="nav-link">sys</a></li><li><a href="/lora-docs/stdlib/ipc" class="nav-link">ipc</a></li><li><a href="/lora-docs/stdlib/math" class="nav-link">math</a></li><li><a href="/lora-docs/stdlib/stats" class="nav-link">stats</a></li><li><a href="/lora-docs/stdlib/matrix" class="nav-link">matrix</a></li><li><a href="/lora-docs/stdlib/fft" class="nav-link">fft</a></li><li><a href="/lora-docs/stdlib/geo" class="nav-link">geo</a></li><li><a href="/lora-docs/stdlib/bits" class="nav-link">bits</a></li><li><a href="/lora-docs/stdlib/bitset" class="nav-link">bitset</a></li><li><a href="/lora-docs/stdlib/bitstructs" class="nav-link">bitstructs</a></li><li><a href="/lora-docs/stdlib/vectors" class="nav-link">vectors</a></li><li><a href="/lora-docs/stdlib/decimal" class="nav-link">decimal</a></li><li><a href="/lora-docs/stdlib/rand" class="nav-link">rand</a></li><li><a href="/lora-docs/stdlib/cmplx" class="nav-link">cmplx</a></li><li><a href="/lora-docs/stdlib/big" class="nav-link">big</a></li><li><a href="/lora-docs/stdlib/color" class="nav-link">color</a></li><li><a href="/lora-docs/stdlib/qoi" class="nav-link">qoi</a></li><li><a href="/lora-docs/stdlib/hash" class="nav-link">hash</a></li><li><a href="/lora-docs/stdlib/checksum" class="nav-link">checksum</a></li><li><a href="/lora-docs/stdlib/crypto" class="nav-link">crypto</a></li><li><a href="/lora-docs/stdlib/secret" class="nav-link">secret</a></li><li><a href="/lora-docs/stdlib/otp" class="nav-link">otp</a></li><li><a href="/lora-docs/stdlib/compress" class="nav-link">compress</a></li><li><a href="/lora-docs/stdlib/tar" class="nav-link">tar</a></li><li><a href="/lora-docs/stdlib/zip" class="nav-link">zip</a></li><li><a href="/lora-docs/stdlib/map" class="nav-link">map</a></li><li><a href="/lora-docs/stdlib/set" class="nav-link">set</a></li><li><a href="/lora-docs/stdlib/deque" class="nav-link">deque</a></li><li><a href="/lora-docs/stdlib/heap" class="nav-link">heap</a></li><li><a href="/lora-docs/stdlib/btree" class="nav-link">btree</a></li><li><a href="/lora-docs/stdlib/trie" class="nav-link">trie</a></li><li><a href="/lora-docs/stdlib/ring" class="nav-link">ring</a></li><li><a href="/lora-docs/stdlib/lru" class="nav-link">lru</a></li><li><a href="/lora-docs/stdlib/cache" class="nav-link">cache</a></li><li><a href="/lora-docs/stdlib/bloom" class="nav-link">bloom</a></li><li><a href="/lora-docs/stdlib/graph" class="nav-link">graph</a></li><li><a href="/lora-docs/stdlib/dsu" class="nav-link">dsu</a></li><li><a href="/lora-docs/stdlib/interval" class="nav-link">interval</a></li><li><a href="/lora-docs/stdlib/thread" class="nav-link">thread</a></li><li><a href="/lora-docs/stdlib/sync" class="nav-link">sync</a></li><li><a href="/lora-docs/stdlib/coro" class="nav-link">coro</a></li><li><a href="/lora-docs/stdlib/context" class="nav-link">context</a></li><li><a href="/lora-docs/stdlib/channel" class="nav-link">channel</a></li><li><a href="/lora-docs/stdlib/broadcast" class="nav-link">broadcast</a></li><li><a href="/lora-docs/stdlib/workpool" class="nav-link">workpool</a></li><li><a href="/lora-docs/stdlib/errors" class="nav-link">errors</a></li><li><a href="/lora-docs/stdlib/ratelimit" class="nav-link">ratelimit</a></li><li><a href="/lora-docs/stdlib/retry" class="nav-link">retry</a></li><li><a href="/lora-docs/stdlib/metrics" class="nav-link">metrics</a></li><li><a href="/lora-docs/stdlib/trace" class="nav-link">trace</a></li><li><a href="/lora-docs/stdlib/cron" class="nav-link">cron</a></li><li><a href="/lora-docs/stdlib/log" class="nav-link">log</a></li><li><a href="/lora-docs/stdlib/config" class="nav-link">config</a></li><li><a href="/lora-docs/stdlib/ini" class="nav-link">ini</a></li><li><a href="/lora-docs/stdlib/flag" class="nav-link">flag</a></li><li><a href="/lora-docs/stdlib/term" class="nav-link">term</a></li><li><a href="/lora-docs/stdlib/unit" class="nav-link">unit</a></li><li><a href="/lora-docs/stdlib/semver" class="nav-link">semver</a></li><li><a href="/lora-docs/stdlib/regex" class="nav-link">regex</a></li><li><a href="/lora-docs/stdlib/base64" class="nav-link">base64</a></li><li><a href="/lora-docs/stdlib/base32" class="nav-link">base32</a></li><li><a href="/lora-docs/stdlib/ascii85" class="nav-link">ascii85</a></li><li><a href="/lora-docs/stdlib/hex" class="nav-link">hex</a></li><li><a href="/lora-docs/stdlib/binary" class="nav-link">binary</a></li><li><a href="/lora-docs/stdlib/encoding" class="nav-link">encoding</a></li><li><a href="/lora-docs/stdlib/pem" class="nav-link">pem</a></li><li><a href="/lora-docs/stdlib/asn1" class="nav-link">asn1</a></li><li><a href="/lora-docs/stdlib/json" class="nav-link">json</a></li><li><a href="/lora-docs/stdlib/csv" class="nav-link">csv</a></li><li><a href="/lora-docs/stdlib/xml" class="nav-link">xml</a></li><li><a href="/lora-docs/stdlib/html" class="nav-link">html</a></li><li><a href="/lora-docs/stdlib/template" class="nav-link">template</a></li><li><a href="/lora-docs/stdlib/markdown" class="nav-link">markdown</a></li><li><a href="/lora-docs/stdlib/pack" class="nav-link">pack</a></li><li><a href="/lora-docs/stdlib/cbor" class="nav-link">cbor</a></li><li><a href="/lora-docs/stdlib/msgpack" class="nav-link">msgpack</a></li><li><a href="/lora-docs/stdlib/toml" class="nav-link">toml</a></li><li><a href="/lora-docs/stdlib/yaml" class="nav-link">yaml</a></li><li><a href="/lora-docs/stdlib/netip" class="nav-link">netip</a></li><li><a href="/lora-docs/stdlib/net" class="nav-link">net</a></li><li><a href="/lora-docs/stdlib/dns" class="nav-link">dns</a></li><li><a href="/lora-docs/stdlib/url" class="nav-link">url</a></li><li><a href="/lora-docs/stdlib/textproto" class="nav-link">textproto</a></li><li><a href="/lora-docs/stdlib/hpack" class="nav-link">hpack</a></li><li><a href="/lora-docs/stdlib/http" class="nav-link">http</a></li><li><a href="/lora-docs/stdlib/cookie" class="nav-link">cookie</a></li><li><a href="/lora-docs/stdlib/mime" class="nav-link">mime</a></li><li><a href="/lora-docs/stdlib/multipart" class="nav-link">multipart</a></li><li><a href="/lora-docs/stdlib/websocket" class="nav-link">websocket</a></li><li><a href="/lora-docs/stdlib/sse" class="nav-link">sse</a></li><li><a href="/lora-docs/stdlib/jwt" class="nav-link">jwt</a></li><li><a href="/lora-docs/stdlib/x509" class="nav-link">x509</a></li><li><a href="/lora-docs/stdlib/tls" class="nav-link">tls</a></li><li><a href="/lora-docs/stdlib/smtp" class="nav-link">smtp</a></li><li><a href="/lora-docs/stdlib/sql" class="nav-link">sql</a></li><li><a href="/lora-docs/stdlib/pg" class="nav-link">pg</a></li><li><a href="/lora-docs/stdlib/sqlite" class="nav-link">sqlite</a></li><li><a href="/lora-docs/stdlib/kv" class="nav-link">kv</a></li><li><a href="/lora-docs/stdlib/uuid" class="nav-link">uuid</a></li><li><a href="/lora-docs/stdlib/ulid" class="nav-link">ulid</a></li><li><a href="/lora-docs/stdlib/diff" class="nav-link">diff</a></li><li><a href="/lora-docs/stdlib/testing" class="nav-link">testing</a></li><li><a href="/lora-docs/stdlib/rt" class="nav-link">rt</a></li></ul></details></details></aside><main class="content-wrap"><article class="article"><div class="breadcrumbs">Safety</div><h1 id="top" class="page-title">Concurrency &amp; Data Races</h1><p class="lead">M:N cooperative coroutines (<code class="inline-code">@all</code>, <code class="inline-code">@first</code>, <code class="inline-code">@scope</code>, <code class="inline-code">@go</code>, <code class="inline-code">@each</code>), structured cancellation &amp; deadlines, task-locals (<code class="inline-code">coro::local</code>), <code class="inline-code">coro::serial</code>, <code class="inline-code">thread::shared</code>, and compile-time data-race proofs (<code class="inline-code">L0700</code>).</p><section><h2 id="overview" class="doc-h2"><a class="anchor-link" href="#overview">Overview</a></h2><p><code class="file-chip file-chip-c"><span class="chip-badge chip-c" aria-hidden="true">C</span><span class="chip-name">races.c</span></code> proves at compile time that concurrent tasks started with <code class="inline-code">@all</code>, <code class="inline-code">@first</code>, <code class="inline-code">@scope</code>, <code class="inline-code">@go</code>, <code class="inline-code">@each</code>, <code class="inline-code">coro::detach</code>, or <code class="inline-code">thread::spawn</code> never race on shared memory (<code class="inline-code">L0700</code>):</p>
+<ul>
+<li><strong>Shared Read-Only</strong>: Any number of tasks may read <code class="inline-code">*const T</code> or immutable globals concurrently.</li>
+<li><strong>Disjoint Ownership / Channels</strong>: Tasks may move <code class="inline-code">^T</code> values through <code class="inline-code">coro::chan[T]</code> or mutate disjoint variables.</li>
+<li><strong>Synchronized Primitives</strong>: Cross-task mutation is permitted through <code class="inline-code">thread::atomic</code>, <code class="inline-code">thread::new_shared(v)</code> + <code class="inline-code">thread::with</code>, <code class="inline-code">thread::mutex</code>, <code class="inline-code">sync::*</code>, or <code class="inline-code">@synchronised</code> module globals.</li>
+</ul>
+</section><h2 id="structured-concurrency-static-data-race-checking" class="doc-h2"><a class="anchor-link" href="#structured-concurrency-static-data-race-checking">Structured Concurrency &amp; Static Data-Race Checking</a></h2>
+<p>let ti = @typeinfo(x); // error: <code class="inline-code">x</code> is not a type: it names something else</p>
+<div class="code-frame" data-lang="text">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">text</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code>
+## 18. Optionals
+
+`?T` is short for `(T | void)`, a value that may be missing. `a ?? b` is
+`a`&#39;s value, or `b` when `a` is `void`; it works the same on nullable
+pointers (`b` when `a` is `null`). `a` is evaluated once and `b` only when
+needed, and `b` can leave the function:
+
+```lora
+fn find(xs: []int, v: int) ?usize = {
+	for (let i = 0z; i &lt; len(xs); i += 1) if (xs[i] == v) return i;
+	return void;
+}
+
+fn index_or_fail(xs: []int, v: int) int = {
+	let i = find(xs, v) ?? return -1;          // an early exit
+	return @int(i);
+}
+
+export fn main() void = {
+	let xs = [1, 2, 3];
+	assert(find(xs, 3) ?? 99 == 2);
+	assert(find(xs, 9) ?? 99 == 99);
+	assert(index_or_fail(xs, 9) == -1);
+	let fallback = 0;
+	let p: nullable *int = null;
+	assert(*(p ?? &amp;fallback) == 0);            // nullable *T ?? *T is *T
+	match find(xs, 2) {
+		let i: usize =&gt; assert(i == 1),
+		void =&gt; abort(),
+	}
+}</code></pre>
+</div><p><code class="inline-code">??</code> binds more loosely than arithmetic and more tightly than comparisons,
+and groups to the right: <code class="inline-code">a ?? b ?? c</code>.</p>
+<p>An optional is not an error, so <code class="inline-code">?</code> does not apply to it:</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> f</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8"> ?</span><span style="color:#7DCFFF">int</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> g</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8"> ?</span><span style="color:#7DCFFF">int</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> x</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> f</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8">?;</span><span style="color:#737373"> // error: No error can occur here, so there is nothing to propagate</span></span>
+<span class="line"><span style="color:#FFC799">	return</span><span style="color:#FFFFFF"> x</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><h2 id="19-string-interpolation" class="doc-h2"><a class="anchor-link" href="#19-string-interpolation">19. String interpolation</a></h2>
+<p><code class="inline-code">$&quot;...&quot;</code> holds expressions in braces and is a <code class="inline-code">str</code>. <code class="inline-code">{{</code> and <code class="inline-code">}}</code> are
+literal braces. It needs no <code class="inline-code">use fmt</code>, and what it costs depends on where
+it is:</p>
+<ul>
+<li><strong>As a format string</strong>, the argument before a function&#39;s <code class="inline-code">rt::any...</code>
+parameter, it expands to the format string and its values:
+<code class="inline-code">fmt::printfn($&quot;{a} + {b}&quot;)</code> is <code class="inline-code">fmt::printfn(&quot;{} + {}&quot;, a, b)</code>. No
+string is made.</li>
+<li><strong>Borrowed</strong>, as another call argument (a <code class="inline-code">str</code> parameter, as in
+<code class="inline-code">fmt::println($&quot;...&quot;)</code>), in <code class="inline-code">len($&quot;...&quot;)</code> or <code class="inline-code">$&quot;...&quot;.len()</code>, it is a
+temporary string, freed as soon as the call is done.</li>
+<li><strong>Kept</strong>, when it is bound, assigned, returned or stored, it is an owned
+string, <code class="inline-code">^str</code>, freed when its owner ends: <code class="inline-code">let s = $&quot;...&quot;</code> is
+<code class="inline-code">let s = fmt::string(...)</code>.</li>
+</ul>
+<p>Running out of memory while making one aborts.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> center</span><span style="color:#E8E8E8">()</span><span style="color:#E8E8E8"> (</span><span style="color:#7DCFFF">int</span><span style="color:#C8C8C8">,</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> (</span><span style="color:#99FFE4">3</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 4</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> name</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> "lora"</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 3</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FF9FC8">	fmt</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">printfn</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">$</span><span style="color:#99FFE4">"</span><span style="color:#FFC799">{</span><span style="color:#FFFFFF">name</span><span style="color:#FFC799">}</span><span style="color:#99FFE4"> has </span><span style="color:#FFC799">{</span><span style="color:#FFFFFF">n</span><span style="color:#FFC799">}</span><span style="color:#99FFE4"> items, </span><span style="color:#FFC799">{</span><span style="color:#FFFFFF">n </span><span style="color:#C8C8C8">*</span><span style="color:#99FFE4"> 2</span><span style="color:#FFC799">}</span><span style="color:#99FFE4"> doubled, {{literal}}"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FF9FC8">	fmt</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">println</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">$</span><span style="color:#99FFE4">"center: </span><span style="color:#FFC799">{center</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8">.</span><span style="color:#99FFE4">0</span><span style="color:#FFC799">}</span><span style="color:#99FFE4">, </span><span style="color:#FFC799">{center</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8">.</span><span style="color:#99FFE4">1</span><span style="color:#FFC799">}</span><span style="color:#99FFE4">"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span><span style="color:#737373"> // a temporary</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> width</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> $</span><span style="color:#99FFE4">"center: </span><span style="color:#FFC799">{center</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8">.</span><span style="color:#99FFE4">0</span><span style="color:#FFC799">}</span><span style="color:#99FFE4">"</span><span style="color:#C8C8C8">.</span><span style="color:#FFC799">size</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8">;</span><span style="color:#737373">             // also one</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">width</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 9</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> s</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> $</span><span style="color:#99FFE4">"</span><span style="color:#FFC799">{</span><span style="color:#FFFFFF">n</span><span style="color:#FFC799">}</span><span style="color:#99FFE4">!"</span><span style="color:#C8C8C8">;</span><span style="color:#737373">                                       // kept: a ^str</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> "3!"</span><span style="color:#C8C8C8"> &#x26;&#x26;</span><span style="color:#FFFFFF"> s</span><span style="color:#C8C8C8">.</span><span style="color:#FFC799">len</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 2</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span><span style="color:#737373">                                                         // s is freed here</span></span></code></pre>
+</div><p>A spec follows the expression after a colon, as in <code class="inline-code">fmt</code>:
+<code class="inline-code">$&quot;{n:x} {ratio:.2} {name:&gt;8}&quot;</code> is <code class="inline-code">(&quot;{:x} {:.2} {:&gt;8}&quot;, n, ratio, name)</code>.
+The last colon outside brackets begins the spec when what follows it is a
+spec; write <code class="inline-code">{(a ? b : x)}</code> to print a conditional whose last part looks
+like one.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> fmt</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 255</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> pi</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 3.14159</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> s</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> $</span><span style="color:#99FFE4">"</span><span style="color:#FFC799">{</span><span style="color:#FFFFFF">n</span><span style="color:#FF9FC8">:#x</span><span style="color:#FFC799">}</span><span style="color:#FFC799"> {</span><span style="color:#FFFFFF">pi</span><span style="color:#FF9FC8">:.2</span><span style="color:#FFC799">}</span><span style="color:#99FFE4"> [</span><span style="color:#FFC799">{</span><span style="color:#FFFFFF">n</span><span style="color:#FF9FC8">:>5</span><span style="color:#FFC799">}</span><span style="color:#99FFE4">] </span><span style="color:#FFC799">{</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">1</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 2</span><span style="color:#E8E8E8">]</span><span style="color:#FF9FC8">:?</span><span style="color:#FFC799">}</span><span style="color:#99FFE4">"</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	defer</span><span style="color:#FFC799"> free</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> "0xff 3.14 [  255] [1, 2]"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p>A literal format string passed with values to a function taking <code class="inline-code">rt::any...</code>
+is checked when compiling: each placeholder must be well formed, and there
+must be a value for each.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> fmt</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FF9FC8">	fmt</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">printfn</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"{} and {}"</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span><span style="color:#737373"> // error: This format string needs 2 values, but 1 is given</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><h2 id="20-concurrency" class="doc-h2"><a class="anchor-link" href="#20-concurrency">20. Concurrency</a></h2>
+<p>Lora&#39;s concurrent work runs as <strong>coroutines</strong> (<code class="inline-code">coro</code>): lightweight tasks
+on a pool of threads, which move between them. There is no <code class="inline-code">async</code> and no
+<code class="inline-code">await</code>: any function can run concurrently, and a coroutine waits inside
+the calls that wait (a channel, <code class="inline-code">coro::sleep</code>, a socket), letting others
+run. Work is started by three forms that wait for it, so it is part of the
+code that starts it:</p>
+<div class="table-wrap"><table><thead><tr><th>Form</th><th>Runs</th><th>Gives</th></tr></thead><tbody><tr><td><code class="inline-code">@all(f(), g())</code></td><td>each expression</td><td>a tuple of their values, or the first error</td></tr>
+<tr><td><code class="inline-code">@all for (let x .. xs) f(x)</code></td><td>the expression for each turn of the loop</td><td>an owned slice of the values, in order, or the first error</td></tr>
+<tr><td><code class="inline-code">@first(f(), g())</code></td><td>each expression</td><td>the first value to come, or the last error if all fail</td></tr>
+<tr><td><code class="inline-code">@scope { ... }</code></td><td><code class="inline-code">@go f(x)</code> anywhere in its block</td><td>the block&#39;s value, or the first error of a child</td></tr>
+<tr><td><code class="inline-code">@each for (let x .. xs) f(x) =&gt; |r| handle</code></td><td>the expression for each turn of the loop</td><td>nothing: <code class="inline-code">handle</code> takes each result <code class="inline-code">r</code> as its child finishes</td></tr></tbody></table></div>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> coro</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> gone</span><span style="color:#C8C8C8"> =</span><span style="color:#C8C8C8"> !</span><span style="color:#FFC799">void</span><span style="color:#99FFE4"> "gone"</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> profile</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">id</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#7DCFFF">str</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> gone</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> if</span><span style="color:#E8E8E8"> (</span><span style="color:#FFFFFF">id</span><span style="color:#C8C8C8"> &#x3C;</span><span style="color:#99FFE4"> 0</span><span style="color:#E8E8E8">)</span><span style="color:#FFFFFF"> gone</span><span style="color:#FFC799"> else</span><span style="color:#99FFE4"> "ann"</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> orders</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">id</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#7DCFFF">int</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> gone</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> id</span><span style="color:#C8C8C8"> *</span><span style="color:#99FFE4"> 10</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> dashboard</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">id</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> ((</span><span style="color:#7DCFFF">str</span><span style="color:#C8C8C8">,</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> gone</span><span style="color:#C8C8C8"> |</span><span style="color:#FF9FC8"> coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">cancelled</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#737373">	// both run at once, and @all waits for both</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#E8E8E8"> (</span><span style="color:#FFFFFF">name</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> count</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> @all</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">profile</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">id</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">,</span><span style="color:#FFC799"> orders</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">id</span><span style="color:#E8E8E8">))</span><span style="color:#C8C8C8">?;</span></span>
+<span class="line"><span style="color:#FFC799">	return</span><span style="color:#E8E8E8"> (</span><span style="color:#FFFFFF">name</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> count</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#E8E8E8"> (</span><span style="color:#FFFFFF">name</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> count</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> dashboard</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">7</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">name</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> "ann"</span><span style="color:#C8C8C8"> &#x26;&#x26;</span><span style="color:#FFFFFF"> count</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 70</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">dashboard</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">-</span><span style="color:#99FFE4">1</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> is</span><span style="color:#FFFFFF"> gone</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><ul>
+<li><strong>The work is the code&#39;s own.</strong> A form ends only once all of its work
+has, on every way out of it, so a child can use the locals and views of
+the code around it: nothing it uses can go away first.</li>
+<li><strong>The first failure ends it.</strong> The other children are cancelled and
+waited for, and the form gives that error, with a type that says which
+errors it can be. <code class="inline-code">?</code>, <code class="inline-code">or</code> and <code class="inline-code">match</code> handle it as any error.</li>
+<li><strong>Cancelling is cooperative.</strong> A cancelled child&#39;s waits end at once: a
+receive or send is <code class="inline-code">done</code>, <code class="inline-code">coro::sleep</code> returns, and a socket read or
+write fails with <code class="inline-code">ECANCELED</code>. Long work asks with <code class="inline-code">coro::check()?</code> or
+<code class="inline-code">coro::is_cancelled()</code>. Cancelling a scope cancels the scopes its
+children have open. Every form can be cancelled, so each can give
+<code class="inline-code">coro::cancelled</code>.</li>
+<li><strong>Options</strong>, in the parentheses: <code class="inline-code">within = ms</code> cancels the work if it is
+not done in time, and gives <code class="inline-code">coro::timed_out</code>; <code class="inline-code">max = n</code> (for <code class="inline-code">@all for</code>) runs at most <code class="inline-code">n</code> children at once; <code class="inline-code">workers = n</code> runs the work on
+<code class="inline-code">n</code> threads when nothing runs coroutines yet.</li>
+</ul>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> coro</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> slow</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">ms</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> u64</span><span style="color:#E8E8E8">)</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FF9FC8">	coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">sleep</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">ms</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	return</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#737373">	// the first to come wins, and the other is cancelled</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">@first</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">slow</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">500</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">,</span><span style="color:#FFC799"> slow</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">1</span><span style="color:#E8E8E8">))</span><span style="color:#C8C8C8">!</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#737373">	// too slow: cancelled, and timed out</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">@all</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">slow</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">1000</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> within</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 10</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> is</span><span style="color:#FF9FC8"> coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">timed_out</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> ns</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> [</span><span style="color:#99FFE4">1</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 2</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 3</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> ones</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> @all</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">max</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 2</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> for</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> n</span><span style="color:#FFC799"> ..</span><span style="color:#FFFFFF"> ns</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> slow</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> got</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> ones</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">len</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">got</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 3</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	free</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">got</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p><code class="inline-code">@scope</code> is for children started as the code goes, as by a server for
+each connection. <code class="inline-code">@go</code> starts one, in the innermost <code class="inline-code">@scope</code>:</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> coro</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> thread</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> hits</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> thread</span><span style="color:#C8C8C8">::</span><span style="color:#FF9FC8">atomic</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> ..</span><span style="color:#C8C8C8">.</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> ph</span><span style="color:#C8C8C8"> =</span><span style="color:#C8C8C8"> &#x26;</span><span style="color:#FFFFFF">hits</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FF9FC8">	@scope</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">		for</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> i</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">;</span><span style="color:#FFFFFF"> i</span><span style="color:#C8C8C8"> &#x3C;</span><span style="color:#99FFE4"> 10</span><span style="color:#C8C8C8">;</span><span style="color:#FFFFFF"> i</span><span style="color:#C8C8C8"> +=</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#FF9FC8"> @go</span><span style="color:#FF9FC8"> thread</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">add</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">ph</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">	}</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">thread</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">load</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">hits</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 10</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> coro</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-error"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span><span style="color:#FF9FC8"> @go</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span><span style="color:#E8E8E8"> }</span><span style="color:#737373"> // error: @go starts a child of the @scope it is in, and this is in none.</span></span></code></pre>
+</div><p>Children start running at once, in a coroutine or not: in <code class="inline-code">main</code>, outside
+any coroutine, the scope&#39;s children run on worker threads while its block
+goes on, so a loop that accepts connections and starts a child for each
+serves them as they come. The block&#39;s end waits for them all.</p>
+<p>When <code class="inline-code">@go f(..., x, ...)</code> gives an owner <code class="inline-code">x</code> that is a local, <code class="inline-code">x</code> moves
+into the child, which drops it when <code class="inline-code">f</code> returns: a connection each child
+serves and closes, a buffer it fills. The code after can&#39;t use <code class="inline-code">x</code>, and a
+call gives one owner this way; more go together in a struct or tuple.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> coro</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> strings</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> check</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> ^</span><span style="color:#7DCFFF">str</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> "hi"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FF9FC8">	@scope</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">		let</span><span style="color:#FFFFFF"> s</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> strings</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">clone</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"hi"</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FF9FC8">		@go</span><span style="color:#FFC799"> check</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373">   // s is the child's now</span></span>
+<span class="line"><span style="color:#E8E8E8">	}</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p><code class="inline-code">@each</code> handles results as they come, errors included: a <code class="inline-code">?</code> in the handler
+returns from the function, which cancels the children still running and
+waits for them, as every way out does. Results not yet taken are dropped.
+Run from outside any coroutine, the children all run first, and their
+results come in the order they finished.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> coro</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">type</span><span style="color:#FFFFFF"> gone</span><span style="color:#C8C8C8"> =</span><span style="color:#C8C8C8"> !</span><span style="color:#FFC799">void</span><span style="color:#99FFE4"> "gone"</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> slow</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">ms</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> u64</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> (</span><span style="color:#7DCFFF">u64</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> gone</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FF9FC8">	coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">sleep</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">ms</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	return</span><span style="color:#FFC799"> if</span><span style="color:#E8E8E8"> (</span><span style="color:#FFFFFF">ms</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 7</span><span style="color:#E8E8E8">)</span><span style="color:#FFFFFF"> gone</span><span style="color:#FFC799"> else</span><span style="color:#FFFFFF"> ms</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> first_two</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">ms</span><span style="color:#C8C8C8">:</span><span style="color:#E8E8E8"> []</span><span style="color:#7DCFFF">u64</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> ([</span><span style="color:#99FFE4">2</span><span style="color:#E8E8E8">]</span><span style="color:#7DCFFF">u64</span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF"> gone</span><span style="color:#C8C8C8"> |</span><span style="color:#FF9FC8"> coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">cancelled</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> got</span><span style="color:#C8C8C8">:</span><span style="color:#E8E8E8"> [</span><span style="color:#99FFE4">2</span><span style="color:#E8E8E8">]</span><span style="color:#7DCFFF">u64</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> [</span><span style="color:#99FFE4">0</span><span style="color:#FFC799">..</span><span style="color:#C8C8C8">.</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 0z</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FF9FC8">	@each</span><span style="color:#FFC799"> for</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> m</span><span style="color:#FFC799"> ..</span><span style="color:#FFFFFF"> ms</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> slow</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">m</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> =></span><span style="color:#C8C8C8"> |</span><span style="color:#FFFFFF">r</span><span style="color:#C8C8C8">|</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">		if</span><span style="color:#E8E8E8"> (</span><span style="color:#FFFFFF">n</span><span style="color:#C8C8C8"> &#x3C;</span><span style="color:#99FFE4"> 2</span><span style="color:#E8E8E8">)</span><span style="color:#FFFFFF"> got</span><span style="color:#E8E8E8">[</span><span style="color:#FFFFFF">n</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> r</span><span style="color:#C8C8C8">?;</span></span>
+<span class="line"><span style="color:#FFFFFF">		n</span><span style="color:#C8C8C8"> +=</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">	}</span><span style="color:#C8C8C8">?;</span></span>
+<span class="line"><span style="color:#FFC799">	return</span><span style="color:#FFFFFF"> got</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> got</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> @all</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">first_two</span><span style="color:#E8E8E8">([</span><span style="color:#99FFE4">30</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 10</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 20</span><span style="color:#E8E8E8">]))</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">got</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">0</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 10</span><span style="color:#C8C8C8"> &#x26;&#x26;</span><span style="color:#FFFFFF"> got</span><span style="color:#E8E8E8">[</span><span style="color:#99FFE4">1</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 20</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">@all</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">first_two</span><span style="color:#E8E8E8">([</span><span style="color:#99FFE4">30</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 7</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 20</span><span style="color:#E8E8E8">]))</span><span style="color:#FFC799"> is</span><span style="color:#FFFFFF"> gone</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p><strong>What children inherit.</strong> A child of <code class="inline-code">@all</code>, <code class="inline-code">@first</code>, <code class="inline-code">@each</code> or <code class="inline-code">@scope</code>
+starts with what its parent has: its cancellation and deadline, its
+priority, and its task-local values. A detached coroutine starts with
+none of these.</p>
+<ul>
+<li><strong>Priority.</strong> <code class="inline-code">coro::priority</code> is <code class="inline-code">low</code>, <code class="inline-code">normal</code> or <code class="inline-code">high</code>: a ready
+coroutine runs before those of lower priority. <code class="inline-code">priority = p</code> sets a
+form&#39;s children&#39;s, <code class="inline-code">coro::set_priority(p)</code> the running coroutine&#39;s, and
+a coroutine waiting for its children raises theirs to its own, so work
+it waits for is never held up behind it.</li>
+<li><strong>Task-local values.</strong> <code class="inline-code">coro::bind(&amp;key, v, fn() R = ...)</code> binds <code class="inline-code">key</code>
+to <code class="inline-code">v</code> for the length of the call, for the coroutine and every child it
+starts there; <code class="inline-code">coro::lookup(&amp;key)</code> gives it, or <code class="inline-code">void</code>. Each reads a
+copy, so a value can&#39;t point into memory or own it.</li>
+</ul>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> coro</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> request</span><span style="color:#C8C8C8">:</span><span style="color:#FF9FC8"> coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">local</span><span style="color:#E8E8E8">[</span><span style="color:#7DCFFF">u64</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> coro</span><span style="color:#C8C8C8">::</span><span style="color:#FF9FC8">local</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> name</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> "request"</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> current</span><span style="color:#E8E8E8">()</span><span style="color:#7DCFFF"> u64</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> match</span><span style="color:#E8E8E8"> (</span><span style="color:#FFD479">coro::lookup</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFD479">request</span><span style="color:#E8E8E8">))</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> r</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> u64</span><span style="color:#FFC799"> =></span><span style="color:#FFFFFF"> r</span><span style="color:#C8C8C8">,</span></span>
+<span class="line"><span style="color:#FFC799">	void</span><span style="color:#FFC799"> =></span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">,</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#E8E8E8"> (</span><span style="color:#FFFFFF">a</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> b</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">bind</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">request</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 42u64</span><span style="color:#C8C8C8">,</span><span style="color:#FFC799"> fn</span><span style="color:#E8E8E8">()</span><span style="color:#E8E8E8"> (</span><span style="color:#7DCFFF">u64</span><span style="color:#C8C8C8">,</span><span style="color:#7DCFFF"> u64</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span></span>
+<span class="line"><span style="color:#FF9FC8">		@all</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">current</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8">,</span><span style="color:#FFC799"> current</span><span style="color:#E8E8E8">())</span><span style="color:#C8C8C8">!</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">a</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 42</span><span style="color:#C8C8C8"> &#x26;&#x26;</span><span style="color:#FFFFFF"> b</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 42</span><span style="color:#C8C8C8"> &#x26;&#x26;</span><span style="color:#FFC799"> current</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 0</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p><strong>Serial values.</strong> <code class="inline-code">coro::serial[T]</code> is a value one coroutine at a time
+uses, as an actor&#39;s state is: <code class="inline-code">coro::with(&amp;s, fn(v: *T) R = ...)</code> runs the
+closure on it, while others wait their turn as coroutines. The closure may
+not wait itself (the compiler checks), so a turn is short and the value
+can&#39;t change in the middle of one: read or change it, and wait before or
+after.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> coro</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> add</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">t</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FF9FC8">coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">serial</span><span style="color:#E8E8E8">[</span><span style="color:#7DCFFF">int</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8">)</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8"> =</span></span>
+<span class="line"><span style="color:#FF9FC8">	coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">with</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">t</span><span style="color:#C8C8C8">,</span><span style="color:#FFC799"> fn</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">v</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#7DCFFF">int</span><span style="color:#E8E8E8">)</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#C8C8C8">	*</span><span style="color:#FFFFFF">v</span><span style="color:#C8C8C8"> +=</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	return</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">v</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">})</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> total</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">serial_new</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">0</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> pt</span><span style="color:#C8C8C8"> =</span><span style="color:#C8C8C8"> &#x26;</span><span style="color:#FFFFFF">total</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> sums</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> @all</span><span style="color:#FFC799"> for</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> n</span><span style="color:#FFC799"> ..</span><span style="color:#E8E8E8"> [</span><span style="color:#99FFE4">1</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 2</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 3</span><span style="color:#E8E8E8">])</span><span style="color:#FFC799"> add</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">pt</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> n</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> each</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> sums</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">len</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">each</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 3</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	free</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">each</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">with</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">total</span><span style="color:#C8C8C8">,</span><span style="color:#FFC799"> fn</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">v</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#7DCFFF">int</span><span style="color:#E8E8E8">)</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8"> =</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">v</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 6</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><p><strong>Detached coroutines.</strong> <code class="inline-code">coro::detach(fn() void = ...)</code> starts work that
+nothing waits for, which may outlive the code that started it, so it takes
+only what it owns: the compiler refuses a capture that points into memory
+it doesn&#39;t own. <code class="inline-code">coro::detach_with(v, fn(v: T) void = ...)</code> gives it an
+owned value, such as an <code class="inline-code">arc</code> share, and <code class="inline-code">coro::run()</code> runs detached
+coroutines until all have finished. Each gives a <code class="inline-code">coro::detached</code>, which
+<code class="inline-code">coro::cancel(d)</code> cancels (its waits end at once, as a cancelled child&#39;s
+do) and <code class="inline-code">coro::running(d)</code> asks about; it is an id, never reused, so it may
+be kept and copied, and cancelling one that has finished does nothing.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> coro</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> start</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#C8C8C8"> &#x26;</span><span style="color:#FFFFFF">n</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-error"><span style="color:#FF9FC8">	coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">detach</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">fn</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">p</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 7</span><span style="color:#C8C8C8">;</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">!;</span><span style="color:#737373"> // error: A detached coroutine may outlive `p`, which is a *int, a view of memory it doesn't own: it takes only what it owns.</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#FFC799"> start</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><p>A plain function, <code class="inline-code">*fn</code>, views nothing that can end, as its code lasts as
+long as the program: a detached coroutine may be given one, with the value
+it works on.</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> coro</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> count</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">c</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#7DCFFF">int</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">c</span><span style="color:#C8C8C8"> +=</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">;</span><span style="color:#E8E8E8"> }</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> f</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFC799">fn</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">c</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#7DCFFF">int</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#C8C8C8"> &#x26;</span><span style="color:#FFFFFF">count</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FF9FC8">	coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">detach_with</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">f</span><span style="color:#C8C8C8">,</span><span style="color:#FFC799"> fn</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">f</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FFC799">fn</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">c</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#7DCFFF">int</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">		let</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">		f</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">n</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">		assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">n</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">	})</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FF9FC8">	coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">run</span><span style="color:#E8E8E8">()</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><ul>
+<li>Coroutines are cooperative: one runs until it waits. A loop that never
+does holds its worker thread; <code class="inline-code">coro::yield_now()</code> lets others run.</li>
+<li>Code in coroutines on different workers runs in parallel: protect what
+they share with channels, <code class="inline-code">coro::serial</code>, <code class="inline-code">thread::mutex</code> or atomics.</li>
+<li>Blocking C calls belong in <code class="inline-code">coro::blocking(fn() void = ...)</code>, which moves
+them off the scheduler.</li>
+<li>Threads (<code class="inline-code">thread::spawn</code>, <code class="inline-code">thread::spawn_with</code>) are OS threads, joined
+with <code class="inline-code">thread::join</code>, which take only what they own (below).</li>
+</ul>
+<h3 id="data-races" class="doc-h3"><a class="anchor-link" href="#data-races">Data races</a></h3>
+<p>Code started on another thread, a closure given to <code class="inline-code">thread::spawn</code>,
+<code class="inline-code">coro::detach</code> or <code class="inline-code">coro::blocking</code>, a child of <code class="inline-code">@all</code>, <code class="inline-code">@first</code> or
+<code class="inline-code">@scope</code>, and every function of the module it calls, runs at the same time
+as the code that started it.
+The compiler checks that it does not change data other threads may use
+without synchronising:</p>
+<ul>
+<li>it may not change a mutable global, or read one that other code changes;</li>
+<li>children that run at the same time (of one <code class="inline-code">@all</code>, <code class="inline-code">@first</code> or
+<code class="inline-code">@scope</code>, or started in a loop, as <code class="inline-code">@all for</code> does) may not reach the
+same data when one of them may change it;</li>
+<li>a <code class="inline-code">@go</code> child may not reach data it may change at all, as the code of
+its <code class="inline-code">@scope</code> runs beside it.</li>
+</ul>
+<p>What a child <strong>reaches</strong> is worked out from the types of what it captures,
+not from what its code happens to do: a <code class="inline-code">*T</code> or <code class="inline-code">[]T</code> reaches data of type
+<code class="inline-code">T</code> it may change, a <code class="inline-code">*const T</code> or <code class="inline-code">[]const T</code> data it only reads, and a
+pointer inside a struct, or inside data a pointer reaches, counts too. So a
+function the child passes a pointer to, or a pointer it reads from memory,
+can&#39;t change shared data unseen. Two children reach the same data when they
+reach data of one type, or of a type holding the other (a <code class="inline-code">*point</code> and a
+<code class="inline-code">*f64</code> may both reach a point&#39;s <code class="inline-code">x</code>), unless each points at a different
+local, by <code class="inline-code">let p = &amp;x</code> given no other value, of a type holding no pointers
+itself: two connections, two counters. What one child captures is used by
+that child alone, one thing after another, so it is not compared with
+itself.</p>
+<p>Shared data is fine when it is <strong>thread-safe</strong>: a <code class="inline-code">thread::atomic</code>, a
+<code class="inline-code">thread::mutex</code> or <code class="inline-code">thread::cond</code>, a <code class="inline-code">coro::chan</code>, <code class="inline-code">coro::group</code> or
+<code class="inline-code">coro::serial</code>, or a
+<code class="inline-code">thread::shared::[T]</code>, a value guarded by a lock that threads reach one at
+a time with <code class="inline-code">thread::with</code>. Code between <code class="inline-code">thread::lock(m)</code> and
+<code class="inline-code">thread::unlock(m)</code> in the same block holds the lock, and a global marked
+<code class="inline-code">@synchronised</code> is guarded by its module itself (as <code class="inline-code">coro</code>&#39;s scheduler
+state is, by its lock). A struct type marked <code class="inline-code">@synchronised</code> is thread-safe
+too: its module guards it, and only its module touches its fields, as with
+<code class="inline-code">allocator::atomic_fixed_buffer</code> and <code class="inline-code">sql::db</code>.</p>
+<p>An interface value can&#39;t be shared: what it points to may be of any type.
+Share a pointer to the thread-safe value itself, and make the interface in
+the child:</p>
+<div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> allocator</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> coro</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> af</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> allocator</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">atomic_fixed_buffer_owned</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">4096</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#C8C8C8"> &#x26;</span><span style="color:#FFFFFF">af</span><span style="color:#C8C8C8">;</span><span style="color:#737373">                                 // thread-safe: shared</span></span>
+<span class="line"><span style="color:#FF9FC8">	@scope</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">		for</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> w</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">;</span><span style="color:#FFFFFF"> w</span><span style="color:#C8C8C8"> &#x3C;</span><span style="color:#99FFE4"> 4</span><span style="color:#C8C8C8">;</span><span style="color:#FFFFFF"> w</span><span style="color:#C8C8C8"> +=</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FF9FC8">			@go</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">				let</span><span style="color:#FFFFFF"> a</span><span style="color:#C8C8C8">:</span><span style="color:#FF9FC8"> allocator</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">allocator</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">				let</span><span style="color:#FFFFFF"> x</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> allocator</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">create</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">a</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> w</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">				assert</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">*</span><span style="color:#FFFFFF">x</span><span style="color:#C8C8C8"> ==</span><span style="color:#FFFFFF"> w</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">			}</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">		}</span></span>
+<span class="line"><span style="color:#E8E8E8">	}</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><div class="code-frame" data-lang="lora">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> thread</span><span style="color:#C8C8C8">;</span></span></code></pre>
+</div><section><h2 id="valid-usage" class="doc-h2"><a class="anchor-link" href="#valid-usage">Valid Usage &amp; Examples</a></h2><h3 id="allowed-structured-scope-go-and-all-with-owned-channel-transfers" class="doc-h3"><a class="anchor-link" href="#allowed-structured-scope-go-and-all-with-owned-channel-transfers">Structured `@scope`, `@go`, and `@all` with owned channel transfers</a></h3><p>Structured concurrency blocks wait for all spawned coroutines to finish before exiting, allowing safe stack borrows to channels.</p>
+<div class="code-frame" data-lang="lora" data-variant="allowed">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-allowed">Allowed</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> coro</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> fmt</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> worker</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">id</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> u32</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> out</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FF9FC8">coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">chan</span><span style="color:#E8E8E8">[</span><span style="color:#C8C8C8">^</span><span style="color:#7DCFFF">str</span><span style="color:#E8E8E8">])</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">void</span><span style="color:#C8C8C8"> |</span><span style="color:#FF9FC8"> coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">cancelled</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FF9FC8">	coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">send</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">out</span><span style="color:#C8C8C8">,</span><span style="color:#FF9FC8"> fmt</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">format</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">"job-{}"</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> id</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">!</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> as</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> ch</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> coro</span><span style="color:#C8C8C8">::</span><span style="color:#FF9FC8">chan_new</span><span style="color:#C8C8C8">::</span><span style="color:#E8E8E8">[</span><span style="color:#C8C8C8">^</span><span style="color:#7DCFFF">str</span><span style="color:#E8E8E8">](</span><span style="color:#99FFE4">4</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> pch</span><span style="color:#C8C8C8"> =</span><span style="color:#C8C8C8"> &#x26;</span><span style="color:#FFFFFF">ch</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FF9FC8">	@scope</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">		for</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> i</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 0u32</span><span style="color:#C8C8C8">;</span><span style="color:#FFFFFF"> i</span><span style="color:#C8C8C8"> &#x3C;</span><span style="color:#99FFE4"> 3</span><span style="color:#C8C8C8">;</span><span style="color:#FFFFFF"> i</span><span style="color:#C8C8C8"> +=</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FF9FC8">			@go</span><span style="color:#FFC799"> worker</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">i</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> pch</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">		}</span></span>
+<span class="line"><span style="color:#FFC799">		for</span><span style="color:#E8E8E8"> (</span><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> k</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">;</span><span style="color:#FFFFFF"> k</span><span style="color:#C8C8C8"> &#x3C;</span><span style="color:#99FFE4"> 3</span><span style="color:#C8C8C8">;</span><span style="color:#FFFFFF"> k</span><span style="color:#C8C8C8"> +=</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">			let</span><span style="color:#FFFFFF"> msg</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">recv</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">pch</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> as</span><span style="color:#C8C8C8"> ^</span><span style="color:#7DCFFF">str</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">			assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">len</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">msg</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ></span><span style="color:#99FFE4"> 0z</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">		}</span></span>
+<span class="line"><span style="color:#E8E8E8">	}</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><h3 id="allowed-sharing-mutable-state-safely-via-threadatomic-and-arc" class="doc-h3"><a class="anchor-link" href="#allowed-sharing-mutable-state-safely-via-threadatomic-and-arc">Sharing mutable state safely via `thread::atomic` and `arc`</a></h3><p>Detached coroutines and OS threads own <code class="inline-code">arc::share(&amp;r)</code> handles and mutate <code class="inline-code">thread::atomic</code> without races.</p>
+<div class="code-frame" data-lang="lora" data-variant="allowed">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-allowed">Allowed</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> arc</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> coro</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> thread</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> r</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> arc</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">new</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">thread</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">new_atomic</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">0u64</span><span style="color:#E8E8E8">))</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FF9FC8">	coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">detach_with</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">arc</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">share</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">r</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">,</span><span style="color:#FFC799"> fn</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">mine</span><span style="color:#C8C8C8">:</span><span style="color:#FF9FC8"> arc</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">arc</span><span style="color:#E8E8E8">[</span><span style="color:#FF9FC8">thread</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">atomic</span><span style="color:#E8E8E8">])</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FF9FC8">		thread</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">add</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">arc</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">get</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">mine</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 42u64</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">	})</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FF9FC8">	coro</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">run_on</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">2</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">thread</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">load</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">arc</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">get</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">r</span><span style="color:#E8E8E8">))</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 42u64</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><h3 id="allowed-mutex-protected-state-with-threadnewshared-and-threadwith" class="doc-h3"><a class="anchor-link" href="#allowed-mutex-protected-state-with-threadnewshared-and-threadwith">Mutex-protected state with `thread::new_shared` and `thread::with`</a></h3><p><code class="inline-code">thread::new_shared</code> enforces lock acquisition via <code class="inline-code">thread::with</code> before accessing the inner value.</p>
+<div class="code-frame" data-lang="lora" data-variant="allowed">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-allowed">Allowed</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> coro</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> thread</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> add_val</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#FF9FC8">thread</span><span style="color:#C8C8C8">::</span><span style="color:#FFFFFF">shared</span><span style="color:#E8E8E8">[</span><span style="color:#7DCFFF">int</span><span style="color:#E8E8E8">]</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> delta</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FF9FC8">	thread</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">with</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">s</span><span style="color:#C8C8C8">,</span><span style="color:#FFC799"> fn</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">v</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#7DCFFF">int</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">v</span><span style="color:#C8C8C8"> +=</span><span style="color:#FFFFFF"> delta</span><span style="color:#C8C8C8">;</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> shared</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> thread</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">new_shared</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">0</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> ps</span><span style="color:#C8C8C8"> =</span><span style="color:#C8C8C8"> &#x26;</span><span style="color:#FFFFFF">shared</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FF9FC8">	@all</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">add_val</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">ps</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 10</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">,</span><span style="color:#FFC799"> add_val</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">ps</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 20</span><span style="color:#E8E8E8">))</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> total</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FF9FC8">	thread</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">with</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">ps</span><span style="color:#C8C8C8">,</span><span style="color:#FFC799"> fn</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">v</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#7DCFFF">int</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span><span style="color:#FFFFFF"> total</span><span style="color:#C8C8C8"> =</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">v</span><span style="color:#C8C8C8">;</span><span style="color:#E8E8E8"> })</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">total</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 30</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div></section><section><h2 id="disallowed-forms" class="doc-h2"><a class="anchor-link" href="#disallowed-forms">Disallowed Forms &amp; Diagnostics</a></h2><h3 id="rejected-mutating-a-non-synchronized-global-from-threadspawn-l0700" class="doc-h3"><a class="anchor-link" href="#rejected-mutating-a-non-synchronized-global-from-threadspawn-l0700">Mutating a non-synchronized global from `thread::spawn` (`L0700`)</a></h3><p>Writing to an ordinary global from a spawned thread or coroutine is a compile-time data race.</p>
+<div class="diag-callout"><strong>L0700: </strong>`counter` is changed by a thread while other threads may use it</div><div class="code-frame" data-lang="lora" data-variant="error">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-error">Rejected</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> thread</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> counter</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> t</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> thread</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">spawn</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">fn</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-error"><span style="color:#FFFFFF">		counter</span><span style="color:#C8C8C8"> +=</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // error[L0700]: unsynchronized global write</span></span>
+<span class="line"><span style="color:#E8E8E8">	})</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FF9FC8">	thread</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">join</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">t</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><div class="code-frame" data-lang="lora" data-variant="allowed">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-allowed">Allowed</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> thread</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">let</span><span style="color:#FFFFFF"> counter</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> thread</span><span style="color:#C8C8C8">::</span><span style="color:#FF9FC8">atomic</span><span style="color:#E8E8E8"> {</span><span style="color:#FFC799"> ..</span><span style="color:#C8C8C8">.</span><span style="color:#E8E8E8"> }</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> t</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> thread</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">spawn</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">fn</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-allowed"><span style="color:#FF9FC8">		thread</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">fetch_add</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">counter</span><span style="color:#C8C8C8">,</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span><span style="color:#737373"> // ok: atomic increment</span></span>
+<span class="line"><span style="color:#E8E8E8">	})</span><span style="color:#C8C8C8">!;</span></span>
+<span class="line"><span style="color:#FF9FC8">	thread</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">join</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">t</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FF9FC8">thread</span><span style="color:#C8C8C8">::</span><span style="color:#FFC799">load</span><span style="color:#E8E8E8">(</span><span style="color:#C8C8C8">&#x26;</span><span style="color:#FFFFFF">counter</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 1</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><h3 id="rejected-passing-the-same-mutable-pointer-to-concurrent-all-branches-l0700" class="doc-h3"><a class="anchor-link" href="#rejected-passing-the-same-mutable-pointer-to-concurrent-all-branches-l0700">Passing the same mutable pointer to concurrent `@all` branches (`L0700`)</a></h3><p>Two concurrent branches cannot reach the same memory when either branch can mutate it.</p>
+<div class="diag-callout"><strong>L0700: </strong>`p` reaches data (an int) that may change while another thread uses it</div><div class="code-frame" data-lang="lora" data-variant="error">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-error">Rejected</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> coro</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> bump</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#C8C8C8">:</span><span style="color:#C8C8C8"> *</span><span style="color:#7DCFFF">int</span><span style="color:#E8E8E8">)</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span><span style="color:#C8C8C8"> *</span><span style="color:#FFFFFF">p</span><span style="color:#C8C8C8"> +=</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">;</span><span style="color:#E8E8E8"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> n</span><span style="color:#C8C8C8"> =</span><span style="color:#99FFE4"> 0</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#FFC799">	let</span><span style="color:#FFFFFF"> p</span><span style="color:#C8C8C8"> =</span><span style="color:#C8C8C8"> &#x26;</span><span style="color:#FFFFFF">n</span><span style="color:#C8C8C8">;</span></span>
+<span class="line line-error"><span style="color:#FF9FC8">	@all</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">bump</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">,</span><span style="color:#FFC799"> bump</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">p</span><span style="color:#E8E8E8">))</span><span style="color:#C8C8C8">!;</span><span style="color:#737373"> // error[L0700]: concurrent mutable alias</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div><div class="code-frame" data-lang="lora" data-variant="allowed">
+  <div class="code-frame-bar">
+    <span class="code-frame-title">
+      <span class="code-lang">lora</span>
+      <span class="code-status is-allowed">Allowed</span>
+    </span>
+    <span class="code-actions">
+      <button type="button" class="wrap-btn" aria-label="Toggle line wrap" title="Toggle line wrap"><span class="wrap-glyph" aria-hidden="true">@</span></button>
+      <button type="button" class="copy-btn" aria-label="Copy code" title="Copy code"><svg class="icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="10" height="13" rx="1.8"></rect><path d="M15 7h2.2A1.8 1.8 0 0 1 19 8.8v9.4a1.8 1.8 0 0 1-1.8 1.8H9.8A1.8 1.8 0 0 1 8 18.2V17"></path></svg><svg class="icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+    </span>
+  </div>
+  <pre class="shiki lora-vesper" style="background-color:#1a1a1a;color:#e8e8ed" tabindex="0"><code><span class="line"><span style="color:#FFC799">use</span><span style="color:#FFFFFF"> coro</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">fn</span><span style="color:#FFC799"> bump_val</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">v</span><span style="color:#C8C8C8">:</span><span style="color:#7DCFFF"> int</span><span style="color:#E8E8E8">)</span><span style="color:#7DCFFF"> int</span><span style="color:#C8C8C8"> =</span><span style="color:#FFFFFF"> v</span><span style="color:#C8C8C8"> +</span><span style="color:#99FFE4"> 1</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFC799">export</span><span style="color:#FFC799"> fn</span><span style="color:#FFC799"> main</span><span style="color:#E8E8E8">()</span><span style="color:#FFC799"> void</span><span style="color:#C8C8C8"> =</span><span style="color:#E8E8E8"> {</span></span>
+<span class="line line-allowed"><span style="color:#FFC799">	let</span><span style="color:#E8E8E8"> (</span><span style="color:#FFFFFF">a</span><span style="color:#C8C8C8">,</span><span style="color:#FFFFFF"> b</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8"> =</span><span style="color:#FF9FC8"> @all</span><span style="color:#E8E8E8">(</span><span style="color:#FFC799">bump_val</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">10</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">,</span><span style="color:#FFC799"> bump_val</span><span style="color:#E8E8E8">(</span><span style="color:#99FFE4">20</span><span style="color:#E8E8E8">))</span><span style="color:#C8C8C8">!;</span><span style="color:#737373"> // ok: independent by-value calls</span></span>
+<span class="line"><span style="color:#FFC799">	assert</span><span style="color:#E8E8E8">(</span><span style="color:#FFFFFF">a</span><span style="color:#C8C8C8"> +</span><span style="color:#FFFFFF"> b</span><span style="color:#C8C8C8"> ==</span><span style="color:#99FFE4"> 32</span><span style="color:#E8E8E8">)</span><span style="color:#C8C8C8">;</span></span>
+<span class="line"><span style="color:#E8E8E8">}</span></span></code></pre>
+</div></section><div class="doc-status-bar"><div class="doc-status-left"><span class="doc-status-files">1 file changed</span><span class="doc-status-counts"><span class="doc-status-add">+447</span><span class="doc-status-del">-2</span></span><span class="doc-status-chevron" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span></div><a href="/lora-docs/specification/language-spec" class="doc-status-review" title="Review full language specification"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg><span>Review</span></a></div><nav class="pager" aria-label="Page pagination"><a href="/lora-docs/safety/borrow-loan-views" class="pager-link prev"><span class="pager-dir">← Previous</span><span class="pager-label">Borrow, Loan &amp; View Safety</span></a><a href="/lora-docs/safety/stack-overflow" class="pager-link next"><span class="pager-dir">Next →</span><span class="pager-label">Stack Overflow &amp; Bounded Recursion (`@depth`)</span></a></nav></article></main><aside class="toc" aria-label="On This Page"><div class="toc-title">On This Page</div><ul class="toc-list"><li><a href="#top" class="toc-link depth-2 is-active" data-toc-target="top">Table of contents</a></li><li><a href="#overview" class="toc-link depth-2" data-toc-target="overview">Overview</a></li><li><a href="#structured-concurrency-static-data-race-checking" class="toc-link depth-2" data-toc-target="structured-concurrency-static-data-race-checking">Structured Concurrency &amp; Static Data-Race Checking</a></li><li><a href="#19-string-interpolation" class="toc-link depth-2" data-toc-target="19-string-interpolation">19. String interpolation</a></li><li><a href="#20-concurrency" class="toc-link depth-2" data-toc-target="20-concurrency">20. Concurrency</a></li><li><a href="#data-races" class="toc-link depth-3" data-toc-target="data-races">Data races</a></li><li><a href="#valid-usage" class="toc-link depth-2" data-toc-target="valid-usage">Valid Usage &amp; Examples</a></li><li><a href="#allowed-structured-scope-go-and-all-with-owned-channel-transfers" class="toc-link depth-3" data-toc-target="allowed-structured-scope-go-and-all-with-owned-channel-transfers">Structured `@scope`, `@go`, and `@all` with owned channel transfers</a></li><li><a href="#allowed-sharing-mutable-state-safely-via-threadatomic-and-arc" class="toc-link depth-3" data-toc-target="allowed-sharing-mutable-state-safely-via-threadatomic-and-arc">Sharing mutable state safely via `thread::atomic` and `arc`</a></li><li><a href="#allowed-mutex-protected-state-with-threadnewshared-and-threadwith" class="toc-link depth-3" data-toc-target="allowed-mutex-protected-state-with-threadnewshared-and-threadwith">Mutex-protected state with `thread::new_shared` and `thread::with`</a></li><li><a href="#disallowed-forms" class="toc-link depth-2" data-toc-target="disallowed-forms">Disallowed Forms &amp; Diagnostics</a></li><li><a href="#rejected-mutating-a-non-synchronized-global-from-threadspawn-l0700" class="toc-link depth-3" data-toc-target="rejected-mutating-a-non-synchronized-global-from-threadspawn-l0700">Mutating a non-synchronized global from `thread::spawn` (`L0700`)</a></li><li><a href="#rejected-passing-the-same-mutable-pointer-to-concurrent-all-branches-l0700" class="toc-link depth-3" data-toc-target="rejected-passing-the-same-mutable-pointer-to-concurrent-all-branches-l0700">Passing the same mutable pointer to concurrent `@all` branches (`L0700`)</a></li></ul></aside></div><dialog id="search-dialog" class="search-modal" aria-label="Search Lora documentation"><div class="search-modal-head"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><input id="search-input" class="search-input" type="search" placeholder="Search syntax, errors (L0800), or stdlib (http::get, sql::numeric_buf_size)..." autocomplete="off"><kbd class="search-kbd">ESC</kbd></div><div id="search-results" class="search-results"><div style="padding: 16px; font-size: 0.86rem; color: var(--text-muted);">Type to search pages, compiler error codes, and 2,256 stdlib exports.</div></div></dialog><script>
+      // 1. Mobile sidebar drawer
+      const menuBtn = document.getElementById('mobile-menu-btn');
+      const sidebar = document.getElementById('sidebar');
+      if (menuBtn && sidebar) {
+        menuBtn.addEventListener('click', () => {
+          const open = sidebar.classList.toggle('is-open');
+          menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+
+      // Keep active nav link scrolled comfortably into view on load
+      const activeNav = sidebar?.querySelector('.nav-link.is-active');
+      if (activeNav) {
+        activeNav.scrollIntoView({ block: 'nearest' });
+      }
+
+      // 2. Dark / Light mode toggle (keeps Lora Fjord dark surface on all code blocks & tables)
+      const themeBtn = document.getElementById('theme-toggle');
+      themeBtn?.addEventListener('click', () => {
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        if (isLight) {
+          document.documentElement.removeAttribute('data-theme');
+          try { localStorage.setItem('lora-docs-theme', 'dark'); } catch {}
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+          try { localStorage.setItem('lora-docs-theme', 'light'); } catch {}
+        }
+      });
+
+      // 3. Code block copy & wrap buttons
+      document.addEventListener('click', async (ev) => {
+        const target = ev.target instanceof Element ? ev.target : null;
+        if (!target) return;
+        const wrapBtn = target.closest('.wrap-btn');
+        if (wrapBtn) {
+          const frame = wrapBtn.closest('.code-frame');
+          frame?.classList.toggle('is-wrapped');
+          wrapBtn.classList.toggle('is-wrapped');
+          return;
+        }
+        const btn = target.closest('.copy-btn');
+        if (!btn) return;
+        const frame = btn.closest('.code-frame');
+        const codeEl = frame?.querySelector('pre code') || frame?.querySelector('pre');
+        if (!codeEl) return;
+        try {
+          await navigator.clipboard.writeText(codeEl.textContent || '');
+          btn.classList.add('copied');
+          setTimeout(() => btn.classList.remove('copied'), 1500);
+        } catch {}
+      });
+
+      // 4. Right TOC scroll-spy
+      const tocLinks = Array.from(document.querySelectorAll('.toc-link'));
+      if (tocLinks.length > 1 && 'IntersectionObserver' in window) {
+        const map = new Map(tocLinks.map((a) => [a.getAttribute('data-toc-target'), a]));
+        const targets = tocLinks
+          .map((a) => document.getElementById(a.getAttribute('data-toc-target') || ''))
+          .filter(Boolean);
+        const obs = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                tocLinks.forEach((l) => l.classList.remove('is-active'));
+                map.get(entry.target.id)?.classList.add('is-active');
+                break;
+              }
+            }
+          },
+          { rootMargin: '-72px 0px -70% 0px', threshold: 0 }
+        );
+        targets.forEach((el) => obs.observe(el));
+      }
+
+      // 5. Lazy Search Modal (Ctrl/Cmd+K or /)
+      const dialog = document.getElementById('search-dialog');
+      const openBtn = document.getElementById('open-search');
+      const input = document.getElementById('search-input');
+      const resultsEl = document.getElementById('search-results');
+      let searchEntries = null;
+
+      const baseUrl = document.body.dataset.base || '/';
+
+      async function ensureIndex() {
+        if (searchEntries) return searchEntries;
+        try {
+          const res = await fetch(baseUrl + 'search-index.json');
+          searchEntries = await res.json();
+        } catch {
+          searchEntries = [];
+        }
+        return searchEntries;
+      }
+
+      function renderResults(query) {
+        if (!resultsEl || !searchEntries) return;
+        const q = query.trim().toLowerCase();
+        const matches = (q
+          ? searchEntries.filter(
+              (item) =>
+                item.title.toLowerCase().includes(q) ||
+                item.section.toLowerCase().includes(q) ||
+                item.subtitle.toLowerCase().includes(q)
+            )
+          : searchEntries.slice(0, 18)
+        ).slice(0, 35);
+
+        if (!matches.length) {
+          resultsEl.innerHTML =
+            '<div style="padding:16px;font-size:0.86rem;color:var(--text-muted)">No matches found.</div>';
+          return;
+        }
+        resultsEl.innerHTML = '';
+        for (const m of matches) {
+          const a = document.createElement('a');
+          a.href = baseUrl + String(m.slug || '').replace(/^\/+/, '');
+          a.className = 'search-item';
+          const left = document.createElement('div');
+          const t = document.createElement('div');
+          t.className = 'search-item-title';
+          t.textContent = m.title;
+          const sub = document.createElement('div');
+          sub.className = 'search-item-sub';
+          sub.textContent = m.subtitle;
+          left.appendChild(t);
+          if (m.subtitle) left.appendChild(sub);
+          const sec = document.createElement('span');
+          sec.className = 'search-item-section';
+          sec.textContent = m.section;
+          a.appendChild(left);
+          a.appendChild(sec);
+          resultsEl.appendChild(a);
+        }
+      }
+
+      async function openSearch() {
+        if (!dialog || !(dialog instanceof HTMLDialogElement)) return;
+        dialog.showModal();
+        input?.focus();
+        await ensureIndex();
+        renderResults(input?.value || '');
+      }
+
+      openBtn?.addEventListener('click', openSearch);
+      dialog?.addEventListener('click', (e) => {
+        if (e.target === dialog) dialog.close();
+      });
+      input?.addEventListener('input', () => renderResults(input.value));
+
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          if (dialog?.open) dialog.close();
+          else openSearch();
+        } else if (
+          e.key === '/' &&
+          document.activeElement?.tagName !== 'INPUT' &&
+          document.activeElement?.tagName !== 'TEXTAREA'
+        ) {
+          e.preventDefault();
+          openSearch();
+        }
+      });
+    </script></body></html>

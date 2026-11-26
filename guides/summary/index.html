@@ -1,0 +1,1598 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Stdlib &amp; Compiler Architecture Notes · Lora Language</title><meta name="description" content="Deep engineering design notes across HTTP/1.1, HTTP/2, TLS 1.3, DNS, @sql, regions, scratch allocators, and LSP type inference (docs/summary.md)."><script>
+      try {
+        const t = localStorage.getItem('lora-docs-theme');
+        if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      } catch {}
+    </script><link rel="stylesheet" href="/lora-docs/_astro/PageContent.NRsqP4nx.css"></head><body data-base="/lora-docs/"><header class="topbar"><div class="topbar-left"><button id="mobile-menu-btn" class="menu-btn" type="button" aria-label="Toggle navigation" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button><a href="/lora-docs/" class="brand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="The Lora owl">
+  <title>The Lora owl</title>
+  <path d="M 48 88 L 60 24 L 96 60 Q 128 52 160 60 L 196 24 L 208 88 Q 232 120 224 160 Q 216 232 128 232 Q 40 232 32 160 Q 24 120 48 88 Z" fill="#ff9fc8"/>
+  <circle cx="92" cy="128" r="40" fill="#ffffff" stroke="#ffc799" stroke-width="13"/>
+  <circle cx="164" cy="128" r="40" fill="#ffffff" stroke="#ffc799" stroke-width="13"/>
+  <circle cx="96" cy="132" r="18" fill="#101010"/>
+  <circle cx="160" cy="132" r="18" fill="#101010"/>
+  <polygon points="114,168 142,168 128,194" fill="#ffc799"/>
+</svg>
+<span>Lora Language</span></a><span class="version-pill">v0.1.0</span></div><button id="open-search" type="button" class="search-trigger" aria-label="Search documentation"><span class="search-trigger-left"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><span>Search documentation...</span></span><kbd class="search-kbd">Ctrl K</kbd></button><div class="topbar-right"><button id="theme-toggle" type="button" class="icon-btn" aria-label="Toggle color theme" title="Toggle dark/light theme"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg></button><a href="/lora-docs/specification/standard-library" class="icon-btn" aria-label="Standard Library Index" title="Standard Library (57 modules)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg></a></div></header><div class="shell"><aside id="sidebar" class="sidebar" aria-label="Documentation Navigation"><details class="nav-group" open><summary class="nav-group-summary"><span>GETTING STARTED</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/getting-started/introduction" class="nav-link">Introduction</a></li><li><a href="/lora-docs/getting-started/toolchain-and-editors" class="nav-link">Toolchain &amp; Editors</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>LANGUAGE DESIGN</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/language-design/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/language-design/aliases" class="nav-link">Aliases &amp; Type Declarations</a></li><li><a href="/lora-docs/language-design/assignment" class="nav-link">Assignment</a></li><li><a href="/lora-docs/language-design/blocks-and-statements" class="nav-link">Blocks and Statements</a></li><li><a href="/lora-docs/language-design/structs-unions-interfaces" class="nav-link">Structs, Unions &amp; Interfaces</a></li><li><a href="/lora-docs/language-design/declaring-entities" class="nav-link">Declaring Entities</a></li><li><a href="/lora-docs/language-design/functions" class="nav-link">Functions</a></li><li><a href="/lora-docs/language-design/lambdas" class="nav-link">Lambdas &amp; Closures</a></li><li><a href="/lora-docs/language-design/metaprogramming" class="nav-link">Metaprogramming &amp; Comptime</a></li><li><a href="/lora-docs/language-design/name-lookup" class="nav-link">Name Lookup</a></li><li><a href="/lora-docs/language-design/naming-conventions" class="nav-link">Naming Conventions</a></li><li><a href="/lora-docs/language-design/pattern-matching" class="nav-link">Pattern Matching</a></li><li><a href="/lora-docs/language-design/sum-types" class="nav-link">Sum Types, Optionals &amp; Enums</a></li><li><a href="/lora-docs/language-design/tuples" class="nav-link">Tuples &amp; Named Tuples</a></li><li><a href="/lora-docs/language-design/type-inference" class="nav-link">Type Inference</a></li><li><a href="/lora-docs/language-design/values-pointers-views" class="nav-link">Values, Owners, Pointers &amp; Views</a></li><li><a href="/lora-docs/language-design/variadics" class="nav-link">Variadics</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>CODE &amp; NAME ORGANIZATION</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/organization/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/organization/source-files" class="nav-link">Source Files &amp; Modules</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>CONTROL FLOW</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/control-flow/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/control-flow/conditionals" class="nav-link">Conditionals</a></li><li><a href="/lora-docs/control-flow/loops" class="nav-link">Loops</a></li><li><a href="/lora-docs/control-flow/return-yield-defer" class="nav-link">Return, Yield &amp; Defer</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>EXPRESSIONS</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/expressions/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/expressions/arithmetic" class="nav-link">Arithmetic &amp; Overflow</a></li><li><a href="/lora-docs/expressions/as-expressions" class="nav-link">Conversions (@T) &amp; Assertions</a></li><li><a href="/lora-docs/expressions/bitwise" class="nav-link">Bitwise &amp; @bits</a></li><li><a href="/lora-docs/expressions/comparison-operators" class="nav-link">Comparison Operators</a></li><li><a href="/lora-docs/expressions/if-expressions" class="nav-link">If &amp; Match Expressions</a></li><li><a href="/lora-docs/expressions/implicit-conversions" class="nav-link">Implicit Conversions</a></li><li><a href="/lora-docs/expressions/indexing" class="nav-link">Indexing &amp; Slicing</a></li><li><a href="/lora-docs/expressions/literals" class="nav-link">Literals</a></li><li><a href="/lora-docs/expressions/logical-operators" class="nav-link">Logical Operators</a></li><li><a href="/lora-docs/expressions/member-access" class="nav-link">Member Access</a></li><li><a href="/lora-docs/expressions/pointer-operators" class="nav-link">Pointer &amp; Ownership Operators</a></li><li><a href="/lora-docs/expressions/type-operators" class="nav-link">Type &amp; Layout Operators</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>GENERICS</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/generics/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/generics/goals" class="nav-link">Goals</a></li><li><a href="/lora-docs/generics/terminology" class="nav-link">Terminology</a></li><li><a href="/lora-docs/generics/generics-overview" class="nav-link">Constraints Overview</a></li><li><a href="/lora-docs/generics/generics-details" class="nav-link">Generics Details</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>INTEROPERABILITY</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/interoperability/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/interoperability/c-abi" class="nav-link">Philosophy, Goals &amp; C ABI</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>LEXICAL CONVENTIONS</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/lexical/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/lexical/comments" class="nav-link">Comments</a></li><li><a href="/lora-docs/lexical/numeric-literals" class="nav-link">Numeric Literals</a></li><li><a href="/lora-docs/lexical/string-literals" class="nav-link">String &amp; Rune Literals</a></li><li><a href="/lora-docs/lexical/symbolic-tokens" class="nav-link">Symbolic Tokens</a></li><li><a href="/lora-docs/lexical/whitespace" class="nav-link">Whitespace &amp; Semicolons</a></li><li><a href="/lora-docs/lexical/words" class="nav-link">Words &amp; Keywords</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>SAFETY</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/safety/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/safety/terminology" class="nav-link">Terminology</a></li><li><a href="/lora-docs/safety/memory-ownership" class="nav-link">Memory &amp; Ownership Safety</a></li><li><a href="/lora-docs/safety/borrow-loan-views" class="nav-link">Borrow, Loan &amp; View Safety</a></li><li><a href="/lora-docs/safety/concurrency-races" class="nav-link">Concurrency &amp; Data Races</a></li><li><a href="/lora-docs/safety/stack-overflow" class="nav-link">Stack Overflow &amp; @depth</a></li><li><a href="/lora-docs/safety/contracts-and-unit-functions" class="nav-link">Contracts &amp; Unit Functions</a></li><li><a href="/lora-docs/safety/unsafe-code" class="nav-link">Unsafe Code &amp; Hardening</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>PRINCIPLES</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/principles/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/principles/error-handling" class="nav-link">Error Handling</a></li><li><a href="/lora-docs/principles/information-accumulation" class="nav-link">Information Accumulation</a></li><li><a href="/lora-docs/principles/library-apis-only" class="nav-link">Library APIs Only</a></li><li><a href="/lora-docs/principles/low-context-sensitivity" class="nav-link">Low Context Sensitivity</a></li><li><a href="/lora-docs/principles/namespace-cleanliness" class="nav-link">Namespace Cleanliness</a></li><li><a href="/lora-docs/principles/one-way" class="nav-link">One Way</a></li><li><a href="/lora-docs/principles/progressive-disclosure" class="nav-link">Progressive Disclosure</a></li><li><a href="/lora-docs/principles/safety-strategy" class="nav-link">Safety Strategy</a></li><li><a href="/lora-docs/principles/static-open-extension" class="nav-link">Static Open Extension</a></li><li><a href="/lora-docs/principles/success-criteria" class="nav-link">Success Criteria</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>GUIDES</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/guides/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/guides/glossary" class="nav-link">Glossary</a></li><li><a href="/lora-docs/guides/idiomatic-lora" class="nav-link">Idiomatic Lora &amp; Style Guide</a></li><li><a href="/lora-docs/guides/testing-and-benchmarking" class="nav-link">Testing, Benchmarks &amp; Fuzzing</a></li><li><a href="/lora-docs/guides/concurrency-and-sync" class="nav-link">Concurrency, Sync &amp; Context</a></li><li><a href="/lora-docs/guides/containers-and-data" class="nav-link">Containers, Data &amp; Checksums</a></li><li><a href="/lora-docs/guides/web-and-auth" class="nav-link">Web, HTTP &amp; Auth</a></li><li><a href="/lora-docs/guides/resilience-and-observability" class="nav-link">Resilience &amp; Observability</a></li><li><a href="/lora-docs/guides/cli-and-markup" class="nav-link">CLI, Terminal &amp; Markup</a></li><li><a href="/lora-docs/guides/math-and-algorithms" class="nav-link">Math, Stats &amp; Algorithms</a></li><li><a href="/lora-docs/guides/allocators" class="nav-link">Allocators &amp; Memory Strategies</a></li><li><a href="/lora-docs/guides/sql-and-postgresql" class="nav-link">Typed SQL, PostgreSQL &amp; SQLite</a></li><li><a href="/lora-docs/guides/tags-and-codecs" class="nav-link">Structure Tags &amp; Codecs</a></li><li><a href="/lora-docs/guides/encodings-and-crypto" class="nav-link">Encodings &amp; Cryptography</a></li><li><a href="/lora-docs/guides/reading-generated-code" class="nav-link">Reading Generated Code</a></li><li><a href="/lora-docs/guides/diagnostic-catalog" class="nav-link">Diagnostic Catalog (L0001–L1004)</a></li><li><a href="/lora-docs/guides/roadmap" class="nav-link">Roadmap</a></li><li><a href="/lora-docs/guides/summary" class="nav-link is-active">Stdlib &amp; Language Summary</a></li></ul></details><details class="nav-group" open><summary class="nav-group-summary"><span>SPECIFICATION</span><svg class="nav-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/specification/overview" class="nav-link">Overview</a></li><li><a href="/lora-docs/specification/language-spec" class="nav-link">Language Spec (Full 27 Chapters)</a></li><li><a href="/lora-docs/specification/execution" class="nav-link">Execution &amp; Runtime</a></li><li><a href="/lora-docs/specification/lexing" class="nav-link">Lexing</a></li><li><a href="/lora-docs/specification/libraries" class="nav-link">Libraries &amp; Typedefs</a></li><li><a href="/lora-docs/specification/names" class="nav-link">Names &amp; Visibility</a></li><li><a href="/lora-docs/specification/parsing" class="nav-link">Parsing &amp; Limits</a></li><li><a href="/lora-docs/specification/semantics" class="nav-link">Semantics &amp; Checking</a></li><li><a href="/lora-docs/specification/standard-library" class="nav-link">Standard Library Index</a></li></ul><details class="nav-subdetails"><summary class="nav-subsummary"><span>Standard Library Modules (141)</span><svg class="nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg></summary><ul class="nav-list"><li><a href="/lora-docs/stdlib/mem" class="nav-link">mem</a></li><li><a href="/lora-docs/stdlib/expanse" class="nav-link">expanse</a></li><li><a href="/lora-docs/stdlib/pool" class="nav-link">pool</a></li><li><a href="/lora-docs/stdlib/allocator" class="nav-link">allocator</a></li><li><a href="/lora-docs/stdlib/arena" class="nav-link">arena</a></li><li><a href="/lora-docs/stdlib/scratch" class="nav-link">scratch</a></li><li><a href="/lora-docs/stdlib/rc" class="nav-link">rc</a></li><li><a href="/lora-docs/stdlib/arc" class="nav-link">arc</a></li><li><a href="/lora-docs/stdlib/slotmap" class="nav-link">slotmap</a></li><li><a href="/lora-docs/stdlib/intern" class="nav-link">intern</a></li><li><a href="/lora-docs/stdlib/strconv" class="nav-link">strconv</a></li><li><a href="/lora-docs/stdlib/utf8" class="nav-link">utf8</a></li><li><a href="/lora-docs/stdlib/utf16" class="nav-link">utf16</a></li><li><a href="/lora-docs/stdlib/unicode" class="nav-link">unicode</a></li><li><a href="/lora-docs/stdlib/ascii" class="nav-link">ascii</a></li><li><a href="/lora-docs/stdlib/strings" class="nav-link">strings</a></li><li><a href="/lora-docs/stdlib/bytes" class="nav-link">bytes</a></li><li><a href="/lora-docs/stdlib/compare" class="nav-link">compare</a></li><li><a href="/lora-docs/stdlib/sort" class="nav-link">sort</a></li><li><a href="/lora-docs/stdlib/slices" class="nav-link">slices</a></li><li><a href="/lora-docs/stdlib/iter" class="nav-link">iter</a></li><li><a href="/lora-docs/stdlib/fuzzy" class="nav-link">fuzzy</a></li><li><a href="/lora-docs/stdlib/io" class="nav-link">io</a></li><li><a href="/lora-docs/stdlib/bufio" class="nav-link">bufio</a></li><li><a href="/lora-docs/stdlib/bitio" class="nav-link">bitio</a></li><li><a href="/lora-docs/stdlib/fmt" class="nav-link">fmt</a></li><li><a href="/lora-docs/stdlib/os" class="nav-link">os</a></li><li><a href="/lora-docs/stdlib/env" class="nav-link">env</a></li><li><a href="/lora-docs/stdlib/dotenv" class="nav-link">dotenv</a></li><li><a href="/lora-docs/stdlib/path" class="nav-link">path</a></li><li><a href="/lora-docs/stdlib/fs" class="nav-link">fs</a></li><li><a href="/lora-docs/stdlib/tempfile" class="nav-link">tempfile</a></li><li><a href="/lora-docs/stdlib/glob" class="nav-link">glob</a></li><li><a href="/lora-docs/stdlib/time" class="nav-link">time</a></li><li><a href="/lora-docs/stdlib/signal" class="nav-link">signal</a></li><li><a href="/lora-docs/stdlib/process" class="nav-link">process</a></li><li><a href="/lora-docs/stdlib/mmap" class="nav-link">mmap</a></li><li><a href="/lora-docs/stdlib/dl" class="nav-link">dl</a></li><li><a href="/lora-docs/stdlib/sys" class="nav-link">sys</a></li><li><a href="/lora-docs/stdlib/ipc" class="nav-link">ipc</a></li><li><a href="/lora-docs/stdlib/math" class="nav-link">math</a></li><li><a href="/lora-docs/stdlib/stats" class="nav-link">stats</a></li><li><a href="/lora-docs/stdlib/matrix" class="nav-link">matrix</a></li><li><a href="/lora-docs/stdlib/fft" class="nav-link">fft</a></li><li><a href="/lora-docs/stdlib/geo" class="nav-link">geo</a></li><li><a href="/lora-docs/stdlib/bits" class="nav-link">bits</a></li><li><a href="/lora-docs/stdlib/bitset" class="nav-link">bitset</a></li><li><a href="/lora-docs/stdlib/bitstructs" class="nav-link">bitstructs</a></li><li><a href="/lora-docs/stdlib/vectors" class="nav-link">vectors</a></li><li><a href="/lora-docs/stdlib/decimal" class="nav-link">decimal</a></li><li><a href="/lora-docs/stdlib/rand" class="nav-link">rand</a></li><li><a href="/lora-docs/stdlib/cmplx" class="nav-link">cmplx</a></li><li><a href="/lora-docs/stdlib/big" class="nav-link">big</a></li><li><a href="/lora-docs/stdlib/color" class="nav-link">color</a></li><li><a href="/lora-docs/stdlib/qoi" class="nav-link">qoi</a></li><li><a href="/lora-docs/stdlib/hash" class="nav-link">hash</a></li><li><a href="/lora-docs/stdlib/checksum" class="nav-link">checksum</a></li><li><a href="/lora-docs/stdlib/crypto" class="nav-link">crypto</a></li><li><a href="/lora-docs/stdlib/secret" class="nav-link">secret</a></li><li><a href="/lora-docs/stdlib/otp" class="nav-link">otp</a></li><li><a href="/lora-docs/stdlib/compress" class="nav-link">compress</a></li><li><a href="/lora-docs/stdlib/tar" class="nav-link">tar</a></li><li><a href="/lora-docs/stdlib/zip" class="nav-link">zip</a></li><li><a href="/lora-docs/stdlib/map" class="nav-link">map</a></li><li><a href="/lora-docs/stdlib/set" class="nav-link">set</a></li><li><a href="/lora-docs/stdlib/deque" class="nav-link">deque</a></li><li><a href="/lora-docs/stdlib/heap" class="nav-link">heap</a></li><li><a href="/lora-docs/stdlib/btree" class="nav-link">btree</a></li><li><a href="/lora-docs/stdlib/trie" class="nav-link">trie</a></li><li><a href="/lora-docs/stdlib/ring" class="nav-link">ring</a></li><li><a href="/lora-docs/stdlib/lru" class="nav-link">lru</a></li><li><a href="/lora-docs/stdlib/cache" class="nav-link">cache</a></li><li><a href="/lora-docs/stdlib/bloom" class="nav-link">bloom</a></li><li><a href="/lora-docs/stdlib/graph" class="nav-link">graph</a></li><li><a href="/lora-docs/stdlib/dsu" class="nav-link">dsu</a></li><li><a href="/lora-docs/stdlib/interval" class="nav-link">interval</a></li><li><a href="/lora-docs/stdlib/thread" class="nav-link">thread</a></li><li><a href="/lora-docs/stdlib/sync" class="nav-link">sync</a></li><li><a href="/lora-docs/stdlib/coro" class="nav-link">coro</a></li><li><a href="/lora-docs/stdlib/context" class="nav-link">context</a></li><li><a href="/lora-docs/stdlib/channel" class="nav-link">channel</a></li><li><a href="/lora-docs/stdlib/broadcast" class="nav-link">broadcast</a></li><li><a href="/lora-docs/stdlib/workpool" class="nav-link">workpool</a></li><li><a href="/lora-docs/stdlib/errors" class="nav-link">errors</a></li><li><a href="/lora-docs/stdlib/ratelimit" class="nav-link">ratelimit</a></li><li><a href="/lora-docs/stdlib/retry" class="nav-link">retry</a></li><li><a href="/lora-docs/stdlib/metrics" class="nav-link">metrics</a></li><li><a href="/lora-docs/stdlib/trace" class="nav-link">trace</a></li><li><a href="/lora-docs/stdlib/cron" class="nav-link">cron</a></li><li><a href="/lora-docs/stdlib/log" class="nav-link">log</a></li><li><a href="/lora-docs/stdlib/config" class="nav-link">config</a></li><li><a href="/lora-docs/stdlib/ini" class="nav-link">ini</a></li><li><a href="/lora-docs/stdlib/flag" class="nav-link">flag</a></li><li><a href="/lora-docs/stdlib/term" class="nav-link">term</a></li><li><a href="/lora-docs/stdlib/unit" class="nav-link">unit</a></li><li><a href="/lora-docs/stdlib/semver" class="nav-link">semver</a></li><li><a href="/lora-docs/stdlib/regex" class="nav-link">regex</a></li><li><a href="/lora-docs/stdlib/base64" class="nav-link">base64</a></li><li><a href="/lora-docs/stdlib/base32" class="nav-link">base32</a></li><li><a href="/lora-docs/stdlib/ascii85" class="nav-link">ascii85</a></li><li><a href="/lora-docs/stdlib/hex" class="nav-link">hex</a></li><li><a href="/lora-docs/stdlib/binary" class="nav-link">binary</a></li><li><a href="/lora-docs/stdlib/encoding" class="nav-link">encoding</a></li><li><a href="/lora-docs/stdlib/pem" class="nav-link">pem</a></li><li><a href="/lora-docs/stdlib/asn1" class="nav-link">asn1</a></li><li><a href="/lora-docs/stdlib/json" class="nav-link">json</a></li><li><a href="/lora-docs/stdlib/csv" class="nav-link">csv</a></li><li><a href="/lora-docs/stdlib/xml" class="nav-link">xml</a></li><li><a href="/lora-docs/stdlib/html" class="nav-link">html</a></li><li><a href="/lora-docs/stdlib/template" class="nav-link">template</a></li><li><a href="/lora-docs/stdlib/markdown" class="nav-link">markdown</a></li><li><a href="/lora-docs/stdlib/pack" class="nav-link">pack</a></li><li><a href="/lora-docs/stdlib/cbor" class="nav-link">cbor</a></li><li><a href="/lora-docs/stdlib/msgpack" class="nav-link">msgpack</a></li><li><a href="/lora-docs/stdlib/toml" class="nav-link">toml</a></li><li><a href="/lora-docs/stdlib/yaml" class="nav-link">yaml</a></li><li><a href="/lora-docs/stdlib/netip" class="nav-link">netip</a></li><li><a href="/lora-docs/stdlib/net" class="nav-link">net</a></li><li><a href="/lora-docs/stdlib/dns" class="nav-link">dns</a></li><li><a href="/lora-docs/stdlib/url" class="nav-link">url</a></li><li><a href="/lora-docs/stdlib/textproto" class="nav-link">textproto</a></li><li><a href="/lora-docs/stdlib/hpack" class="nav-link">hpack</a></li><li><a href="/lora-docs/stdlib/http" class="nav-link">http</a></li><li><a href="/lora-docs/stdlib/cookie" class="nav-link">cookie</a></li><li><a href="/lora-docs/stdlib/mime" class="nav-link">mime</a></li><li><a href="/lora-docs/stdlib/multipart" class="nav-link">multipart</a></li><li><a href="/lora-docs/stdlib/websocket" class="nav-link">websocket</a></li><li><a href="/lora-docs/stdlib/sse" class="nav-link">sse</a></li><li><a href="/lora-docs/stdlib/jwt" class="nav-link">jwt</a></li><li><a href="/lora-docs/stdlib/x509" class="nav-link">x509</a></li><li><a href="/lora-docs/stdlib/tls" class="nav-link">tls</a></li><li><a href="/lora-docs/stdlib/smtp" class="nav-link">smtp</a></li><li><a href="/lora-docs/stdlib/sql" class="nav-link">sql</a></li><li><a href="/lora-docs/stdlib/pg" class="nav-link">pg</a></li><li><a href="/lora-docs/stdlib/sqlite" class="nav-link">sqlite</a></li><li><a href="/lora-docs/stdlib/kv" class="nav-link">kv</a></li><li><a href="/lora-docs/stdlib/uuid" class="nav-link">uuid</a></li><li><a href="/lora-docs/stdlib/ulid" class="nav-link">ulid</a></li><li><a href="/lora-docs/stdlib/diff" class="nav-link">diff</a></li><li><a href="/lora-docs/stdlib/testing" class="nav-link">testing</a></li><li><a href="/lora-docs/stdlib/rt" class="nav-link">rt</a></li></ul></details></details></aside><main class="content-wrap"><article class="article"><div class="breadcrumbs">Guides</div><h1 id="top" class="page-title">Stdlib &amp; Compiler Architecture Notes</h1><p class="lead">Deep engineering design notes across HTTP/1.1, HTTP/2, TLS 1.3, DNS, <code class="inline-code">@sql</code>, regions, scratch allocators, and LSP type inference (<code class="inline-code">docs/summary.md</code>).</p><p>Each section below sums up one piece of work, in the order it was done:
+what it added or changed, what it found and fixed on the way, and how it
+is tested. The networking libraries came first, in phases: streams,
+then addresses, sockets, names, URLs and HTTP, then the server and
+client on top, compression, mail, and TLS for servers. Every change
+after them gets a section here too.</p>
+<p>Every piece of work ends with the whole test suite passing: the library
+tests, the compiler&#39;s checks, error messages, leak checks, the language
+server, the fuzzers, the tree-sitter grammar, the examples and the stack
+frame estimates.</p>
+<h2 id="phase-1-io-readers-and-writers" class="doc-h2"><a class="anchor-link" href="#phase-1-io-readers-and-writers">Phase 1 — io: readers and writers</a></h2>
+<p>Commit <code class="inline-code">67eedb4</code>.</p>
+<ul>
+<li><strong>Interfaces every stream shares:</strong> reader, writer, closer, seeker,
+reader_at, writer_at and byte_reader, the interfaces made of them, and
+one error set, <code class="inline-code">io::failure</code>, that every stream returns.</li>
+<li><strong>Helpers:</strong> copy, limit, join, tee and section streams. Writers take
+several buffers in one call (<code class="inline-code">write_vec</code>, a single system call on files
+and sockets). There is also a fixed-size writer, <code class="inline-code">take</code> and <code class="inline-code">reserve</code>.</li>
+<li><strong>bufio, rebuilt over any reader or writer:</strong> lines, slices, runes,
+peek, take, and a scanner with split functions. A line longer than the
+buffer is <code class="inline-code">too_large</code>, never cut.</li>
+<li><strong>Everything speaks it:</strong><ul>
+<li><code class="inline-code">fs::open</code> and <code class="inline-code">fs::create</code> give an owned file that closes when it is
+dropped.</li>
+<li>Files, sockets and TLS connections implement the interfaces.</li>
+<li>json, csv, xml and pack read and write any stream.</li>
+<li><code class="inline-code">fmt::fprintf</code> prints to any writer.</li>
+</ul>
+</li>
+<li><strong>Compiler fixes:</strong><ul>
+<li>An interface value converts to any interface it embeds, not only the
+first.</li>
+<li>A type with an impl of each part implements the interface made of
+them.</li>
+<li>Default methods of exported impls link from other modules.</li>
+<li>A default parameter may be a function&#39;s address.</li>
+<li>An owned temporary in a loop is made once (it caused a false double
+free).</li>
+</ul>
+</li>
+</ul>
+<h2 id="phase-2-netip-addresses-as-values" class="doc-h2"><a class="anchor-link" href="#phase-2-netip-addresses-as-values">Phase 2 — netip: addresses as values</a></h2>
+<p>Commit <code class="inline-code">57feabe</code>.</p>
+<ul>
+<li><strong>Small values that allocate nothing:</strong> IPv4 and IPv6 addresses (with
+their zones), an address with a port, prefixes, and MAC addresses.</li>
+<li><strong>Parsing:</strong> strict, with errors that name the byte at fault.</li>
+<li><strong>Writing:</strong> as RFC 5952 has it.</li>
+<li><strong>Classes:</strong> private, loopback, multicast, link-local and global
+unicast.</li>
+<li><strong>Operations:</strong> stepping, comparing, and hashing for maps.</li>
+<li><strong>Encodings:</strong> json, xml, csv and pack carry them through their text
+and binary forms.</li>
+<li><strong>Tests:</strong> checked against a reference implementation on 20,606
+inputs. The few differences are deliberate:<ul>
+<li>a port with a leading zero is refused, so each value has one text;</li>
+<li>a zone is at most 15 bytes.</li>
+</ul>
+</li>
+</ul>
+<h2 id="phase-3-net-tcp-udp-and-local-sockets" class="doc-h2"><a class="anchor-link" href="#phase-3-net-tcp-udp-and-local-sockets">Phase 3 — net: TCP, UDP and local sockets</a></h2>
+<p>Commits <code class="inline-code">770d573</code> and <code class="inline-code">327d0c0</code>.</p>
+<ul>
+<li><strong>Connections:</strong><ul>
+<li>Dial and listen over TCP (IPv4 and IPv6) and local sockets, and
+accept.</li>
+<li>Datagrams over UDP and local sockets.</li>
+<li>Socket pairs, passing descriptors, sendfile, writev, half-close.</li>
+<li>Socket options: no-delay, keep-alive, linger, buffer sizes, reuse,
+v6-only.</li>
+<li>The system&#39;s interfaces and their addresses.</li>
+</ul>
+</li>
+<li><strong>Waiting:</strong> sockets are non-blocking. In a coroutine they wait on
+kqueue so other coroutines run; outside one they poll.</li>
+<li><strong>Deadlines:</strong> every read, write, accept and dial can have one. A
+cancelled coroutine&#39;s wait ends at once.</li>
+<li><strong>Errors:</strong> writing to a peer that has gone is <code class="inline-code">EPIPE</code>, never a
+signal. Errors name the operation and the address.</li>
+<li><strong>dial_host:</strong> looks a name up and tries its IPv6 and IPv4 addresses by
+turns.</li>
+<li><strong>Compiler:</strong><ul>
+<li><code class="inline-code">@go f(x)</code> moves an owned <code class="inline-code">x</code> into the child, so a server gives each
+connection its own coroutine.</li>
+<li>The race checker tells pointers to two different locals apart.</li>
+</ul>
+</li>
+<li><strong>Stack use:</strong><ul>
+<li>Recursion across the library is now loops, or bounded with <code class="inline-code">@depth</code>,
+so programs that use coroutines have a known stack bound.</li>
+<li>Readers of untrusted input fail with their own error first.</li>
+<li>The vendored QBE shares stack slots, which made large frames up to
+13 times smaller.</li>
+<li><code class="inline-code">scripts/test-stack-frames.py</code> checks that no estimate is below the
+real frame.</li>
+</ul>
+</li>
+</ul>
+<h2 id="phase-4-dns-a-resolver-of-its-own" class="doc-h2"><a class="anchor-link" href="#phase-4-dns-a-resolver-of-its-own">Phase 4 — dns: a resolver of its own</a></h2>
+<p>Commits <code class="inline-code">cb33564</code>, <code class="inline-code">f46cc2b</code>, <code class="inline-code">40fbb8e</code> and <code class="inline-code">f7f6265</code>.</p>
+<ul>
+<li><strong>Where it asks:</strong> the servers <code class="inline-code">/etc/resolv.conf</code> names, after
+<code class="inline-code">/etc/hosts</code>.<ul>
+<li>Queries go over UDP, and over TCP when the answer is cut short.</li>
+<li>Each server is asked in turn, a few times, each within a timeout.</li>
+<li>Queries use EDNS (dropped for a server that doesn&#39;t know it) and
+random ids. An answer must be to the question asked.</li>
+<li>Short names are tried in the search domains.</li>
+<li><code class="inline-code">.local</code> names, and everything when there is no configuration, are
+asked of the system.</li>
+</ul>
+</li>
+<li><strong>Lookups:</strong><ul>
+<li>hosts, sorted as RFC 6724 asks;</li>
+<li>reverse names and CNAME;</li>
+<li>MX by preference, and SRV by priority and weight;</li>
+<li>TXT, NS, and whole answers of any kind.</li>
+<li>Errors say the name, why it failed, and the last server asked.</li>
+</ul>
+</li>
+<li><strong>Messages:</strong> decoded safely (compressed names may only point
+backward, and impossible counts are refused first), and written with a
+builder.</li>
+<li><strong>Bugs fixed on the way:</strong><ul>
+<li><strong>Lexer:</strong> string tokens shared one buffer, so a literal after a <code class="inline-code">?</code>
+could compile as another string&#39;s bytes.</li>
+<li><strong>Stack guards:</strong> a frame larger than the guard page could step over
+it. QBE now enters large frames a page at a time, on arm64, amd64 and
+rv64.</li>
+<li><strong>Stack overflows off the main thread</strong> died silently. Now they&#39;re
+reported on every stack, naming the coroutine or thread.</li>
+<li><strong>rv64:</strong> a copy-elimination bug.</li>
+<li><strong>tree-sitter:</strong> a string starting with <code class="inline-code">//</code> was read as a comment.</li>
+</ul>
+</li>
+</ul>
+<h2 id="phase-5-url-and-textproto" class="doc-h2"><a class="anchor-link" href="#phase-5-url-and-textproto">Phase 5 — url and textproto</a></h2>
+<p>Commit <code class="inline-code">dade5bf</code>.</p>
+<ul>
+<li><p><strong>url</strong> parses URLs and relative references strictly, as RFC 3986 has
+them, with errors that say what is wrong and at which byte.</p>
+<ul>
+<li>A URL owns one copy of its text, and its parts are views of it.</li>
+<li><code class="inline-code">resolve</code> follows section 5; every example of 5.4 is tested.</li>
+<li>There is also build, join_path, remove_dots, redacted and
+request_target, escaping and unescaping for each part, and query
+values (encoded with their keys sorted).</li>
+</ul>
+</li>
+<li><p><strong>textproto</strong> reads what HTTP, SMTP and mail share:</p>
+<ul>
+<li>lines, and lines folded across several;</li>
+<li>headers with canonical keys, looked up in any case and bounded by
+limits;</li>
+<li>bodies ended by a line of <code class="inline-code">.</code>;</li>
+<li>three-digit replies.</li>
+</ul>
+<p>It writes headers so that no value can start a field of its own.</p>
+</li>
+</ul>
+<h2 id="phase-6-http-http11-messages" class="doc-h2"><a class="anchor-link" href="#phase-6-http-http11-messages">Phase 6 — http: HTTP/1.1 messages</a></h2>
+<p>Commit <code class="inline-code">3103db3</code>.</p>
+<ul>
+<li><p><strong>Reading:</strong> requests and responses are read from a buffered reader as
+RFC 9110 and 9112 have them.</p>
+<ul>
+<li>Every target form; keep-alive by version and Connection; 1xx
+responses; no body for HEAD, 204 and 304.</li>
+<li>Bodies are readers: of a length, chunked with trailers, or to the
+end.</li>
+</ul>
+</li>
+<li><p><strong>Strictness:</strong> reading refuses anything that would let two readers
+see different messages:</p>
+<ul>
+<li>Content-Length together with Transfer-Encoding, or lengths that
+disagree;</li>
+<li>codings other than chunked;</li>
+<li>a missing or repeated Host;</li>
+<li>bad chunk sizes or line ends;</li>
+<li>versions other than 1.0 and 1.1.</li>
+</ul>
+<p>The error carries the status to answer with.</p>
+</li>
+<li><p><strong>Writing:</strong> request and response heads, a chunked writer with
+trailers, status texts, and HTTP dates in all three forms.</p>
+</li>
+<li><p><strong>Bug fixed:</strong> reading a header waited for a byte after the blank
+line, which hung every server on its first request.</p>
+</li>
+</ul>
+<h2 id="phase-7-http-server" class="doc-h2"><a class="anchor-link" href="#phase-7-http-server">Phase 7 — http server</a></h2>
+<p>Commits <code class="inline-code">6be8813</code> and <code class="inline-code">645d8c2</code>.</p>
+<ul>
+<li><strong>Serving:</strong> <code class="inline-code">http::serve</code> answers each connection in its own
+coroutine, one request after another, through a handler (an interface,
+or a plain function).</li>
+<li><strong>The responder buffers:</strong><ul>
+<li>A response that fits gets its Content-Length; a larger one goes in
+chunks. A length the handler sets is kept to.</li>
+<li>It adds Date, and sends no body for HEAD, 1xx, 204 and 304.</li>
+<li>It answers <code class="inline-code">100 Continue</code> when the handler first reads the body.</li>
+<li>A body the handler leaves unread is drained, so the next request can
+be read.</li>
+</ul>
+</li>
+<li><strong>Time limits and stopping:</strong> limits for the header, the body and
+writing. A message that isn&#39;t HTTP gets its status. <code class="inline-code">serve</code> stops when
+its flag is set, after each connection&#39;s current response.</li>
+<li><strong>No unsafe code:</strong> the handler call no longer needs it. The compiler
+now knows that flat values (no pointers, slices or strings) and its
+own method tables don&#39;t move when changed.</li>
+<li><strong>Compiler fixes:</strong><ul>
+<li>A lambda read a module&#39;s function rather than a local of the same
+name.</li>
+<li>The race checker compared a child&#39;s captures with themselves.</li>
+</ul>
+</li>
+<li><strong>coro fix:</strong> a scope&#39;s helper thread was detached, and the leak check
+sometimes saw 32 bytes left at exit. It&#39;s joined now.</li>
+</ul>
+<h2 id="phase-8-routing-forms-cookies-and-binding" class="doc-h2"><a class="anchor-link" href="#phase-8-routing-forms-cookies-and-binding">Phase 8 — routing, forms, cookies and binding</a></h2>
+<p>Commit <code class="inline-code">de78f2f</code>.</p>
+<ul>
+<li><strong>Router:</strong> routes by method and path.<ul>
+<li>Wildcards: <code class="inline-code">{name}</code>, <code class="inline-code">{name...}</code> and <code class="inline-code">{$}</code>.</li>
+<li>The most specific route wins.</li>
+<li>405 with Allow for other methods; HEAD is served by GET.</li>
+<li>Paths that aren&#39;t clean are redirected (301, or 308 to keep the
+method).</li>
+<li>Patterns that clash are refused.</li>
+</ul>
+</li>
+<li><strong>Forms:</strong> from urlencoded bodies and the query. Multipart bodies are
+read part by part, each part streamed.</li>
+<li><strong>Cookies:</strong> read from requests. Set-Cookie checks the name, value,
+path and domain, and that SameSite=None or Partitioned come with
+Secure.</li>
+<li><strong>bind:</strong> <code class="inline-code">http::bind[T]</code> fills a struct from <code class="inline-code">@path</code>, <code class="inline-code">@query</code>,
+<code class="inline-code">@header</code>, <code class="inline-code">@form</code> and <code class="inline-code">@body</code> (JSON) tags. Its errors name where and
+why.</li>
+</ul>
+<h2 id="phase-9-file-server" class="doc-h2"><a class="anchor-link" href="#phase-9-file-server">Phase 9 — file server</a></h2>
+<p>Commit <code class="inline-code">5b405dd</code>.</p>
+<ul>
+<li><strong>What it sends:</strong><ul>
+<li>a type from the name or the first bytes, with nosniff;</li>
+<li>Last-Modified and a strong ETag;</li>
+<li>Cache-Control;</li>
+<li>the bytes by sendfile.</li>
+</ul>
+</li>
+<li><strong>Conditions:</strong> answered with 304 or 412, in the order RFC 9110 gives.</li>
+<li><strong>Ranges:</strong><ul>
+<li>one range is 206, several are <code class="inline-code">multipart/byteranges</code>, and one past
+the end is 416;</li>
+<li>malformed or abusive ranges get the whole file;</li>
+<li>If-Range is honored.</li>
+</ul>
+</li>
+<li><strong>Directories:</strong> served by their index file or a listing with names
+escaped. A directory without its trailing <code class="inline-code">/</code> is redirected. A prefix
+can be stripped for mounting.</li>
+<li><strong>Safety:</strong> each part of a path is opened inside the one before it
+without following links (unless allowed, and then only to inside the
+root). So <code class="inline-code">..</code>, an escaped <code class="inline-code">/</code> or a link swapped in can&#39;t lead out.
+Hidden names are 404 unless allowed.</li>
+<li><strong>fs:</strong> stat, lstat, read_dir, open_dir, open_in, real_path and
+symlink.</li>
+</ul>
+<h2 id="phase-10-http-client" class="doc-h2"><a class="anchor-link" href="#phase-10-http-client">Phase 10 — http client</a></h2>
+<p>Commits <code class="inline-code">ec576c5</code> and <code class="inline-code">b9bf915</code>.</p>
+<ul>
+<li><strong>Requests:</strong> over HTTP and HTTPS, verifying certificates against the
+system&#39;s roots or your own.</li>
+<li><strong>Connections:</strong> a few are kept open to each server and reused. One
+the server closed in the meantime is detected, and the request goes
+again on a new one.</li>
+<li><strong>Time limit:</strong> one, covering connecting, sending and the response.</li>
+<li><strong>Redirects, as RFC 9110 has them:</strong><ul>
+<li>301, 302 and 303 turn a POST into a GET without its body;</li>
+<li>307 and 308 keep both;</li>
+<li>a redirect to another server drops Authorization and Cookie.</li>
+</ul>
+</li>
+<li><strong>Reading:</strong> <code class="inline-code">get</code>, <code class="inline-code">post</code> and <code class="inline-code">fetch</code> read the whole response; <code class="inline-code">send</code>
+streams the body; <code class="inline-code">release</code> gives the connection back.</li>
+<li><strong>Sharing:</strong> the pool is guarded, so coroutines can share one client.</li>
+<li><strong>Also added:</strong> TLS deadlines, and <code class="inline-code">thread::lock_shared</code>.</li>
+<li><strong>Compiler fix:</strong> a temporary lent to a call could be freed while the
+result still viewed it; a request&#39;s URL was freed under it.</li>
+</ul>
+<h2 id="phase-11-compression-gzip-in-http-testing-handlers-proxy" class="doc-h2"><a class="anchor-link" href="#phase-11-compression-gzip-in-http-testing-handlers-proxy">Phase 11 — compression, gzip in HTTP, testing handlers, proxy</a></h2>
+<p>Commit <code class="inline-code">7ce1ce8</code>.</p>
+<ul>
+<li><strong>compress:</strong> reads and writes DEFLATE, gzip and zlib.<ul>
+<li>Every checksum is checked when reading: gzip&#39;s CRC-32 and length,
+zlib&#39;s Adler-32.</li>
+<li>A gzip file holding several streams reads as one.</li>
+<li>Levels 0–9, each block written in whichever of three encodings comes
+out smallest.</li>
+<li>A stream flushed partway can be read up to the flush.</li>
+<li>Output stays within about 1% of zlib&#39;s size.</li>
+</ul>
+</li>
+<li><strong>hash:</strong> CRC-32 and Adler-32.</li>
+<li><strong>http:</strong><ul>
+<li><strong>Server:</strong> with <code class="inline-code">gzip</code> on, text responses are gzipped for clients
+that accept it. Short, non-text, partial and already-encoded
+responses go as they are.</li>
+<li><strong>Client:</strong> <code class="inline-code">fetch</code> asks for gzip and gives the body back
+decompressed.</li>
+<li><strong>Testing:</strong> <code class="inline-code">record</code> and <code class="inline-code">record_raw</code> run a handler in memory.</li>
+<li><strong>Proxy:</strong> <code class="inline-code">proxy</code> forwards requests to another server, with
+<code class="inline-code">X-Forwarded-*</code> headers and connection headers removed. It answers
+502 when the server can&#39;t be reached and 504 when it doesn&#39;t answer
+in time.</li>
+</ul>
+</li>
+<li><strong>Bugs fixed:</strong><ul>
+<li><strong>Compiler:</strong> <code class="inline-code">append(a, b...)</code> leaked <code class="inline-code">b</code>.</li>
+<li><strong>QBE:</strong> macOS arm64 refused addresses just before a symbol.</li>
+<li><strong>Lookup tables:</strong> made <code class="inline-code">const</code>, as a large <code class="inline-code">def</code> table was rebuilt
+at every lookup.</li>
+<li><strong>Stack:</strong> the decompression window moved to the heap so client calls
+fit in a coroutine&#39;s stack.</li>
+</ul>
+</li>
+</ul>
+<h2 id="phase-12-smtp-sending-mail" class="doc-h2"><a class="anchor-link" href="#phase-12-smtp-sending-mail">Phase 12 — smtp: sending mail</a></h2>
+<p>Commit <code class="inline-code">baf00c2</code>.</p>
+<ul>
+<li><p><strong>Connecting:</strong> <code class="inline-code">dial</code> (port 587), <code class="inline-code">dial_tls</code> (465), or <code class="inline-code">new_client</code>
+over a connection you already have.</p>
+</li>
+<li><p><strong>Commands:</strong> one at a time, each reply awaited within a time limit:</p>
+<ul>
+<li>EHLO, learning the server&#39;s extensions, with a HELO fallback for old
+servers;</li>
+<li>STARTTLS, MAIL, RCPT, DATA (from bytes or a reader), RSET, NOOP,
+VRFY and QUIT.</li>
+</ul>
+</li>
+<li><p><strong>Login:</strong> PLAIN, LOGIN, CRAM-MD5 and XOAUTH2. A password or token goes
+only over TLS or to this machine.</p>
+</li>
+<li><p><strong>Safety:</strong></p>
+<ul>
+<li>Addresses with line breaks or angle brackets are refused, so they
+can&#39;t inject commands.</li>
+<li>Bytes that arrive between STARTTLS and the handshake are refused.</li>
+</ul>
+</li>
+<li><p><strong>Refusals:</strong> carry the server&#39;s code and text. <code class="inline-code">is_temporary</code> tells a
+4xx from a 5xx.</p>
+</li>
+<li><p><strong>Sending in one call:</strong> <code class="inline-code">send_mail</code>, and <code class="inline-code">send_message</code> (which also
+composes).</p>
+</li>
+<li><p><strong>Composing:</strong></p>
+<ul>
+<li>Date, Message-ID and the usual headers;</li>
+<li>subjects and names that aren&#39;t ASCII, encoded;</li>
+<li>quoted-printable bodies;</li>
+<li>text and HTML as alternatives;</li>
+<li>attachments.</li>
+</ul>
+<p>A header value with a line break is refused, and Bcc is never written.</p>
+</li>
+<li><p><strong>Tests:</strong> a scripted SMTP server on loopback. They include RFC 2195&#39;s
+worked CRAM-MD5 example.</p>
+</li>
+</ul>
+<h2 id="phase-13-part-1-tls-servers-and-https" class="doc-h2"><a class="anchor-link" href="#phase-13-part-1-tls-servers-and-https">Phase 13, part 1 — TLS servers and HTTPS</a></h2>
+<p>Commit <code class="inline-code">ad63690</code>.</p>
+<ul>
+<li><strong>TLS 1.3 server:</strong> <code class="inline-code">tls::server</code> and <code class="inline-code">tls::server_on</code>.<ul>
+<li><strong>Key exchange:</strong> X25519, P-256 or P-384. If the client sent no share
+the server takes, a HelloRetryRequest asks for one.</li>
+<li><strong>Cipher suites:</strong> all three of TLS 1.3&#39;s.</li>
+<li><strong>Certificates:</strong> ECDSA or RSA. The server signs with ECDSA or RSA-PSS,
+as the client accepts.</li>
+<li><strong>Protocols:</strong> chosen by ALPN in the server&#39;s order of preference.</li>
+<li><strong>The client&#39;s side:</strong> <code class="inline-code">server_name</code> gives the name the client asked
+for (SNI).</li>
+<li><strong>Refusals:</strong> each failure goes to the client as the alert RFC 8446
+names: protocol version, handshake failure, no application protocol,
+certificate required, and so on.</li>
+<li><strong>TLS 1.2:</strong> clients that speak only TLS 1.2 or older are refused.</li>
+</ul>
+</li>
+<li><strong>Client certificates:</strong> a server can ask for one and take a
+connection without it, or require it. A certificate must lead to the
+server&#39;s roots and be meant for clients. <code class="inline-code">peer_certificate</code> gives it to
+the server. x509 gains <code class="inline-code">verify_client</code> and knows the clientAuth key
+usage.</li>
+<li><strong>Deadlines:</strong> <code class="inline-code">server_on</code> and <code class="inline-code">client_on</code> take the socket instead of
+its descriptor, and keep to the socket&#39;s read and write deadlines as
+they are each time they wait.</li>
+<li><strong>Clients:</strong> <code class="inline-code">alpn</code> takes several protocols, best first (&quot;h2,http/1.1&quot;).</li>
+<li><strong>Read-only settings:</strong> certificates, keys and root pools are now
+<code class="inline-code">*const</code> and <code class="inline-code">[]const</code> in every config (tls, http, smtp, pg), so
+coroutines can share them.</li>
+<li><strong>HTTPS:</strong> <code class="inline-code">http::server</code> gains a <code class="inline-code">tls</code> field.<ul>
+<li>The handshake must finish within the header time limit.</li>
+<li><code class="inline-code">req.secure</code> says the request came over TLS, and a proxy sends
+<code class="inline-code">X-Forwarded-Proto: https</code> for it.</li>
+</ul>
+</li>
+<li><strong>Compiler fixes found on the way:</strong><ul>
+<li><strong>Race checker:</strong> what an owned slice or pointer holds is as
+read-only as its owner when reached through <code class="inline-code">*const</code>. The
+checker also knows that memory an owned slice holds is inside no
+other type&#39;s value. Before, sharing a <code class="inline-code">*const</code> root pool beside a
+listener was refused.</li>
+<li><strong>Loans checker:</strong> a <code class="inline-code">*const</code> pointer to data that nothing can change
+(no mutable pointer, no thread-safe type, no interface inside) stays
+good across calls that change what holds it. Before, setting a
+client&#39;s roots made every later request an error.</li>
+<li><strong>Loans checker:</strong> a function&#39;s address stored in a struct no longer
+makes the struct look as if it lived forever. Before, a router given
+a function first refused any handler that viewed a local afterwards.</li>
+</ul>
+</li>
+<li><strong>Tests:</strong><ul>
+<li><strong>TLS server</strong> (<code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/tls_server.lora</span></code>):<ul>
+<li>ECDSA and RSA certificates, with 100 KB echoed both ways;</li>
+<li>ALPN chosen by the server&#39;s preference, and refused when nothing
+is in common;</li>
+<li>an untrusted root;</li>
+<li>client certificates required, requested, missing, and of the wrong
+kind.</li>
+</ul>
+</li>
+<li><strong>HTTPS</strong> (<code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/https.lora</span></code>): the client trusts the server&#39;s root,
+keeps the connection and uses it again, the proxy says https, and a
+client that trusts another root is refused.</li>
+<li><strong>Interop with OpenSSL 4.1:</strong><ul>
+<li>each of the three cipher suites;</li>
+<li>P-384 key shares, and a HelloRetryRequest for X25519;</li>
+<li>an RSA certificate;</li>
+<li>ALPN choosing h2;</li>
+<li>a client certificate, and the alerts for TLS 1.2 and for a missing
+client certificate.</li>
+</ul>
+</li>
+<li><strong>curl over HTTPS:</strong> a 1 MB download and a 300 KB upload.</li>
+<li><strong>test-errors:</strong> a regression case for each compiler fix.</li>
+</ul>
+</li>
+</ul>
+<h2 id="phase-13-part-2-http2" class="doc-h2"><a class="anchor-link" href="#phase-13-part-2-http2">Phase 13, part 2 — HTTP/2</a></h2>
+<p>Commit <code class="inline-code">6036fc8</code>.</p>
+<ul>
+<li><strong>hpack:</strong> a new module for HTTP/2&#39;s header compression (RFC 7541).<ul>
+<li><strong>Decoder:</strong> keeps the dynamic table the peer builds, with eviction,
+and decodes Huffman strings. It refuses blocks it can&#39;t read safely:
+an index past the tables, bad Huffman, a table size that&#39;s too large
+or out of place, integers that overflow, and lists over their limit.</li>
+<li><strong>Encoder:</strong> uses the static table and Huffman codes but keeps no
+dynamic table, which it says in its first block. Sensitive fields
+(cookies, authorization) are marked never to be indexed.</li>
+</ul>
+</li>
+<li><strong>HTTP/2 server:</strong><ul>
+<li><strong>When:</strong> spoken when TLS chooses <code class="inline-code">h2</code> by ALPN, or over plain TCP when
+the client starts with HTTP/2&#39;s preface. HTTP/1.1 is still answered
+on the same port.</li>
+<li><strong>Streams:</strong> answered one at a time, in arrival order, up to 100
+open. Frames for the other streams keep being read while one is
+answered, so large uploads and downloads can&#39;t deadlock on flow
+control.</li>
+<li><strong>Frames:</strong> windows are kept both ways. PING and SETTINGS are
+answered, padding and priority are read, and CONTINUATION frames
+rejoin header blocks.</li>
+<li><strong>Errors:</strong> protocol violations end the connection with GOAWAY and
+the right code. A refused or abandoned stream gets RST_STREAM.</li>
+<li><strong>Handlers:</strong> unchanged. <code class="inline-code">req.major</code> is 2, and the responder sends
+HEADERS and DATA frames, with gzip working as before.</li>
+</ul>
+</li>
+<li><strong>HTTP/2 client:</strong><ul>
+<li>It offers h2 by ALPN over HTTPS (turn it off with <code class="inline-code">http2 = false</code>).</li>
+<li>Each request goes on a new stream of a pooled connection. The
+connection keeps its HPACK table and windows, and the bytes it read
+ahead, between requests.</li>
+<li>A response body read only partway ends its stream with RST_STREAM,
+and the connection goes back to the pool.</li>
+<li><code class="inline-code">response.major</code> and <code class="inline-code">fetched.major</code> say which version was spoken.</li>
+</ul>
+</li>
+<li><strong>Smaller stack:</strong> the exchange&#39;s 8 KiB header buffer moved to the heap
+and gzip decompression to its own function. A request&#39;s stack estimate
+dropped from 240 KB to 216 KB, which leaves room for HTTPS requests in
+coroutines.</li>
+<li><strong>Bug fixed on the way:</strong> telling HTTP/2&#39;s preface from HTTP/1 waited
+for 24 bytes, so a request shorter than that hung. The server now reads
+only as far as the bytes still match the preface: two bytes for any
+HTTP/1 request.</li>
+<li><strong>Compiler fixes found on the way (loans checker):</strong><ul>
+<li><code class="inline-code">&amp;x</code> on a local that owns nothing and has no union holding pointers
+is now a pointer to the variable itself. Changing <code class="inline-code">x</code> doesn&#39;t move
+it, so such pointers stay good across calls that change it. Before,
+a server couldn&#39;t keep a buffered reader across a handler call.</li>
+<li>The compiler&#39;s method tables, like functions, are never taken as
+places a view is stored in. Before, a reader made from an interface
+looked as if it outlived everything.</li>
+</ul>
+</li>
+<li><strong>Tests:</strong><ul>
+<li><strong>hpack</strong> (<code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/hpack.lora</span></code>):<ul>
+<li>every example of RFC 7541 C.4 and C.6, including eviction from a
+256-byte table;</li>
+<li>round trips through the encoder;</li>
+<li>each kind of malformed block.</li>
+</ul>
+</li>
+<li><strong>HTTP/2</strong> (<code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/http2.lora</span></code>):<ul>
+<li>the Lora client and server over TLS: GET, HEAD, a 300 KB POST, a
+1 MB gzipped download, a streamed body with a flush, 404,
+connection reuse, a stream given up partway, and a client
+limited to HTTP/1.1;</li>
+<li>frames written by hand over plain TCP: PING answered, SETTINGS
+acknowledged, GOAWAY with the right code for a frame that&#39;s too
+large, DATA on stream 0, a bad SETTINGS size and an unreadable
+header block;</li>
+<li>a request made by hand answered in one HEADERS and one DATA frame.</li>
+</ul>
+</li>
+<li><strong>Interop:</strong><ul>
+<li>Go&#39;s HTTP/2 client: 50 requests at once over one connection,
+mixing 100 KB uploads and 1 MB downloads, all correct.</li>
+<li>curl over TLS, and over plain TCP with prior knowledge.</li>
+<li>The Lora client against Go&#39;s HTTP/2 server: a 3 MB download, a
+200 KB upload, a redirect and a 404.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Not yet:</strong><ul>
+<li>Streams of one connection are answered one after another, not at
+the same time.</li>
+<li>There is no server push.</li>
+<li>There is no upgrade from HTTP/1.1 to plaintext HTTP/2 (the h2c
+upgrade). Prior knowledge works.</li>
+</ul>
+</li>
+</ul>
+<h2 id="http2-streams-at-once-server-push-and-the-h2c-upgrade" class="doc-h2"><a class="anchor-link" href="#http2-streams-at-once-server-push-and-the-h2c-upgrade">HTTP/2 streams at once, server push, and the h2c upgrade</a></h2>
+<p>Commit <code class="inline-code">21fe852</code>.</p>
+<ul>
+<li><strong>Streams at the same time:</strong> each HTTP/2 stream&#39;s request is now
+answered by the handler in its own coroutine. One slow handler no longer
+holds up the others: ten requests that each sleep 300 ms finish in 0.31 s
+on one connection.<ul>
+<li>The connection&#39;s coroutine alone reads and writes the connection.
+Handlers send it what they want (their head, their data, the body read
+so far) over channels and wait for its answer.</li>
+<li>A small watcher coroutine says when the socket can be read. Data
+already decrypted and waiting inside TLS is read first
+(<code class="inline-code">tls::pending</code>).</li>
+<li>A handler&#39;s write returns once flow control has let its data out, so a
+slow client slows only that handler.</li>
+</ul>
+</li>
+<li><strong>Server push:</strong> <code class="inline-code">http::push(w, path)</code> sends a PUSH_PROMISE for a GET of
+path. The same handler then answers it beside the page, as if it had
+been asked for. It returns <code class="inline-code">no_push</code> when the client has turned pushes
+off, or over HTTP/1.</li>
+<li><strong>The h2c upgrade:</strong> a plain HTTP/1.1 request with <code class="inline-code">Upgrade: h2c</code> and
+<code class="inline-code">HTTP2-Settings</code> (and no body) gets <code class="inline-code">101 Switching Protocols</code>. The
+connection goes on as HTTP/2, the request answered as stream 1 with the
+settings it brought. <code class="inline-code">server.h2c</code> turns this off.</li>
+<li><strong>Client:</strong> <code class="inline-code">client.h2c</code> speaks HTTP/2 to <code class="inline-code">http://</code> URLs from the first
+byte, for servers known to speak it.</li>
+<li><strong>coro: channels move owned values.</strong> Channels copied their values in and
+out, so a value owning memory couldn&#39;t be sent: it would have been freed
+twice, or never.<ul>
+<li>A send now moves its value in (boxing it first, then freeing the box
+without what it held).</li>
+<li>A receive owns what it gets.</li>
+<li>Values still in a channel are dropped with it, and a send to a closed
+channel drops its value.</li>
+<li><code class="inline-code">select</code>&#39;s receive drops what its variable held before.</li>
+<li><code class="inline-code">send_case</code> refuses, while compiling, a value that owns memory, since
+it couldn&#39;t say whether it gave the value away.</li>
+</ul>
+</li>
+<li><strong>Compiler bugs found on the way:</strong><ul>
+<li><strong>Leak:</strong> an owned value taken out of a union with <code class="inline-code">as</code> and used in
+place, as in <code class="inline-code">assert(f() as ^str == &quot;y&quot;)</code>, was never freed. It&#39;s now
+dropped like any owned temporary.</li>
+<li><strong>Crash:</strong> unpacking a tuple of nothing, such as <code class="inline-code">let (a, b) = @all(f(), g())</code> where both return only <code class="inline-code">void</code>, crashed the compiler.
+It now gets an empty slot.</li>
+<li>Both have regression cases in <code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/owner_frees.lora</span></code>.</li>
+</ul>
+</li>
+<li><strong>Compiler fix found on the way (loans checker):</strong> pointers to channels,
+wait groups, atomics, mutexes and conditions stay good across calls.
+They&#39;re shared by pointer, change only in place, and nothing in them can
+be viewed. Before, a handler given a responder that reached a channel
+made every later use of the responder an error.</li>
+<li><strong>Tests:</strong><ul>
+<li><strong>HTTP/2</strong> (<code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/http2.lora</span></code>) gains:<ul>
+<li>a push promised and both responses answered;</li>
+<li>no push to a client that turned pushes off;</li>
+<li>an HTTP/1.1 request upgraded and answered as stream 1;</li>
+<li>three slow streams finishing in about the time of one;</li>
+<li>the client speaking h2c.</li>
+</ul>
+</li>
+<li><strong>Channels</strong> (<code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/chan_owned.lora</span></code>): owned values sent through a
+buffer, handed straight over, left behind, sent to a closed channel,
+and received by a <code class="inline-code">select</code> over a variable that held one. All are
+leak-free, and test-errors checks that <code class="inline-code">send_case</code> refuses an owned
+value. The existing coroutine tests pass on the
+new channels.</li>
+<li><strong>Interop:</strong><ul>
+<li>Go&#39;s client: 50 requests at once over one connection, all correct;
+10 slow ones in 0.31 s.</li>
+<li>curl over TLS, with prior knowledge, and with <code class="inline-code">--http2</code> upgrading
+from HTTP/1.1.</li>
+<li>The Lora client against Go&#39;s server, unchanged.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="a-simple-http-server-example" class="doc-h2"><a class="anchor-link" href="#a-simple-http-server-example">A simple HTTP server example</a></h2>
+<ul>
+<li><p><code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">examples/http_server.lora</span></code> is rewritten around the router. It has five
+routes:</p>
+<ul>
+<li>a page at <code class="inline-code">/</code>;</li>
+<li>a greeting by the part of the path <code class="inline-code">/hello/{name}</code> names;</li>
+<li><code class="inline-code">POST /echo</code>, which reads the body (refusing one over 1 MiB with 413);</li>
+<li><code class="inline-code">/time</code> as JSON;</li>
+<li><code class="inline-code">/health</code>.</li>
+</ul>
+</li>
+<li><p>gzip is on, and HTTP/1.1 and HTTP/2 are both spoken (to a client that
+starts with HTTP/2, or asks to upgrade). A failure at startup is
+returned from <code class="inline-code">main</code>, which prints what was being done and where.</p>
+</li>
+<li><p><strong>Tested</strong> by running it and asking every route with curl:</p>
+<ul>
+<li>over HTTP/1.1, over HTTP/2 with prior knowledge, and upgraded from
+HTTP/1.1;</li>
+<li>404 for an unknown path, and 405 for a known one asked with another
+method.</li>
+</ul>
+<p><code class="inline-code">scripts/check-examples.py</code> compiles it, as it does every server.</p>
+</li>
+</ul>
+<h2 id="type-parameters-inferred-from-a-function-given-by-pointer" class="doc-h2"><a class="anchor-link" href="#type-parameters-inferred-from-a-function-given-by-pointer">Type parameters inferred from a function given by pointer</a></h2>
+<ul>
+<li><p><strong>The check:</strong> a generic function&#39;s type parameters are inferred from a
+function passed by pointer, so <code class="inline-code">post(&quot;/users&quot;, &amp;create)</code> needs no
+<code class="inline-code">::[new_user, user]</code>. It turned out to work already, so the compiler is
+unchanged.</p>
+</li>
+<li><p><strong>What&#39;s now tested</strong> (<code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/generic_calls.lora</span></code>):</p>
+<ul>
+<li>the function&#39;s parameters and its result;</li>
+<li>a result in a union with an error, or with <code class="inline-code">void</code>;</li>
+<li>a closure, a lambda, and a function with no parameters;</li>
+<li>a parameter behind a pointer, a slice, and a generic struct;</li>
+<li>a generic function given with explicit types.</li>
+</ul>
+<p>Before, only a parameter type was covered (<code class="inline-code">sort(items, &amp;less)</code>).</p>
+</li>
+<li><p><strong>The conflict error:</strong> when the function and another argument disagree,
+the compiler names the argument and suggests the explicit form. That
+message is now in test-errors.</p>
+</li>
+</ul>
+<h2 id="shared-helpers-for-writing-text-and-numbers-into-a-buffer" class="doc-h2"><a class="anchor-link" href="#shared-helpers-for-writing-text-and-numbers-into-a-buffer">Shared helpers for writing text and numbers into a buffer</a></h2>
+<p>Commit <code class="inline-code">597f121</code>.</p>
+<ul>
+<li><p><strong>The problem:</strong> many modules carried their own copy of the same two
+helpers.</p>
+<ul>
+<li>One copied a string into a caller&#39;s buffer (<code class="inline-code">put</code>, <code class="inline-code">add</code>, <code class="inline-code">put_text</code>,
+<code class="inline-code">put_str</code>).</li>
+<li>The other wrote a number&#39;s digits by hand (<code class="inline-code">put_number</code>, <code class="inline-code">add_number</code>,
+inline loops).</li>
+</ul>
+<p>These live mostly in error messages, which must not allocate.</p>
+</li>
+<li><p><strong>The new shared helpers,</strong> none of which allocate:</p>
+<ul>
+<li><code class="inline-code">strings::put(buf, at, s)</code> copies text from <code class="inline-code">at</code>, as much as fits,
+and says where it stopped.</li>
+<li><code class="inline-code">strconv::u64_into(buf, v)</code> and <code class="inline-code">strconv::i64_into(buf, v)</code> write a
+number into a buffer of <code class="inline-code">strconv::DIGITS_MAX</code> (20) bytes and return
+its digits.</li>
+<li><code class="inline-code">strconv::put_u64(buf, at, v, width)</code> writes a number from <code class="inline-code">at</code>,
+zero-padded to <code class="inline-code">width</code>, as much as fits.</li>
+</ul>
+</li>
+<li><p><strong>Replaced in 16 modules:</strong> <code class="inline-code">asn1</code>, <code class="inline-code">csv</code>, <code class="inline-code">dns</code>, <code class="inline-code">hex</code>, <code class="inline-code">http</code>, <code class="inline-code">io</code>,
+<code class="inline-code">net</code>, <code class="inline-code">netip</code>, <code class="inline-code">pack</code>, <code class="inline-code">smtp</code>, <code class="inline-code">sql</code>, <code class="inline-code">textproto</code>, <code class="inline-code">tls</code>, <code class="inline-code">unit</code>, <code class="inline-code">url</code>
+and <code class="inline-code">xml</code>.</p>
+<ul>
+<li>The zero-padded two-digit helpers for dates (<code class="inline-code">http</code>&#39;s <code class="inline-code">put2</code>, <code class="inline-code">asn1</code>&#39;s
+<code class="inline-code">two</code>) became <code class="inline-code">put_u64(..., 2)</code>.</li>
+<li>&quot;Write the digits, then slice them&quot; became <code class="inline-code">u64_into</code>.</li>
+<li>The result is 179 fewer lines.</li>
+</ul>
+</li>
+<li><p><strong>Left alone,</strong> because they do other jobs:</p>
+<ul>
+<li>helpers that append to an owned buffer (<code class="inline-code">csv</code>&#39;s and <code class="inline-code">pem</code>&#39;s <code class="inline-code">put</code>,
+<code class="inline-code">pack</code>&#39;s <code class="inline-code">put_str</code>);</li>
+<li><code class="inline-code">smtp</code>&#39;s <code class="inline-code">put</code>, which sends on the connection;</li>
+<li><code class="inline-code">asn1</code>&#39;s OID text and <code class="inline-code">sql</code>&#39;s decimal numerics;</li>
+<li>the signed formatters in <code class="inline-code">json</code>, <code class="inline-code">xml</code>, <code class="inline-code">fmt</code> and <code class="inline-code">pg</code>.</li>
+</ul>
+</li>
+<li><p><strong>Tests:</strong></p>
+<ul>
+<li><code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/core.lora</span></code> checks the helpers at their edges: zero, the largest
+u64, the smallest i64, padding, and a buffer too small for the text.</li>
+<li>Every error message reads as before: the library tests and
+test-errors, which compare messages, pass unchanged.</li>
+</ul>
+</li>
+</ul>
+<h2 id="uuid-checked-against-another-implementation" class="doc-h2"><a class="anchor-link" href="#uuid-checked-against-another-implementation">uuid, checked against another implementation</a></h2>
+<p>Commit <code class="inline-code">8032b09</code>.</p>
+<ul>
+<li><strong>The check:</strong> Lora&#39;s <code class="inline-code">uuid</code> was tested against Go&#39;s new standard-library
+<code class="inline-code">uuid</code> package (from Go&#39;s master branch, built in a scratch module).<ul>
+<li>26 inputs, valid and malformed, went through both parsers.</li>
+<li>22,000 UUIDs made by each, versions 4 and 7, were checked by the other.
+Every one parses, round-trips, has the right version and variant bits,
+is unique, and, for version 7, is in order with a timestamp at the
+current time.</li>
+<li>Lora&#39;s version 5 matches RFC 9562&#39;s worked example.</li>
+<li>160,000 version 7 UUIDs made by 8 coroutines at once had no repeats.</li>
+</ul>
+</li>
+<li><strong>The bug it found:</strong> <code class="inline-code">uuid::parse</code> took the <code class="inline-code">urn:uuid:</code> prefix only in
+lower case. A URN&#39;s scheme and namespace are case-insensitive (RFC 8141),
+so <code class="inline-code">URN:UUID:…</code> is the same UUID. The prefix is now matched in any case,
+and the two parsers agree on all 26 inputs.</li>
+<li><strong>Differences that are deliberate:</strong><ul>
+<li><code class="inline-code">uuid::new</code> makes version 7, not 4, so that later ids sort later and
+database indexes stay compact.</li>
+<li>Version 7 keeps order with a counter (RFC 9562 method 1) and no lock,
+and stays in order even when the clock goes back.</li>
+<li>Lora also has version 5, its namespaces, <code class="inline-code">version</code>, <code class="inline-code">is_rfc</code> and
+<code class="inline-code">unix_ms</code>.</li>
+</ul>
+</li>
+<li><strong>Tests:</strong> <code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/uuid.lora</span></code> adds the prefix in upper and mixed case,
+another prefix of the same length, and a URN without hyphens.</li>
+</ul>
+<h2 id="compare-a-module-for-ordering-values" class="doc-h2"><a class="anchor-link" href="#compare-a-module-for-ordering-values">compare: a module for ordering values</a></h2>
+<p>Commit <code class="inline-code">208f9bd</code>.</p>
+<ul>
+<li><p><strong>What it adds:</strong> a new standard-library module, <code class="inline-code">compare</code>.</p>
+<ul>
+<li><strong><code class="inline-code">order</code>:</strong> an enum of <code class="inline-code">less</code>, <code class="inline-code">equal</code> and <code class="inline-code">greater</code>.</li>
+<li><strong><code class="inline-code">of</code>:</strong> compares any type ordered with <code class="inline-code">&lt;</code>.</li>
+<li><strong>Floats in a total order:</strong> NaN comes before every other value and
+equals itself, so a sort gathers NaNs at the start instead of
+scattering them through the result. <code class="inline-code">-0.0</code> and <code class="inline-code">0.0</code> are equal.</li>
+<li><strong><code class="inline-code">less</code> and <code class="inline-code">greater</code></strong> pass that order to <code class="inline-code">sort::sort_by</code>.</li>
+<li><strong><code class="inline-code">min</code>, <code class="inline-code">max</code>, <code class="inline-code">clamp</code>, <code class="inline-code">min_of</code> and <code class="inline-code">max_of</code></strong> use the same order.
+<code class="inline-code">clamp</code> checks that <code class="inline-code">lo &lt;= hi</code>.</li>
+<li><strong><code class="inline-code">then</code> and <code class="inline-code">reverse</code></strong> chain and turn around orders (sort by one
+field, then another); <code class="inline-code">sign</code> gives -1, 0 or 1.</li>
+<li><strong><code class="inline-code">slices</code>, <code class="inline-code">slices_by</code> and <code class="inline-code">same</code></strong> compare slices element by
+element.</li>
+<li><strong>Strings:</strong><ul>
+<li><code class="inline-code">text</code> compares by bytes;</li>
+<li><code class="inline-code">fold</code> treats ASCII letters in either case alike;</li>
+<li><code class="inline-code">natural</code> compares numbers in names by value (&quot;file2&quot; before
+&quot;file10&quot;, &quot;v1.9&quot; before &quot;v1.10&quot;), with digit runs of any length.
+Of names differing only in leading zeros, the one with fewer comes
+first.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Runes:</strong> they have no order with <code class="inline-code">&lt;</code> in Lora, so they compare through
+their numbers.</p>
+</li>
+<li><p><strong>Tests</strong> (<code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/compare.lora</span></code>):</p>
+<ul>
+<li>every function;</li>
+<li>NaN, infinities, <code class="inline-code">-0.0</code> and <code class="inline-code">f32</code>;</li>
+<li>empty slices and prefixes;</li>
+<li>natural order on versions, leading zeros, and numbers longer than any
+integer type;</li>
+<li>sorting floats with NaNs, largest-first, by two fields, and file
+names in natural order.</li>
+</ul>
+<p>It&#39;s leak-free.</p>
+</li>
+</ul>
+<h2 id="runes-ordered-by-code-point" class="doc-h2"><a class="anchor-link" href="#runes-ordered-by-code-point">Runes ordered by code point</a></h2>
+<p>Commit <code class="inline-code">f53a157</code>.</p>
+<ul>
+<li><strong>The change:</strong> <code class="inline-code">&lt;</code>, <code class="inline-code">&lt;=</code>, <code class="inline-code">&gt;</code> and <code class="inline-code">&gt;=</code> now order runes by code point,
+and the <code class="inline-code">ordered</code> constraint includes <code class="inline-code">rune</code>. So <code class="inline-code">max(&#39;q&#39;, &#39;x&#39;)</code>,
+<code class="inline-code">compare::of(&#39;a&#39;, &#39;b&#39;)</code> and <code class="inline-code">sort::sort</code> of runes all work.<ul>
+<li>Runes are still not numbers: <code class="inline-code">&#39;a&#39; + 1</code> and <code class="inline-code">a - &#39;b&#39;</code> are still
+refused, and the <code class="inline-code">numeric</code> constraint still excludes <code class="inline-code">rune</code>.</li>
+<li>To compute with a rune&#39;s number, convert it with <code class="inline-code">@u32</code> and back with
+<code class="inline-code">@rune</code>.</li>
+</ul>
+</li>
+<li><strong>Why:</strong> Lora already ordered runes by code point in ranges and match
+patterns (<code class="inline-code">&#39;a&#39;..=&#39;z&#39;</code>, <code class="inline-code">rune is &#39;0&#39;..=&#39;9&#39;</code>), but refused <code class="inline-code">&lt;</code> on them. Now
+the two agree. This follows the model of languages whose characters are
+their own type, like Rust&#39;s <code class="inline-code">char</code> (a Unicode scalar value, as Lora&#39;s
+rune is): ordered, but with no arithmetic.</li>
+<li><strong>Where it changed:</strong><ul>
+<li><strong>The type checker</strong> allows ordering runes and rune literals. Its
+message for unordered types now names runes among those that have an
+order.</li>
+<li><strong>Compile-time evaluation</strong> (<code class="inline-code">@comptime</code>, constants) orders runes too.
+Before, it would have hit an internal assertion.</li>
+</ul>
+</li>
+<li><strong>Compatible:</strong> code that compiled before still compiles.</li>
+<li><strong>Tests:</strong><ul>
+<li><strong>test-errors:</strong> runes ordered in generics, in loops and at compile
+time; arithmetic on runes refused; <code class="inline-code">numeric</code> refusing a rune.</li>
+<li><strong>compare:</strong> <code class="inline-code">compare::of</code>, <code class="inline-code">max</code>, <code class="inline-code">clamp</code> and <code class="inline-code">slices</code> on runes.</li>
+<li><strong><code class="inline-code">docs/language.md</code>:</strong> a section on runes, with an example that runs
+and one that&#39;s refused. All 236 of its examples pass.</li>
+</ul>
+</li>
+</ul>
+<h2 id="sql-in-strings-checked-highlighted-and-completed-as-you-type" class="doc-h2"><a class="anchor-link" href="#sql-in-strings-checked-highlighted-and-completed-as-you-type">SQL in strings: checked, highlighted and completed as you type</a></h2>
+<p>Commit <code class="inline-code">834a176</code>. The Zed extension&#39;s grammar is pinned to it.</p>
+<ul>
+<li><strong>The change:</strong> SQL written as text in <code class="inline-code">@sql</code> is now checked against the
+database&#39;s schema while compiling, and so in the editor as one types.
+<code class="inline-code">@sql(db, into = r) &quot;select id, nme from users&quot; as row?</code> is an error on
+<code class="inline-code">nme</code>, inside the string: &quot;Table users has no column nme&quot;, with &quot;Did you
+mean name?&quot;.<ul>
+<li><strong>Checked:</strong> the tables a <code class="inline-code">select</code>, <code class="inline-code">insert</code>, <code class="inline-code">update</code> or <code class="inline-code">delete</code>
+names (<code class="inline-code">from</code>, <code class="inline-code">join</code>, <code class="inline-code">into</code>, <code class="inline-code">update</code>, <code class="inline-code">delete ... using</code>, with a
+<code class="inline-code">public.</code> prefix or none); the columns it names in them, bare or by a
+table&#39;s alias, <code class="inline-code">excluded</code> of <code class="inline-code">on conflict</code> included; a name before a
+dot that is no table of the query; and, read <code class="inline-code">as</code> a struct, that each
+field has a column of the result (<code class="inline-code">*</code>, <code class="inline-code">t.*</code>, plain names and <code class="inline-code">as</code>
+names).</li>
+<li><strong>Left to the server, with no error made up:</strong> a query inside the
+query, <code class="inline-code">with</code>, <code class="inline-code">union</code> and the like (their tables are still checked
+when they are the outer query&#39;s), tables of other schemas, rows of a
+function, and the types of what the text computes. Keywords, function
+names, types after <code class="inline-code">::</code>, strings, <code class="inline-code">$$</code> strings, comments, <code class="inline-code">$n</code> and
+<code class="inline-code">{name}</code>, and the names of constraints, collations and windows are
+never taken for columns.</li>
+</ul>
+</li>
+<li><strong>The editor:</strong> the language server checks a copy of the buffer, so it
+missed the project&#39;s <code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">lora.schema</span></code>; it now looks for it beside the real
+file and above it. With <code class="inline-code">lora.databaseUrl</code> set (or
+<code class="inline-code">LORA_DATABASE_URL</code>), it reads the schema from the database itself with
+<code class="inline-code">lora sql schema</code>, again every <code class="inline-code">lora.schemaRefresh</code> seconds (30, at
+least 5) and on save, and checks everything open again when it changes.
+The URL is a machine setting in VS Code and is never logged.<ul>
+<li><strong>Two schema sources, as options:</strong> <code class="inline-code">schemaSource</code> is <code class="inline-code">auto</code> (the
+database when <code class="inline-code">databaseUrl</code> is set, else <code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">lora.schema</span></code>), <code class="inline-code">file</code> or
+<code class="inline-code">database</code>. VS Code takes <code class="inline-code">lora.schemaSource</code>; Zed takes the same
+three settings in <code class="inline-code">initialization_options</code>.</li>
+<li><strong>Highlighting:</strong> SQL inside <code class="inline-code">@sql</code>&#39;s text, and in any string that
+starts with <code class="inline-code">select</code>, <code class="inline-code">insert</code>, <code class="inline-code">update</code>, <code class="inline-code">delete</code> or <code class="inline-code">with</code>, is
+highlighted as SQL. In Zed, a tree-sitter injection hands it to Zed&#39;s
+SQL grammar (from the SQL extension). For this, the tree-sitter
+grammar now has a <code class="inline-code">string_content</code> node: a string&#39;s text apart from
+its escapes. In VS Code, the Lora grammar has its own SQL patterns
+(keywords, functions, numbers, <code class="inline-code">&#39;...&#39;</code> strings, comments, <code class="inline-code">{name}</code> and
+<code class="inline-code">$n</code>), each ending at the closing <code class="inline-code">&quot;</code>, so a half-typed <code class="inline-code">&#39;</code> can&#39;t spill
+past the string.</li>
+<li><strong>Completion:</strong> in such a string, table names after <code class="inline-code">from</code>, <code class="inline-code">join</code>,
+<code class="inline-code">into</code>, <code class="inline-code">update</code> and <code class="inline-code">using</code>; elsewhere, the columns of the tables the
+query names (all tables while it names none), and after <code class="inline-code">u.</code> the
+columns of the table <code class="inline-code">u</code> is an alias of. Each comes with its type,
+NULL and key. None inside a <code class="inline-code">&#39;...&#39;</code> string of the SQL, or a comment.</li>
+<li>Extension 0.43.0; Zed extension 0.8.0.</li>
+</ul>
+</li>
+<li><strong>Plain strings that read as queries:</strong> a string written anywhere that
+starts with <code class="inline-code">select</code>, <code class="inline-code">insert</code>, <code class="inline-code">update</code> or <code class="inline-code">delete</code> is checked the same
+way, but as a warning, and only once it names a table the database has
+(or one a letter or two away): <code class="inline-code">&quot;update the readme first&quot;</code> is let be.
+The SQL <code class="inline-code">@sql</code> writes for itself is never checked twice, and a literal
+checked again (a generic function&#39;s) is warned of once.</li>
+<li><strong>Fixes found on the way:</strong><ul>
+<li><code class="inline-code">&quot;...&quot; as T?</code> in <code class="inline-code">@sql</code> was read as the start of <code class="inline-code">cond ? a : b</code>; a <code class="inline-code">?</code>
+with no <code class="inline-code">:</code> after its value is now <code class="inline-code">?</code> that returns the error.</li>
+<li>A literal&#39;s location was the place after it (the lexer&#39;s, after a
+look ahead), so errors about a string pointed past it. It is now where
+the literal starts.</li>
+</ul>
+</li>
+<li><strong>Tests:</strong><ul>
+<li><strong>test-errors:</strong> seven <code class="inline-code">@sql text</code> cases: a wrong column, a wrong
+table, an alias&#39;s column, an insert&#39;s column, a name that is no table
+of the query, a field no column fills, and a set of right queries
+(<code class="inline-code">is distinct from</code>, <code class="inline-code">generate_series(...) g(n)</code>, a subquery,
+<code class="inline-code">on conflict ... excluded</code>, DDL) that must give no error.</li>
+<li><strong>test-lsp:</strong> the error appears as SQL text is typed, sits on the
+column inside the string, and goes once the text is right; the
+<code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">lora.schema</span></code> beside the file is found.</li>
+<li><strong>test-errors</strong>, also: a plain string that reads as a query gives two
+warnings, at the column, and none for text that merely starts so.</li>
+<li><strong>test-lsp</strong>, also: completion of tables after <code class="inline-code">from</code>, of the query&#39;s
+table&#39;s columns and of an alias&#39;s; none in a plain string or inside
+SQL&#39;s own <code class="inline-code">&#39;...&#39;</code>; <code class="inline-code">schemaSource</code> <code class="inline-code">file</code> and <code class="inline-code">database</code>.</li>
+<li><strong>test-lsp-live</strong> (new, needs <code class="inline-code">scripts/pg-test-server.sh start</code>): with
+<code class="inline-code">databaseUrl</code> set, a column the database lacks is an error; after
+<code class="inline-code">alter table ... add column</code>, it goes within a refresh, with nothing
+saved. <code class="inline-code">schemaSource</code> <code class="inline-code">file</code> then uses <code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">lora.schema</span></code> though a database
+is set, and <code class="inline-code">database</code> the database again.</li>
+<li><strong>tree-sitter:</strong> the injection queries match <code class="inline-code">@sql</code>&#39;s text and
+SQL-looking strings, and not other strings.</li>
+</ul>
+</li>
+</ul>
+<h2 id="a-live-sql-example-and-a-language-server-fix-it-found" class="doc-h2"><a class="anchor-link" href="#a-live-sql-example-and-a-language-server-fix-it-found">A live SQL example, and a language server fix it found</a></h2>
+<p>Commit <code class="inline-code">768987f</code>.</p>
+<ul>
+<li><strong>The example:</strong> <code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">examples/sql_live/main.lora</span></code> connects to a local
+database <code class="inline-code">lora_demo</code> (table <code class="inline-code">users</code>: <code class="inline-code">id</code>, <code class="inline-code">name</code>, <code class="inline-code">email</code>), inserts a
+row, reads every row <code class="inline-code">as</code> a struct, prints them, and deletes the row. With
+Zed&#39;s <code class="inline-code">lora-lsp</code> <code class="inline-code">initialization_options</code> set to that database&#39;s URL,
+changing <code class="inline-code">name</code> to <code class="inline-code">nme</code> in its query shows &quot;Table users has no column
+nme&quot; on the word as it&#39;s typed, and <code class="inline-code">from </code> completes <code class="inline-code">users</code>. It is in a
+directory of its own, so the examples check, which needs no database,
+doesn&#39;t run it.</li>
+<li><strong>The bug it found:</strong> the language server&#39;s lexer ended an
+interpolation&#39;s <code class="inline-code">{...}</code> at the first <code class="inline-code">&quot;</code>, so <code class="inline-code">$&quot;{u.email ?? &quot;(no email)&quot;}&quot;</code> was read as unbalanced brackets. Bracket errors stop the
+compiler from being run, so the file was never checked, and the SQL
+errors never showed. The lexer now passes over strings, runes and
+interpolated strings inside the braces whole, and stops at the line&#39;s
+end if a <code class="inline-code">}</code> is missing.</li>
+<li><strong>Tests:</strong> test-lsp checks that such a string gives no bracket errors;
+the LSP fuzzer still survives all 466 files.</li>
+</ul>
+<h2 id="every-form-completes-and-hovers-in-the-editor" class="doc-h2"><a class="anchor-link" href="#every-form-completes-and-hovers-in-the-editor">Every @ form completes and hovers in the editor</a></h2>
+<p>Commit <code class="inline-code">d14cad1</code>.</p>
+<ul>
+<li><strong>The problem:</strong> typing <code class="inline-code">@</code> in the editor didn&#39;t offer <code class="inline-code">@sql</code>, and
+hovering it showed nothing. The language server&#39;s table of <code class="inline-code">@</code> forms
+had fallen behind the compiler: <code class="inline-code">@sql</code>, <code class="inline-code">@all</code>, <code class="inline-code">@first</code>, <code class="inline-code">@scope</code>,
+<code class="inline-code">@go</code>, <code class="inline-code">@each</code>, <code class="inline-code">@depth</code>, <code class="inline-code">@bits</code> and <code class="inline-code">@at</code> were missing from it.</li>
+<li><strong>The change:</strong><ul>
+<li>Each of those now completes after <code class="inline-code">@</code>, with a short signature as its
+detail and its documentation. <code class="inline-code">@sql</code>&#39;s hover lists its forms (<code class="inline-code">count</code>,
+<code class="inline-code">from</code>, <code class="inline-code">first</code>, <code class="inline-code">insert</code>, <code class="inline-code">update</code>, <code class="inline-code">delete</code>, SQL as text), its
+clauses, and the <code class="inline-code">@table</code> and <code class="inline-code">@column</code> tags.</li>
+<li>Conversions complete after <code class="inline-code">@</code>: <code class="inline-code">int</code>, <code class="inline-code">i64</code>, <code class="inline-code">u8</code>, <code class="inline-code">f64</code>, <code class="inline-code">rune</code> and
+the rest, inserting <code class="inline-code">@T(</code>. Hovering <code class="inline-code">@i64(x)</code> says what converting
+does (integers truncate or extend; a float truncates toward zero).</li>
+<li>Inside an <code class="inline-code">@sql</code> query written as Lora, the words <code class="inline-code">count</code>, <code class="inline-code">from</code>,
+<code class="inline-code">first</code>, <code class="inline-code">insert</code>, <code class="inline-code">update</code>, <code class="inline-code">delete</code>, <code class="inline-code">where</code>, <code class="inline-code">order</code>, <code class="inline-code">limit</code>,
+<code class="inline-code">offset</code>, <code class="inline-code">join</code>, <code class="inline-code">group</code>, <code class="inline-code">having</code>, <code class="inline-code">select</code>, <code class="inline-code">distinct</code>,
+<code class="inline-code">returning</code>, <code class="inline-code">set</code> and <code class="inline-code">desc</code> hover with what each does. Outside
+<code class="inline-code">@sql</code>, <code class="inline-code">insert</code> and <code class="inline-code">delete</code> keep their own hovers.</li>
+</ul>
+</li>
+<li><strong>A bug fixed on the way:</strong> at the start of a name that is a keyword
+(<code class="inline-code">@if</code>, <code class="inline-code">@for</code>, <code class="inline-code">@align</code>), the server took the hover to be on the <code class="inline-code">@</code>,
+and showed nothing. It now takes the word, keyword or not, over the
+punctuation it touches.</li>
+<li><strong>Tests:</strong> test-lsp reads the compiler&#39;s own tables of <code class="inline-code">@</code> forms (the
+parser&#39;s and the lexer&#39;s) and checks that every one completes after <code class="inline-code">@</code>
+and has a hover, so a form added later can&#39;t be missed. It also checks
+that conversions complete. Extension 0.44.0.</li>
+</ul>
+<h2 id="sql-keeps-rows-with-no-into-a-region-of-the-blocks-own" class="doc-h2"><a class="anchor-link" href="#sql-keeps-rows-with-no-into-a-region-of-the-blocks-own">@sql keeps rows with no into: a region of the block&#39;s own</a></h2>
+<p>Commit <code class="inline-code">919fdd8</code>.</p>
+<ul>
+<li><strong>The change:</strong> a query that keeps rows (<code class="inline-code">from</code>, <code class="inline-code">first</code>, <code class="inline-code">returning</code>,
+or SQL text read <code class="inline-code">as</code> a struct) no longer needs <code class="inline-code">into = &amp;r</code>. With none,
+the compiler gives the statement a hidden region, owned by the block it
+is in: a <code class="inline-code">let</code> it inserts before the statement, holding
+<code class="inline-code">sql::auto_region()</code>, which is dropped when the block ends.<ul>
+<li><strong>No size to choose:</strong> <code class="inline-code">sql::auto_region()</code> reserves nothing until a
+row needs room. Then it reserves a tebibyte of address space, which
+takes no memory: pages are committed only as rows fill them, and the
+region grows in place, so pointers into it stay good. A test reads
+5,000 rows of 1,000 bytes each through one.</li>
+<li><strong><code class="inline-code">into</code> still works:</strong> to keep rows longer than the block, give a
+region the caller owns. <code class="inline-code">sql::auto_region()</code> sizes itself there too;
+<code class="inline-code">expanse::reserve(n)</code> holds at most <code class="inline-code">n</code> bytes.</li>
+<li><strong>Still leak proof and memory safe:</strong> the region is an owner like any
+other, dropped on every way out of the block, and nothing is reserved
+for a query that never runs. The rows&#39; text can&#39;t outlive the block:
+returning <code class="inline-code">users[0].name</code> is error L0608, which says the text is in
+the region <code class="inline-code">@sql</code> keeps for the block, and suggests <code class="inline-code">into</code> or
+<code class="inline-code">strings::clone</code>.</li>
+<li><strong>Where it applies:</strong> an <code class="inline-code">@sql</code> anywhere in a statement (a <code class="inline-code">let</code>, <code class="inline-code">?</code>
+or <code class="inline-code">!</code>, an assignment, <code class="inline-code">return</code>, call arguments, <code class="inline-code">assert</code>, a field or
+index of its result, a <code class="inline-code">for</code> loop&#39;s head, <code class="inline-code">if</code> and <code class="inline-code">match</code> heads, and
+the like). A body written as an expression, outside any block, still
+needs <code class="inline-code">into</code>, and its error now says so: &quot;in a block, @sql keeps one
+of its own, but this is in none&quot;.</li>
+</ul>
+</li>
+<li><strong>Why:</strong> sizing a region by hand meant guessing how much text a query
+would return. The block&#39;s lifetime is what the rows almost always need,
+and the compiler already checks views of a region against it.</li>
+<li><strong>A bug fixed on the way:</strong> the new L0608 message first took the
+location&#39;s &quot;report once&quot; mark before knowing which message to give, so
+every other view-outlives-its-source error went unreported. Caught by
+the error suite and fixed before committing.</li>
+<li><strong>Tests:</strong><ul>
+<li><strong>test-errors:</strong> every form keeping rows with no <code class="inline-code">into</code>, in a loop
+too; returning the rows&#39; text is refused with the new message; a
+query outside any block is refused.</li>
+<li><strong>sql_form</strong> (against the test server, with leak checks): rows with no
+<code class="inline-code">into</code>, again in a loop, <code class="inline-code">first</code> inside <code class="inline-code">assert</code>, an explicit
+<code class="inline-code">auto_region()</code>, and 5,000 rows of 1 KB.</li>
+<li><code class="inline-code">examples/sql_live</code> no longer reserves a region; <code class="inline-code">docs/sql.md</code> shows
+the form, and its examples pass.</li>
+<li>Extension 0.45.0: hovers updated, <code class="inline-code">sql::auto_region</code> in its data.</li>
+</ul>
+</li>
+</ul>
+<h2 id="struct-hovers-show-their-declaration-defaults-and-notes" class="doc-h2"><a class="anchor-link" href="#struct-hovers-show-their-declaration-defaults-and-notes">Struct hovers show their declaration, defaults and notes</a></h2>
+<p>Commit <code class="inline-code">a26cfe6</code>.</p>
+<ul>
+<li><strong>The change:</strong> hovering a library struct in the editor, such as
+<code class="inline-code">sql::limits</code>, shows its declaration as written: each field with its
+type, its default and the note after it, the notes lined up, then its
+documentation. Before, it showed <code class="inline-code">type limits = struct { … }</code> and a bare
+list of field names and types.</li>
+<li><strong><code class="inline-code">sql::limits</code></strong> has notes that say what each field does and what 0
+means, and two examples: <code class="inline-code">sql::limits { ... }</code> for all defaults, and
+<code class="inline-code">sql::limits { max_open = 10, ... }</code> to set one.</li>
+<li><strong>Examples as code:</strong> lines of a doc comment indented with a tab after
+the <code class="inline-code">//</code> are examples. They now show as a code block in hovers, where
+before their indentation was lost. 45 library items have such examples.</li>
+<li><strong>How:</strong> <code class="inline-code">scripts/gen-lsp-data.py</code> keeps each field&#39;s default and
+trailing note, and turns example lines into code blocks; the language
+server lays a struct out from them. test-lsp checks the <code class="inline-code">sql::limits</code>
+hover. Extension 0.46.0.</li>
+</ul>
+<h2 id="pool-values-reached-by-generation-checked-handles" class="doc-h2"><a class="anchor-link" href="#pool-values-reached-by-generation-checked-handles">pool: values reached by generation-checked handles</a></h2>
+<p>Commit <code class="inline-code">2095dc8</code>.</p>
+<ul>
+<li><strong>The change:</strong> a new <code class="inline-code">pool</code> module. <code class="inline-code">pool[T]</code> keeps values of one type
+in slots; <code class="inline-code">put</code> gives a <code class="inline-code">handle[T]</code> (slot number, generation, and the
+pool&#39;s id) instead of a pointer. Removing a value moves its slot&#39;s
+generation on, so its handles find nothing (<code class="inline-code">get</code> gives null) rather
+than whatever takes the slot later. Handles of another pool find nothing
+too, and the zero handle stands for none.<ul>
+<li><strong>API:</strong> <code class="inline-code">new</code>, <code class="inline-code">put</code>, <code class="inline-code">get</code>, <code class="inline-code">contains</code>, <code class="inline-code">take</code> (moves a value out),
+<code class="inline-code">remove</code> (drops it), <code class="inline-code">count</code>, <code class="inline-code">clear</code>, <code class="inline-code">finish</code>, <code class="inline-code">iter</code> and <code class="inline-code">next</code>.</li>
+<li><strong>Holds owners, leak free:</strong> each slot holds <code class="inline-code">(T | void)</code>, so removing
+a value, clearing the pool or dropping it drops what it holds, by the
+language&#39;s own drop rules; no custom drop code.</li>
+<li><strong>Cost:</strong> constant-time <code class="inline-code">put</code>, <code class="inline-code">get</code>, <code class="inline-code">take</code> and <code class="inline-code">remove</code>; removed
+slots are reused through a free list. A slot whose generation would run
+out is retired.</li>
+</ul>
+</li>
+<li><strong>Why:</strong> things that point at each other (graphs, trees with parent
+links, entities) otherwise need <code class="inline-code">rc</code> (and risk cycles) or <code class="inline-code">unsafe</code>. A
+handle is a plain value that can&#39;t dangle.</li>
+<li><strong>Compiler bugs the pool&#39;s tests found, fixed:</strong><ul>
+<li><strong>A crash:</strong> the ownership check of <code class="inline-code">for (let (a, b) =&gt; next(&amp;it))</code>
+read the tagged union <code class="inline-code">next</code> gives as if it were a tuple. It now finds
+the union&#39;s tuple member.</li>
+<li><strong>Writes through a stale view went unchecked:</strong> L0609 caught reading
+through a view after its source grew, but not writing: <code class="inline-code">*x = 5</code> or
+<code class="inline-code">v[0] += 1</code> after <code class="inline-code">append</code> compiled, and wrote into freed memory. The
+target of an assignment now uses what it is reached through.</li>
+<li><strong>Growth through a pointer to an owner:</strong> <code class="inline-code">let p = &amp;b; append(p, x)</code>
+didn&#39;t make views of <code class="inline-code">b</code>&#39;s elements stale. It does now.</li>
+<li><strong>Precision, so the stricter check stays usable:</strong> growing a place
+reached through a pointer (<code class="inline-code">append(s.out, x)</code>, or a call given
+<code class="inline-code">&amp;s.fields</code>) no longer counts as moving that pointer itself: <code class="inline-code">s</code> still
+points where it did, and only views of what moved go stale. Without
+this, the write check flagged correct code in <code class="inline-code">http</code>.</li>
+</ul>
+</li>
+<li><strong>Tests:</strong> <code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/pool.lora</span></code> (with leak checks): stale handles, slot
+reuse, <code class="inline-code">take</code>, owners removed, cleared and dropped, handles of another
+pool, iteration, a tree with parent links, a thousand slots reused.
+test-errors: a pool pointer used after a <code class="inline-code">put</code> is L0609; unpacking an
+iterator&#39;s tuple of owners compiles; seven stale-view cases, five
+refused and two allowed. <code class="inline-code">docs/stdlib.md</code> has a pool section with an
+example that runs; <code class="inline-code">docs/errors.md</code> says L0609 covers writes.</li>
+</ul>
+<h2 id="regions-that-size-themselves-a-region-per-request-and-region-views-checked" class="doc-h2"><a class="anchor-link" href="#regions-that-size-themselves-a-region-per-request-and-region-views-checked">Regions that size themselves, a region per request, and region views checked</a></h2>
+<p>Commit <code class="inline-code">f72ce78</code>.</p>
+<ul>
+<li><strong><code class="inline-code">expanse::auto()</code>:</strong> a region that chooses no size. It reserves
+nothing until something is put in it, then a tebibyte of address space
+(<code class="inline-code">expanse::AUTO</code>), which takes no memory until pages are used, and
+grows into it in place. A block, a coroutine&#39;s body or a request owns
+one for as long as it lives. <code class="inline-code">sql::auto_region()</code> is now this.</li>
+<li><strong><code class="inline-code">http::region(req)</code>:</strong> the request&#39;s region, public: memory that lives
+as long as the request is served, freed all at once after it. The
+HTTP/1.1 server keeps one per connection, lent to each request in turn
+(<code class="inline-code">request.lent</code>) and emptied after it, so a warm connection&#39;s requests
+cost no system call. A request with none lent (HTTP/2 streams,
+<code class="inline-code">record</code>) makes its own on first use. Binding uses it too.</li>
+<li><strong>Safety holes found and fixed on the way:</strong><ul>
+<li><strong>What a region held wasn&#39;t tied to it.</strong> <code class="inline-code">expanse</code> builds its
+pointers from addresses kept as numbers, so the checker saw no link:
+text from <code class="inline-code">expanse::copy</code> could be stored in a global, returned past
+its region, or used after <code class="inline-code">finish</code> (an unmapped page). Functions can
+now say, by parameter name, what their result views and what they
+change: <code class="inline-code">@views(r)</code> and <code class="inline-code">@changes(r)</code>, kept in typedefs (for generics
+too). <code class="inline-code">take</code>, <code class="inline-code">new</code>, <code class="inline-code">make</code>, <code class="inline-code">copy</code>, <code class="inline-code">push</code> and <code class="inline-code">items</code> view their
+region; <code class="inline-code">reset</code>, <code class="inline-code">rewind</code>, <code class="inline-code">shrink</code>, <code class="inline-code">finish</code>, <code class="inline-code">pop</code> and the array&#39;s
+clear and finish change it. A region keeps its mapping as a pointer
+too, so it is no longer taken for a plain value that nothing can move.</li>
+<li><strong>A function value could keep its arguments.</strong> Calls through function
+pointers are taken not to keep what they are given, but nothing
+checked the function: <code class="inline-code">&amp;keep</code>, or a handler saving <code class="inline-code">req.target</code> in a
+global, compiled, and read freed memory at run time. Making such a
+function a value is now an error (L0608), naming the parameter kept.</li>
+<li><strong>Precision, so the stricter checks fit real code:</strong> a function whose
+result is reached through a parameter records only that (not that it
+views the parameter itself); an owner moved into a struct or tuple
+takes views of what it owns with it, when moving it moves no memory
+(heap owners and regions), as <code class="inline-code">json::document</code> holds its region and
+the values in it; filling an empty auto region on first use sets its
+fields rather than replacing it, so taking more ends nothing taken
+before.</li>
+</ul>
+</li>
+<li><strong>Making the region checks fit real code, as found by the library&#39;s
+own tests:</strong><ul>
+<li><code class="inline-code">@changes(r)</code> is its own effect (&quot;moves&quot;), carried in typedefs as
+<code class="inline-code">@moves(n)</code> and passed on to callers, and honoured even for a value
+that looks plain: a region&#39;s fields are numbers, so ordinary changes
+to it are still taken to move nothing. Only what is declared to end
+region memory (reset, rewind, shrink, finish, and their callers) does.</li>
+<li>A field a struct owns (<code class="inline-code">^T</code>, <code class="inline-code">^[]T</code>), read through a pointer, now
+counts as part of what that pointer reaches rather than memory of
+unknown lifetime: storing into it is storing into the struct.</li>
+<li>Growing what a pointer variable points to changes that pointee, not
+the things whose views were stored in it.</li>
+</ul>
+</li>
+<li><strong><code class="inline-code">map</code> owns its table:</strong> the table is now a <code class="inline-code">^[]slot</code> the map owns
+(it was raw memory freed by hand), new slots are zero bytes rather than
+a copy of the entry being added, and keys and values can&#39;t own memory:
+a map of owners is refused with an error, where before it leaked them.
+So <code class="inline-code">map::put</code> stores a key into the map instead of &quot;keeping&quot; it: a map
+of strings from the same scope, or of region text, compiles, and using
+the map after a key&#39;s source has ended is the error, where it belongs.</li>
+<li><strong>A trap found on the way (corrected below):</strong> comparing compilers, a
+build from <code class="inline-code">git archive</code> seemed to disagree with the working one; it
+was first taken for objects left built against an old header.</li>
+<li><strong>Tests:</strong> <code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/expanse.lora</span></code> (auto: 20 MB with no size given, reset,
+rewind, finish); <code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/http_server.lora</span></code> (the request&#39;s region over
+six requests on one connection, and through <code class="inline-code">record_raw</code>); test-errors:
+region text stored in a global, a region&#39;s slice too, text used after
+finish, reset and rewind (refused); taking more, and taking after a
+reset (allowed); a struct holding a region with views of it (allowed),
+a value returned past its region (refused); a function value and a
+handler that keep their argument (refused); a request&#39;s region kept
+past the request (refused); a map keyed by a string of the same scope
+(allowed); a map of owners (refused); a map used after its key&#39;s block
+ended (refused, &quot;<code class="inline-code">m</code> views <code class="inline-code">o</code>&quot;). <code class="inline-code">docs/stdlib.md</code>: <code class="inline-code">expanse::auto</code>,
+the request&#39;s region, and what a map owns, with examples that run.</li>
+</ul>
+<h2 id="scratch-memory-for-a-piece-of-work-per-coroutine-and-thread" class="doc-h2"><a class="anchor-link" href="#scratch-memory-for-a-piece-of-work-per-coroutine-and-thread">scratch: memory for a piece of work, per coroutine and thread</a></h2>
+<p>Commit <code class="inline-code">3e0da54</code>.</p>
+<ul>
+<li><strong>The change:</strong> a new <code class="inline-code">scratch</code> module. <code class="inline-code">scratch::with(fn(s: *scratch::frame) R = { ... })</code> marks where the scratch region is, runs
+the body, and goes back to the mark when it returns: what the body took
+with <code class="inline-code">scratch::make</code>, <code class="inline-code">new</code> and <code class="inline-code">copy</code> is given back all at once, and an
+inner <code class="inline-code">with</code> gives back only its own. Taking scratch costs a pointer
+move: no lock, no system call once the pages are there.</li>
+<li><strong>Per coroutine, and per thread:</strong> each coroutine&#39;s task has its own
+scratch region (dropped with the task), and each thread one for code
+outside coroutines (finished as a spawned thread ends). A coroutine
+keeps its scratch wherever it runs, so its body may wait while others
+use theirs, and no two ever share one. All are <code class="inline-code">expanse::auto</code> regions:
+nothing reserved until used, no size to choose.</li>
+<li><strong>Checked:</strong> the body gets only a borrowed <code class="inline-code">*frame</code>, and what it takes
+views it. Returning scratch from the body is refused where <code class="inline-code">with</code> is
+called, by a new compile-time test, <code class="inline-code">@borrows(T)</code> (whether a value of
+<code class="inline-code">T</code> may view memory it doesn&#39;t own); storing it in a global or through
+a captured pointer is refused as a function value that keeps its
+argument.</li>
+<li><strong>A bug found on the way:</strong> a mark taken from an <code class="inline-code">expanse::auto</code> region
+before its first use was address 0, and rewinding to it after the
+region reserved its memory set its position below its start. A mark of
+an empty region now means its start.</li>
+<li><strong>Build order:</strong> <code class="inline-code">expanse</code> now builds before <code class="inline-code">thread</code> and <code class="inline-code">coro</code>, which
+hold scratch regions.</li>
+<li><strong>Tests:</strong> <code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/scratch.lora</span></code> (with leak checks): results, nesting,
+20 MB with no size chosen, two coroutines interleaving (each waiting
+mid-body) with their own scratch, and a thread. test-errors: scratch
+returned, kept through a captured pointer, and stored in a global
+(refused); used inside its body (allowed); <code class="inline-code">@borrows</code>. <code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/expanse.lora</span></code>:
+rewinding an auto region to a mark taken before its first use.
+<code class="inline-code">docs/stdlib.md</code> has a scratch section with an example that runs;
+<code class="inline-code">@borrows</code> is in <code class="inline-code">docs/language.md</code> and the editor. Extension 0.47.0.</li>
+</ul>
+<h2 id="a-correction-the-compilers-makefile-rebuilds-on-header-changes" class="doc-h2"><a class="anchor-link" href="#a-correction-the-compilers-makefile-rebuilds-on-header-changes">A correction: the compiler&#39;s Makefile rebuilds on header changes</a></h2>
+<p>No code change.</p>
+<ul>
+<li><strong>What was said:</strong> the summary of the region work (<code class="inline-code">f72ce78</code>) said the
+compiler&#39;s Makefile doesn&#39;t rebuild what includes a changed header, and
+named that as a follow-up.</li>
+<li><strong>What is so:</strong> it does. Every object depends on every header
+(<code class="inline-code">$(headers)</code>, which lists all of <code class="file-chip file-chip-dir"><span class="chip-badge chip-dir" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span><span class="chip-name">include/</span></code>): touching <code class="file-chip file-chip-c"><span class="chip-badge chip-c" aria-hidden="true">C</span><span class="chip-name">effects.h</span></code>
+rebuilds all 28 objects, and a second <code class="inline-code">make</code> rebuilds none.</li>
+<li><strong>What happened instead:</strong> the compilers built for comparison came from
+<code class="inline-code">git archive</code>, which leaves out <code class="inline-code">compiler/config.mk</code> (it is ignored by
+git). Without it nothing built, and running the missing binary printed
+no errors, which read as &quot;this version accepts the program&quot;. To build a
+copy of the compiler elsewhere, copy <code class="inline-code">config.mk</code> into it, and check the
+binary exists before trusting what it says.</li>
+</ul>
+<h2 id="interface-values-whose-methods-keep-their-arguments" class="doc-h2"><a class="anchor-link" href="#interface-values-whose-methods-keep-their-arguments">Interface values whose methods keep their arguments</a></h2>
+<p>Commit <code class="inline-code">fafa62e</code>.</p>
+<ul>
+<li><strong>The hole:</strong> the rule that a function keeping its argument can&#39;t be
+made a function value (from the region work) didn&#39;t cover interface
+values. A type&#39;s methods are called through an interface value without
+being seen, so <code class="inline-code">impl http::handler for keeper</code> with a <code class="inline-code">serve</code> that saved
+<code class="inline-code">req.target</code> in a global compiled, and read freed memory once the
+request ended, though the same handler written as a function was
+refused.</li>
+<li><strong>The fix:</strong> each method table the compiler makes remembers its <code class="inline-code">impl</code>;
+where a value is made an interface value (its table&#39;s address taken),
+each method is checked as a function value is: one that keeps a pointer
+or view it is given is an error, &quot;Its method serve keeps <code class="inline-code">req</code> after it
+returns, so this can&#39;t be made an interface value&quot; (L0608).</li>
+<li><strong>Tests:</strong> test-errors: a handler type whose method keeps the request
+(refused); one whose method keeps nothing it is given (allowed). The
+library builds with no method refused.</li>
+</ul>
+<h2 id="named-tuple-parts" class="doc-h2"><a class="anchor-link" href="#named-tuple-parts">Named tuple parts</a></h2>
+<p>Commit <code class="inline-code">3971ae5</code>.</p>
+<ul>
+<li><strong>The change:</strong> a tuple&#39;s parts can be named in its type,
+<code class="inline-code">fn divmod(a: int, b: int) (quot: int, rem: int)</code>, and read by name,
+<code class="inline-code">d.quot</code>, as well as by number, <code class="inline-code">d.0</code>. A tuple is made with names,
+<code class="inline-code">(quot = 3, rem = 1)</code>, or by position where the type is known, as in a
+<code class="inline-code">return (lo, hi)</code> from a function whose result names them.</li>
+<li><strong>Rules:</strong><ul>
+<li>A named tuple and an unnamed one of the same parts take each other,
+both ways: <code class="inline-code">let plain: (int, int) = d;</code>. Two named differently don&#39;t,
+as their parts mean different things.</li>
+<li>A literal&#39;s names must match the type&#39;s, in order: <code class="inline-code">(rem = 1, quot = 2)</code> where <code class="inline-code">(quot: int, rem: int)</code> is expected is an error saying so.</li>
+<li>A tuple names all its parts or none, no name twice, and has two parts
+or more.</li>
+<li>Reading a name from a tuple that names none says to read by number,
+or to name its parts.</li>
+</ul>
+</li>
+<li><strong><code class="inline-code">@all</code> names its results:</strong> <code class="inline-code">let r = @all(user = load(id), orders = count(id))?;</code> gives <code class="inline-code">r.user</code> and <code class="inline-code">r.orders</code>; all named or none, and
+<code class="inline-code">@first</code>, which gives one value, takes no names.</li>
+<li><strong>Everywhere a tuple goes:</strong> the names are part of the tuple&#39;s type
+(hashed and compared), printed in error messages and typedefs, so they
+cross modules; kept through generics and type aliases; and given by
+<code class="inline-code">@typeinfo</code> as its fields&#39; names. Unpacking, <code class="inline-code">match</code> patterns and owners
+in named parts work as for any tuple.</li>
+<li><strong>Editors:</strong> the tree-sitter grammar parses named tuple types and
+literals, and Zed highlights the names as fields. The language server
+completes a tuple&#39;s parts after <code class="inline-code">t.</code> (by name, or by number for an
+unnamed tuple) and shows a part&#39;s type on hover. Extension 0.48.0; the
+Zed extension&#39;s grammar is pinned to this commit.</li>
+<li><strong>Tests:</strong> <code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/named_tuples.lora</span></code> (with leak checks); test-errors:
+seven named-tuple errors and <code class="inline-code">@all</code> naming some results; test-lsp:
+completion and hover of named parts; <code class="inline-code">docs/language.md</code> has an example
+that runs.</li>
+<li><strong>A flaky test made steady:</strong> the stack-frames test rebuilt the
+library with <code class="inline-code">make</code> while a <code class="inline-code">lora</code> command (an editor&#39;s check) could be
+building it too, under the lock <code class="inline-code">lora</code> takes; the two wrote the same
+files, and the test failed on a half-written one, several times today.
+It now removes the old build and rebuilds under the same lock.</li>
+</ul>
+<h2 id="patterns-in-let-and-for" class="doc-h2"><a class="anchor-link" href="#patterns-in-let-and-for">Patterns in let and for</a></h2>
+<p>Commit <code class="inline-code">9af28f7</code>.</p>
+<ul>
+<li><strong>The change:</strong> what a <code class="inline-code">let</code> or <code class="inline-code">for</code> binds can be a pattern that takes
+a value apart:<ul>
+<li>tuples nested in tuples, <code class="inline-code">let ((a, b), c) = ((1, 2), 3);</code></li>
+<li>a tuple&#39;s named parts, by name and in any order,
+<code class="inline-code">let (quot = q, ..) = divmod(9, 4);</code></li>
+<li>a struct by its fields&#39; names, nested too, a field bound to its own
+name or another, <code class="inline-code">let point { x, y: height } = p;</code></li>
+<li><code class="inline-code">..</code> for the parts or fields left out;</li>
+<li>in for-each loops over slices: <code class="inline-code">for (let (name, score) .. scores)</code>,
+<code class="inline-code">for (let point { x, .. } .. pts)</code>.</li>
+</ul>
+</li>
+<li><strong>Rules, each refused with its reason:</strong> a <code class="inline-code">let</code> always takes its value
+apart, so a value in its pattern (<code class="inline-code">let (1, b) = t</code>) is sent to <code class="inline-code">match</code>;
+a struct pattern names every field or ends with <code class="inline-code">..</code>; a tuple pattern
+names its parts all by name or all by position; names and fields that
+aren&#39;t there are named; a pattern of the wrong shape says what the
+value is. Owners move into their names: a part that owns memory can&#39;t
+be left with <code class="inline-code">_</code> or <code class="inline-code">..</code> (it would be dropped unused), and a type that
+cleans up when dropped (<code class="inline-code">impl drop</code>) can&#39;t be taken apart. <code class="inline-code">static let</code>
+keeps to a flat tuple.</li>
+<li><strong>How:</strong> a pattern is flattened into the bindings unpacking already
+made, each name bound at its part&#39;s offset in the value, so code
+generation and the later checks (ownership, views, effects) needed no
+change; the ownership count of a flat tuple&#39;s parts is skipped for a
+pattern, which checked what it leaves itself. A flat list of names is
+parsed as it always was.</li>
+<li><strong>Editors:</strong> the tree-sitter grammar parses the patterns, and Zed
+highlights a named part&#39;s label and a struct pattern&#39;s type. The
+language server finds the names a pattern binds, not taking a part&#39;s
+label (<code class="inline-code">quot = q</code>), a field&#39;s (<code class="inline-code">x: px</code>) or the struct&#39;s name for one,
+so they hover and complete. Extension 0.49.0; the Zed extension&#39;s
+grammar is pinned to this commit.</li>
+<li><strong>Tests:</strong> <code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/let_patterns.lora</span></code> (with leak checks, owners in
+nested tuples and structs included); test-errors: ten refusals; test-lsp:
+names bound in patterns in scope, labels not; <code class="inline-code">docs/language.md</code> has an
+example that runs.</li>
+</ul>
+<h2 id="types-for-the-names-patterns-bind-in-the-editor" class="doc-h2"><a class="anchor-link" href="#types-for-the-names-patterns-bind-in-the-editor">Types for the names patterns bind, in the editor</a></h2>
+<p>Commit <code class="inline-code">f0bb6be</code>.</p>
+<ul>
+<li><strong>The change:</strong> hovering a name a <code class="inline-code">let</code> or <code class="inline-code">for</code> pattern binds shows its
+type (<code class="inline-code">let px: int</code>), and completion after <code class="inline-code">px.</code> offers its members.<ul>
+<li><strong>Once the file is checked,</strong> the compiler&#39;s index already had each
+name&#39;s type: matched by name, line and function, it is shown.</li>
+<li><strong>Before then, or while the file doesn&#39;t build,</strong> the server works
+it out itself: each name a pattern binds records its path through
+the value (part 0, part <code class="inline-code">quot</code>, field <code class="inline-code">x</code>), and the type is followed
+along that path from the value&#39;s inferred type, or the element type
+of what a <code class="inline-code">for</code> walks.</li>
+</ul>
+</li>
+<li><strong>Inference the server lacked, added for this:</strong> tuple literals,
+<code class="inline-code">(1, &quot;a&quot;)</code> as <code class="inline-code">(int, str)</code> and <code class="inline-code">(quot = 1, rem = 2)</code> with its names; and
+array literals, <code class="inline-code">[(a, 1)]</code> as <code class="inline-code">[1](T, int)</code> (<code class="inline-code">[_]</code> with <code class="inline-code">...</code>).
+Inlay hints show these too.</li>
+<li><strong>Tests:</strong> test-lsp: a struct pattern&#39;s name hovers with its type;
+test-lsp-types: completion of members of names from a nested tuple
+pattern, a struct pattern, a named tuple part and a <code class="inline-code">for</code> pattern (33
+cases pass). Extension 0.50.0.</li>
+</ul>
+<h2 id="errors-inside-interpolated-strings-where-they-are" class="doc-h2"><a class="anchor-link" href="#errors-inside-interpolated-strings-where-they-are">Errors inside interpolated strings, where they are</a></h2>
+<p>Commit <code class="inline-code">c0d5638</code>.</p>
+<ul>
+<li><strong>The bug:</strong> in <code class="inline-code">$&quot;{name} is {next.age}&quot;</code>, an error about a name inside
+the braces was shown past it: the editor underlined <code class="inline-code"> is</code>, <code class="inline-code">.age</code>, or
+the closing quote instead of <code class="inline-code">name</code>, <code class="inline-code">next</code> or <code class="inline-code">x</code>. Two slips added up:<ul>
+<li><strong>A name&#39;s expression took the lexer&#39;s position</strong> (<code class="inline-code">parse_access</code>
+used <code class="inline-code">lexer-&gt;loc</code>), which by then was past the name and the token
+looked at after it. In ordinary code that was close to right; in an
+interpolated part, parsed by a lexer of its own whose source is just
+the expression, it landed after the whole name.</li>
+<li><strong>Each part started one character late:</strong> its position was taken
+after its first character had been read and pushed back, so the
+part&#39;s lexer counted that character a second time.</li>
+</ul>
+</li>
+<li><strong>The fix:</strong> a name&#39;s expression is placed where the name starts; and a
+part&#39;s lexer starts at its <code class="inline-code">{</code>, so its first character is where it is.
+Errors about names in ordinary code are placed at the name&#39;s start too.</li>
+<li><strong>Tests:</strong> test-errors checks the exact columns of names after <code class="inline-code">n + </code>,
+after a <code class="inline-code">{{x}}</code> escape and a <code class="inline-code">{n:x}</code> format; test-lsp checks that the
+editor underlines exactly <code class="inline-code">name</code>, <code class="inline-code">next</code> and <code class="inline-code">x</code> in <code class="inline-code">$&quot;{name} is {next.age}, at {x}&quot;</code>.</li>
+</ul>
+<h2 id="sealing-the-librarys-types-the-runtime-trusts" class="doc-h2"><a class="anchor-link" href="#sealing-the-librarys-types-the-runtime-trusts">Sealing the library&#39;s types the runtime trusts</a></h2>
+<p>Commit <code class="inline-code">c4c1026</code>; the guidance on when to seal, in the language
+reference and on the site, followed it.</p>
+<ul>
+<li><strong>The rule:</strong> a type needs <code class="inline-code">@sealed</code> only when its own module&#39;s
+<code class="inline-code">unsafe</code> code trusts its fields. Code with no <code class="inline-code">unsafe</code> stays memory
+safe whatever its fields hold. Of the 58 modules, 16 have <code class="inline-code">unsafe</code>
+code, and two more needed seals:<ul>
+<li><strong><code class="inline-code">coro</code>:</strong> <code class="inline-code">chan</code>, <code class="inline-code">case</code>, <code class="inline-code">waitq</code>, <code class="inline-code">group</code>, <code class="inline-code">scope</code>, <code class="inline-code">results</code>,
+<code class="inline-code">serial</code> and <code class="inline-code">arrivals</code>. Safe code could build a <code class="inline-code">case</code> holding any
+pointer, which <code class="inline-code">select</code> treated as a channel; a channel&#39;s ring
+positions drive its byte copies; the rest hold the scheduler&#39;s
+queues or state only their locks may touch.</li>
+<li><strong><code class="inline-code">thread</code>:</strong> <code class="inline-code">thread</code>, <code class="inline-code">mutex</code>, <code class="inline-code">cond</code>, <code class="inline-code">atomic</code> and <code class="inline-code">shared</code>.
+Writing an atomic&#39;s value, or reaching a shared value without its
+lock, was a data race the race checker couldn&#39;t see; a thread&#39;s id
+goes to the system&#39;s join.</li>
+</ul>
+</li>
+<li><strong>Left open:</strong> <code class="inline-code">crypto::aes</code>, whose round count is checked before its
+assembly uses it; <code class="inline-code">net</code>, <code class="inline-code">fs</code> and <code class="inline-code">io</code>, which only pass descriptors to
+system calls; <code class="inline-code">map</code>, <code class="inline-code">sql</code> and <code class="inline-code">pg</code>, whose <code class="inline-code">unsafe</code> code doesn&#39;t depend
+on field values or whose type isn&#39;t exported.</li>
+<li><strong>What changed for programs:</strong><ul>
+<li><code class="inline-code">thread::atomic { ... }</code> is an atomic holding 0, and
+<code class="inline-code">thread::new_atomic(n)</code> one holding <code class="inline-code">n</code>; every <code class="inline-code">{ v = ... }</code> in the
+library, tests, docs, examples and benchmarks was rewritten.</li>
+<li>A thread is moved, never copied, and joined or detached once; one
+dropped with neither is detached. Several are kept in a <code class="inline-code">^[]thread</code>
+and joined with <code class="inline-code">thread::join_all</code>; <code class="inline-code">coro</code>&#39;s worker pool works so.</li>
+</ul>
+</li>
+<li><strong>Zero values:</strong> each sealed type&#39;s <code class="inline-code">T { ... }</code> works. Mutexes, conds,
+shared values, <code class="inline-code">coro::notifier</code> and <code class="inline-code">sql::db</code> default their locks to
+valid ones (a zero-filled lock failed its first use on macOS); a zero
+channel is unbuffered; a zero thread is none, which <code class="inline-code">join</code> and
+<code class="inline-code">detach</code> leave alone.</li>
+<li><strong>Found and fixed on the way:</strong> the first rewrite of <code class="inline-code">coro</code>&#39;s worker
+shutdown freed the pool&#39;s slice twice at exit; it is now emptied in
+place.</li>
+<li><strong>Docs and editors:</strong> <code class="inline-code">docs/stdlib.md</code> says which <code class="inline-code">thread</code> and <code class="inline-code">coro</code>
+types are sealed and how threads are joined; <code class="inline-code">docs/language.md</code> says
+when to seal a type and lists the library&#39;s sealed types, and the
+site&#39;s structs page shows it. Extension 0.63.0.</li>
+<li><strong>Tests:</strong> test-errors refuses a forged select case, setting channel
+fields, reaching an atomic&#39;s or a shared value&#39;s fields, and copying a
+thread; <code class="file-chip file-chip-lora"><span class="chip-badge chip-lora" aria-hidden="true">λ</span><span class="chip-name">tests/zero_values.lora</span></code> uses each zero value plainly, under
+leak checks and in guard mode.</li>
+</ul>
+<div class="doc-status-bar"><div class="doc-status-left"><span class="doc-status-files">1 file changed</span><span class="doc-status-counts"><span class="doc-status-add">+1282</span><span class="doc-status-del">-0</span></span><span class="doc-status-chevron" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span></div><a href="/lora-docs/guides/diagnostic-catalog" class="doc-status-review" title="Review compiler diagnostic catalog"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg><span>Review</span></a></div><nav class="pager" aria-label="Page pagination"><a href="/lora-docs/guides/roadmap" class="pager-link prev"><span class="pager-dir">← Previous</span><span class="pager-label">Lora Roadmap</span></a><a href="/lora-docs/specification/overview" class="pager-link next"><span class="pager-dir">Next →</span><span class="pager-label">Specification Overview</span></a></nav></article></main><aside class="toc" aria-label="On This Page"><div class="toc-title">On This Page</div><ul class="toc-list"><li><a href="#top" class="toc-link depth-2 is-active" data-toc-target="top">Table of contents</a></li><li><a href="#phase-1-io-readers-and-writers" class="toc-link depth-2" data-toc-target="phase-1-io-readers-and-writers">Phase 1 — io: readers and writers</a></li><li><a href="#phase-2-netip-addresses-as-values" class="toc-link depth-2" data-toc-target="phase-2-netip-addresses-as-values">Phase 2 — netip: addresses as values</a></li><li><a href="#phase-3-net-tcp-udp-and-local-sockets" class="toc-link depth-2" data-toc-target="phase-3-net-tcp-udp-and-local-sockets">Phase 3 — net: TCP, UDP and local sockets</a></li><li><a href="#phase-4-dns-a-resolver-of-its-own" class="toc-link depth-2" data-toc-target="phase-4-dns-a-resolver-of-its-own">Phase 4 — dns: a resolver of its own</a></li><li><a href="#phase-5-url-and-textproto" class="toc-link depth-2" data-toc-target="phase-5-url-and-textproto">Phase 5 — url and textproto</a></li><li><a href="#phase-6-http-http11-messages" class="toc-link depth-2" data-toc-target="phase-6-http-http11-messages">Phase 6 — http: HTTP/1.1 messages</a></li><li><a href="#phase-7-http-server" class="toc-link depth-2" data-toc-target="phase-7-http-server">Phase 7 — http server</a></li><li><a href="#phase-8-routing-forms-cookies-and-binding" class="toc-link depth-2" data-toc-target="phase-8-routing-forms-cookies-and-binding">Phase 8 — routing, forms, cookies and binding</a></li><li><a href="#phase-9-file-server" class="toc-link depth-2" data-toc-target="phase-9-file-server">Phase 9 — file server</a></li><li><a href="#phase-10-http-client" class="toc-link depth-2" data-toc-target="phase-10-http-client">Phase 10 — http client</a></li><li><a href="#phase-11-compression-gzip-in-http-testing-handlers-proxy" class="toc-link depth-2" data-toc-target="phase-11-compression-gzip-in-http-testing-handlers-proxy">Phase 11 — compression, gzip in HTTP, testing handlers, proxy</a></li><li><a href="#phase-12-smtp-sending-mail" class="toc-link depth-2" data-toc-target="phase-12-smtp-sending-mail">Phase 12 — smtp: sending mail</a></li><li><a href="#phase-13-part-1-tls-servers-and-https" class="toc-link depth-2" data-toc-target="phase-13-part-1-tls-servers-and-https">Phase 13, part 1 — TLS servers and HTTPS</a></li><li><a href="#phase-13-part-2-http2" class="toc-link depth-2" data-toc-target="phase-13-part-2-http2">Phase 13, part 2 — HTTP/2</a></li><li><a href="#http2-streams-at-once-server-push-and-the-h2c-upgrade" class="toc-link depth-2" data-toc-target="http2-streams-at-once-server-push-and-the-h2c-upgrade">HTTP/2 streams at once, server push, and the h2c upgrade</a></li><li><a href="#a-simple-http-server-example" class="toc-link depth-2" data-toc-target="a-simple-http-server-example">A simple HTTP server example</a></li><li><a href="#type-parameters-inferred-from-a-function-given-by-pointer" class="toc-link depth-2" data-toc-target="type-parameters-inferred-from-a-function-given-by-pointer">Type parameters inferred from a function given by pointer</a></li><li><a href="#shared-helpers-for-writing-text-and-numbers-into-a-buffer" class="toc-link depth-2" data-toc-target="shared-helpers-for-writing-text-and-numbers-into-a-buffer">Shared helpers for writing text and numbers into a buffer</a></li><li><a href="#uuid-checked-against-another-implementation" class="toc-link depth-2" data-toc-target="uuid-checked-against-another-implementation">uuid, checked against another implementation</a></li><li><a href="#compare-a-module-for-ordering-values" class="toc-link depth-2" data-toc-target="compare-a-module-for-ordering-values">compare: a module for ordering values</a></li><li><a href="#runes-ordered-by-code-point" class="toc-link depth-2" data-toc-target="runes-ordered-by-code-point">Runes ordered by code point</a></li><li><a href="#sql-in-strings-checked-highlighted-and-completed-as-you-type" class="toc-link depth-2" data-toc-target="sql-in-strings-checked-highlighted-and-completed-as-you-type">SQL in strings: checked, highlighted and completed as you type</a></li><li><a href="#a-live-sql-example-and-a-language-server-fix-it-found" class="toc-link depth-2" data-toc-target="a-live-sql-example-and-a-language-server-fix-it-found">A live SQL example, and a language server fix it found</a></li><li><a href="#every-form-completes-and-hovers-in-the-editor" class="toc-link depth-2" data-toc-target="every-form-completes-and-hovers-in-the-editor">Every @ form completes and hovers in the editor</a></li><li><a href="#sql-keeps-rows-with-no-into-a-region-of-the-blocks-own" class="toc-link depth-2" data-toc-target="sql-keeps-rows-with-no-into-a-region-of-the-blocks-own">@sql keeps rows with no into: a region of the block&#39;s own</a></li><li><a href="#struct-hovers-show-their-declaration-defaults-and-notes" class="toc-link depth-2" data-toc-target="struct-hovers-show-their-declaration-defaults-and-notes">Struct hovers show their declaration, defaults and notes</a></li><li><a href="#pool-values-reached-by-generation-checked-handles" class="toc-link depth-2" data-toc-target="pool-values-reached-by-generation-checked-handles">pool: values reached by generation-checked handles</a></li><li><a href="#regions-that-size-themselves-a-region-per-request-and-region-views-checked" class="toc-link depth-2" data-toc-target="regions-that-size-themselves-a-region-per-request-and-region-views-checked">Regions that size themselves, a region per request, and region views checked</a></li><li><a href="#scratch-memory-for-a-piece-of-work-per-coroutine-and-thread" class="toc-link depth-2" data-toc-target="scratch-memory-for-a-piece-of-work-per-coroutine-and-thread">scratch: memory for a piece of work, per coroutine and thread</a></li><li><a href="#a-correction-the-compilers-makefile-rebuilds-on-header-changes" class="toc-link depth-2" data-toc-target="a-correction-the-compilers-makefile-rebuilds-on-header-changes">A correction: the compiler&#39;s Makefile rebuilds on header changes</a></li><li><a href="#interface-values-whose-methods-keep-their-arguments" class="toc-link depth-2" data-toc-target="interface-values-whose-methods-keep-their-arguments">Interface values whose methods keep their arguments</a></li><li><a href="#named-tuple-parts" class="toc-link depth-2" data-toc-target="named-tuple-parts">Named tuple parts</a></li><li><a href="#patterns-in-let-and-for" class="toc-link depth-2" data-toc-target="patterns-in-let-and-for">Patterns in let and for</a></li><li><a href="#types-for-the-names-patterns-bind-in-the-editor" class="toc-link depth-2" data-toc-target="types-for-the-names-patterns-bind-in-the-editor">Types for the names patterns bind, in the editor</a></li><li><a href="#errors-inside-interpolated-strings-where-they-are" class="toc-link depth-2" data-toc-target="errors-inside-interpolated-strings-where-they-are">Errors inside interpolated strings, where they are</a></li><li><a href="#sealing-the-librarys-types-the-runtime-trusts" class="toc-link depth-2" data-toc-target="sealing-the-librarys-types-the-runtime-trusts">Sealing the library&#39;s types the runtime trusts</a></li></ul></aside></div><dialog id="search-dialog" class="search-modal" aria-label="Search Lora documentation"><div class="search-modal-head"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><input id="search-input" class="search-input" type="search" placeholder="Search syntax, errors (L0800), or stdlib (http::get, sql::numeric_buf_size)..." autocomplete="off"><kbd class="search-kbd">ESC</kbd></div><div id="search-results" class="search-results"><div style="padding: 16px; font-size: 0.86rem; color: var(--text-muted);">Type to search pages, compiler error codes, and 2,256 stdlib exports.</div></div></dialog><script>
+      // 1. Mobile sidebar drawer
+      const menuBtn = document.getElementById('mobile-menu-btn');
+      const sidebar = document.getElementById('sidebar');
+      if (menuBtn && sidebar) {
+        menuBtn.addEventListener('click', () => {
+          const open = sidebar.classList.toggle('is-open');
+          menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+
+      // Keep active nav link scrolled comfortably into view on load
+      const activeNav = sidebar?.querySelector('.nav-link.is-active');
+      if (activeNav) {
+        activeNav.scrollIntoView({ block: 'nearest' });
+      }
+
+      // 2. Dark / Light mode toggle (keeps Lora Fjord dark surface on all code blocks & tables)
+      const themeBtn = document.getElementById('theme-toggle');
+      themeBtn?.addEventListener('click', () => {
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        if (isLight) {
+          document.documentElement.removeAttribute('data-theme');
+          try { localStorage.setItem('lora-docs-theme', 'dark'); } catch {}
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+          try { localStorage.setItem('lora-docs-theme', 'light'); } catch {}
+        }
+      });
+
+      // 3. Code block copy & wrap buttons
+      document.addEventListener('click', async (ev) => {
+        const target = ev.target instanceof Element ? ev.target : null;
+        if (!target) return;
+        const wrapBtn = target.closest('.wrap-btn');
+        if (wrapBtn) {
+          const frame = wrapBtn.closest('.code-frame');
+          frame?.classList.toggle('is-wrapped');
+          wrapBtn.classList.toggle('is-wrapped');
+          return;
+        }
+        const btn = target.closest('.copy-btn');
+        if (!btn) return;
+        const frame = btn.closest('.code-frame');
+        const codeEl = frame?.querySelector('pre code') || frame?.querySelector('pre');
+        if (!codeEl) return;
+        try {
+          await navigator.clipboard.writeText(codeEl.textContent || '');
+          btn.classList.add('copied');
+          setTimeout(() => btn.classList.remove('copied'), 1500);
+        } catch {}
+      });
+
+      // 4. Right TOC scroll-spy
+      const tocLinks = Array.from(document.querySelectorAll('.toc-link'));
+      if (tocLinks.length > 1 && 'IntersectionObserver' in window) {
+        const map = new Map(tocLinks.map((a) => [a.getAttribute('data-toc-target'), a]));
+        const targets = tocLinks
+          .map((a) => document.getElementById(a.getAttribute('data-toc-target') || ''))
+          .filter(Boolean);
+        const obs = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                tocLinks.forEach((l) => l.classList.remove('is-active'));
+                map.get(entry.target.id)?.classList.add('is-active');
+                break;
+              }
+            }
+          },
+          { rootMargin: '-72px 0px -70% 0px', threshold: 0 }
+        );
+        targets.forEach((el) => obs.observe(el));
+      }
+
+      // 5. Lazy Search Modal (Ctrl/Cmd+K or /)
+      const dialog = document.getElementById('search-dialog');
+      const openBtn = document.getElementById('open-search');
+      const input = document.getElementById('search-input');
+      const resultsEl = document.getElementById('search-results');
+      let searchEntries = null;
+
+      const baseUrl = document.body.dataset.base || '/';
+
+      async function ensureIndex() {
+        if (searchEntries) return searchEntries;
+        try {
+          const res = await fetch(baseUrl + 'search-index.json');
+          searchEntries = await res.json();
+        } catch {
+          searchEntries = [];
+        }
+        return searchEntries;
+      }
+
+      function renderResults(query) {
+        if (!resultsEl || !searchEntries) return;
+        const q = query.trim().toLowerCase();
+        const matches = (q
+          ? searchEntries.filter(
+              (item) =>
+                item.title.toLowerCase().includes(q) ||
+                item.section.toLowerCase().includes(q) ||
+                item.subtitle.toLowerCase().includes(q)
+            )
+          : searchEntries.slice(0, 18)
+        ).slice(0, 35);
+
+        if (!matches.length) {
+          resultsEl.innerHTML =
+            '<div style="padding:16px;font-size:0.86rem;color:var(--text-muted)">No matches found.</div>';
+          return;
+        }
+        resultsEl.innerHTML = '';
+        for (const m of matches) {
+          const a = document.createElement('a');
+          a.href = baseUrl + String(m.slug || '').replace(/^\/+/, '');
+          a.className = 'search-item';
+          const left = document.createElement('div');
+          const t = document.createElement('div');
+          t.className = 'search-item-title';
+          t.textContent = m.title;
+          const sub = document.createElement('div');
+          sub.className = 'search-item-sub';
+          sub.textContent = m.subtitle;
+          left.appendChild(t);
+          if (m.subtitle) left.appendChild(sub);
+          const sec = document.createElement('span');
+          sec.className = 'search-item-section';
+          sec.textContent = m.section;
+          a.appendChild(left);
+          a.appendChild(sec);
+          resultsEl.appendChild(a);
+        }
+      }
+
+      async function openSearch() {
+        if (!dialog || !(dialog instanceof HTMLDialogElement)) return;
+        dialog.showModal();
+        input?.focus();
+        await ensureIndex();
+        renderResults(input?.value || '');
+      }
+
+      openBtn?.addEventListener('click', openSearch);
+      dialog?.addEventListener('click', (e) => {
+        if (e.target === dialog) dialog.close();
+      });
+      input?.addEventListener('input', () => renderResults(input.value));
+
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          if (dialog?.open) dialog.close();
+          else openSearch();
+        } else if (
+          e.key === '/' &&
+          document.activeElement?.tagName !== 'INPUT' &&
+          document.activeElement?.tagName !== 'TEXTAREA'
+        ) {
+          e.preventDefault();
+          openSearch();
+        }
+      });
+    </script></body></html>
